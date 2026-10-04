@@ -91,7 +91,8 @@ input[type=search]{width:100%;padding:11px 12px;border:1px solid var(--line);bor
 .promo a{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
 .promo img{display:block;width:100%;height:auto;aspect-ratio:3/2}
 .promo .ad-tag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);color:#5B6475;border-color:transparent}
-.promo .ad-note{margin:6px 2px 0}
+.adpick-note{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.45;color:var(--ink);word-break:keep-all}
+.adpick-note img{flex:none;width:20px;height:20px;border-radius:50%}
 .ad-slot{display:none}
 footer{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
 footer a{color:inherit}
@@ -176,13 +177,14 @@ const PROMO = {
     {src: "banner1.webp", alt: "취업·이직 준비, 혼자 하지 마세요. 자기소개서·이력서·인적성·NCS필기·면접 컨설팅, 크몽에서 상담하기"},
     {src: "banner2.webp", alt: "취업·이직, 혼자 준비하지 마세요. 자격증·자소서·면접·커리어 컨설팅, 크몽에서 전문가 찾기"}
   ],
-  note: "이 배너는 제휴 링크로, 이를 통해 구매가 이루어지면 일정액의 수수료를 제공받습니다."
+  note: "이 배너는 애드픽 제휴 광고로, 배너를 통해 구매가 이루어지면 사이트 운영자에게 수수료가 지급됩니다.",
+  noteIcon: "adpick_icon.png"
 };
 const PROMO_PICK = PROMO.images[Math.floor(Math.random() * PROMO.images.length)];
 function promoBlock(){
   return `<li class="promo"><a href="${PROMO.url}" target="_blank" rel="sponsored noopener">
     <img src="${PROMO_PICK.src}" alt="${esc(PROMO_PICK.alt)}" width="1200" height="800" loading="lazy"></a>
-    <span class="ad-tag">광고</span><p class="ad-note">${PROMO.note}</p></li>`;
+    <span class="ad-tag">광고</span><p class="adpick-note"><img src="${PROMO.noteIcon}" alt="애드픽" width="20" height="20">${PROMO.note}</p></li>`;
 }
 const DISCLOSURE = "이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
 function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
