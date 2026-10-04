@@ -76,6 +76,22 @@ input[type=search]{width:100%;padding:11px 12px;border:1px solid var(--line);bor
 .item.is-closed .title{color:var(--muted)}
 .empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px}
 .empty button{margin-top:10px}
+.ad{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.ad-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.ad-head b{font-size:14px}
+.ad-tag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.ad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ad-grid a{color:inherit;text-decoration:none;min-width:0}
+.ad-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--bg);display:block}
+.ad-name{font-size:12px;line-height:1.35;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ad-price{font-size:13px;font-weight:700;margin-top:2px}
+.ad-rocket{color:var(--brand);font-size:11px;font-weight:600}
+.ad-note{font-size:11px;color:var(--muted);margin:8px 0 0}
+.promo{position:relative}
+.promo a{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.promo img{display:block;width:100%;height:auto;aspect-ratio:3/2}
+.promo .ad-tag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);color:#5B6475;border-color:transparent}
+.promo .ad-note{margin:6px 2px 0}
 .ad-slot{display:none}
 footer{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
 footer a{color:inherit}
@@ -124,7 +140,7 @@ footer a{color:inherit}
 </div>
 
 <script>
-let POSTS = [], UPDATED = null;
+let POSTS = [], UPDATED = null, ADS = [];
 const pad = n => String(n).padStart(2,"0");
 const kst = d => new Date(d.getTime() + 9*3600e3);
 function dueText(d, hasTime){
@@ -148,6 +164,38 @@ async function load(){
   const k = kst(new Date(UPDATED));
   $("updated").textContent = `${k.getUTCFullYear()}.${pad(k.getUTCMonth()+1)}.${pad(k.getUTCDate())} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트, 글 ${POSTS.length}개`;
   refresh();
+  try{
+    const a = await fetch("ads.json?t=" + Date.now(), {cache:"no-store"});
+    if(a.ok){ ADS = ((await a.json()).products || []).sort(() => Math.random() - .5); render(); }
+  }catch(e){}
+}
+
+const PROMO = {
+  url: "https://bitl.bz/zdoDny",
+  images: [
+    {src: "banner1.webp", alt: "취업·이직 준비, 혼자 하지 마세요. 자기소개서·이력서·인적성·NCS필기·면접 컨설팅, 크몽에서 상담하기"},
+    {src: "banner2.webp", alt: "취업·이직, 혼자 준비하지 마세요. 자격증·자소서·면접·커리어 컨설팅, 크몽에서 전문가 찾기"}
+  ],
+  note: "이 배너는 제휴 링크로, 이를 통해 구매가 이루어지면 일정액의 수수료를 제공받습니다."
+};
+const PROMO_PICK = PROMO.images[Math.floor(Math.random() * PROMO.images.length)];
+function promoBlock(){
+  return `<li class="promo"><a href="${PROMO.url}" target="_blank" rel="sponsored noopener">
+    <img src="${PROMO_PICK.src}" alt="${esc(PROMO_PICK.alt)}" width="1200" height="800" loading="lazy"></a>
+    <span class="ad-tag">광고</span><p class="ad-note">${PROMO.note}</p></li>`;
+}
+const DISCLOSURE = "이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function adBlock(n){
+  const picks = ADS.slice(n*3, n*3 + 3);
+  if(picks.length < 3) return "";
+  return `<li class="ad"><div class="ad-head"><b>취업 준비에 필요한 것</b><span class="ad-tag">광고</span></div>
+    <div class="ad-grid">${picks.map(p => `<a href="${esc(p.url)}" target="_blank" rel="sponsored noopener">
+      <img src="${esc(p.image)}" alt="" loading="lazy">
+      <div class="ad-name">${esc(p.name)}</div>
+      <div class="ad-price">${p.price ? Number(p.price).toLocaleString("ko-KR") + "원" : ""}</div>
+      ${p.rocket ? '<div class="ad-rocket">로켓배송</div>' : ""}</a>`).join("")}</div>
+    <p class="ad-note">${DISCLOSURE}</p></li>`;
 }
 
 const TABS = [
@@ -222,7 +270,7 @@ function render(){
     $("list").innerHTML = `<li class="empty">조건에 맞는 글이 없습니다. 검색어나 필터를 바꿔 보세요.<br><button class="chip" id="empty-reset">필터 초기화</button></li>`;
     return;
   }
-  $("list").innerHTML = rows.map(p => {
+  const cards = rows.map(p => {
     const d = dday(p, now);
     const tile = d
       ? `<div class="dd ${d.cls}"><span class="big">${d.big}</span><span class="sm">${d.cls==="closed" ? fmt(p.due) : "마감 " + fmt(p.due)}</span></div>`
@@ -237,7 +285,14 @@ function render(){
           <div class="meta">${p.due ? `<span class="due">접수 마감 ${p.dueText}</span>` : ""}<span>${fmt(p.pub)} 게시</span></div>
         </div>
       </a></li>`;
-  }).join("");
+  });
+  const n = cards.length;
+  if(ADS.length){
+    cards.push(adBlock(1));
+    if(n > 10) cards.splice(10, 0, adBlock(0));
+  }
+  cards.splice(Math.min(3, n), 0, promoBlock());
+  $("list").innerHTML = cards.join("");
 }
 function refresh(){ renderTabs(); renderFilters(); render(); }
 
