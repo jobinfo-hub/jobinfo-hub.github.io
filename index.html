@@ -92,7 +92,9 @@ input[type=search]{width:100%;padding:11px 12px;border:1px solid var(--line);bor
 .promo img{display:block;width:100%;height:auto;aspect-ratio:3/2}
 .promo .ad-tag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);color:#5B6475;border-color:transparent}
 .adpick-note{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.45;color:var(--ink);word-break:keep-all}
-.adpick-note img{flex:none;width:20px;height:20px;border-radius:50%}
+.ad-dot{flex:none;width:20px;height:20px;border-radius:50%;background:var(--muted);color:var(--surface);font-size:9px;font-weight:700;display:grid;place-items:center}
+.adpick-note img{flex:none;width:20px;height:20px;border-radius:4px}
+.adpick-note img[src*="adpick"]{border-radius:50%}
 .ad-slot{display:none}
 footer{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
 footer a{color:inherit}
@@ -171,20 +173,45 @@ async function load(){
   }catch(e){}
 }
 
-const PROMO = {
-  url: "https://bitl.bz/zdoDny",
-  images: [
-    {src: "banner1.webp", alt: "취업·이직 준비, 혼자 하지 마세요. 자기소개서·이력서·인적성·NCS필기·면접 컨설팅, 크몽에서 상담하기"},
-    {src: "banner2.webp", alt: "취업·이직, 혼자 준비하지 마세요. 자격증·자소서·면접·커리어 컨설팅, 크몽에서 전문가 찾기"}
-  ],
-  note: "이 배너는 애드픽 제휴 광고로, 배너를 통해 구매가 이루어지면 사이트 운영자에게 수수료가 지급됩니다.",
-  noteIcon: "adpick_icon.png"
-};
-const PROMO_PICK = PROMO.images[Math.floor(Math.random() * PROMO.images.length)];
+// 제휴 배너 목록: 캠페인을 추가하려면 아래 형식대로 항목을 하나 더 넣으면 됩니다.
+const PROMOS = [
+  {
+    name: "크몽 (애드픽)",
+    url: "https://bitl.bz/zdoDny",
+    images: [
+      {src: "banner1.webp", alt: "취업·이직 준비, 혼자 하지 마세요. 자기소개서·이력서·인적성·NCS필기·면접 컨설팅, 크몽에서 상담하기"},
+      {src: "banner2.webp", alt: "취업·이직, 혼자 준비하지 마세요. 자격증·자소서·면접·커리어 컨설팅, 크몽에서 전문가 찾기"}
+    ],
+    note: "이 배너는 애드픽 제휴 광고로, 배너를 통해 구매가 이루어지면 사이트 운영자에게 수수료가 지급됩니다.",
+    noteIcon: "adpick_icon.png"
+  },
+  {
+    name: "숨고 (애드릭스)",
+    url: "https://appu.kr/?i=12539674",
+    images: [
+      {src: "banner3.webp", alt: "취업 준비, 지금이 바로 그때! 면접·스피닝·이력서·자소서·취업 컨설팅, 숨고에서 전문가 찾기"}
+    ],
+    note: "이 배너는 애드릭스 제휴 광고로, 배너를 통해 구매가 이루어지면 사이트 운영자에게 수수료가 지급됩니다.",
+    noteIcon: "adlix_icon.png"
+  }
+];
+// 방문할 때마다 캠페인을 번갈아 보여줌 (저장이 막힌 환경에서는 무작위)
+const PROMO_PICK = (() => {
+  let i;
+  try {
+    const last = parseInt(localStorage.getItem("promoTurn") ?? "-1", 10);
+    i = (isNaN(last) ? 0 : last + 1) % PROMOS.length;
+    localStorage.setItem("promoTurn", String(i));
+  } catch(e) { i = Math.floor(Math.random() * PROMOS.length); }
+  const c = PROMOS[i];
+  return {c, img: c.images[Math.floor(Math.random() * c.images.length)]};
+})();
 function promoBlock(){
-  return `<li class="promo"><a href="${PROMO.url}" target="_blank" rel="sponsored noopener">
-    <img src="${PROMO_PICK.src}" alt="${esc(PROMO_PICK.alt)}" width="1200" height="800" loading="lazy"></a>
-    <span class="ad-tag">광고</span><p class="adpick-note"><img src="${PROMO.noteIcon}" alt="애드픽" width="20" height="20">${PROMO.note}</p></li>`;
+  const {c, img} = PROMO_PICK;
+  const icon = c.noteIcon ? `<img src="${c.noteIcon}" alt="" width="20" height="20">` : `<span class="ad-dot">AD</span>`;
+  return `<li class="promo"><a href="${c.url}" target="_blank" rel="sponsored noopener">
+    <img src="${img.src}" alt="${esc(img.alt)}" width="1200" height="800" loading="lazy"></a>
+    <span class="ad-tag">광고</span><p class="adpick-note">${icon}${c.note}</p></li>`;
 }
 const DISCLOSURE = "이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
 function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
