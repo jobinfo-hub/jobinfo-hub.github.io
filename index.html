@@ -3,15 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>취업/정책 지원소 · 공고 모아보기</title>
+<title>취업/정책 지원소 · 마감순 채용공고 모음</title>
+<meta name="description" content="공기업·공공기관·공무직 채용공고를 마감순으로 한눈에. 기관명, 인원, 고용형태, 접수 마감 시각까지 정리했습니다.">
+<meta name="theme-color" content="#1F3FBF">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="취업지원소">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="취업/정책 지원소">
+<meta property="og:title" content="취업/정책 지원소 · 마감순 채용공고 모음">
+<meta property="og:description" content="공기업·공공기관·공무직 채용공고를 마감순으로 한눈에. 기관명, 인원, 고용형태, 접수 마감 시각까지 정리했습니다.">
+<meta property="og:url" content="https://jobinfo-hub.github.io/">
+<meta property="og:image" content="https://jobinfo-hub.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Black+Han+Sans&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F5F7FB; --surface:#FFFFFF; --ink:#14213D; --muted:#5B6475; --line:#DFE4EE;
-  --brand:#1F3FBF; --brand-soft:#E6EBFB; --hot:#E0312F; --hot-soft:#FDE8E7;
-  --open:#0E7C7B; --open-soft:#E1F3F2; --closed:#9AA3B2;
+  --brand:#1F3FBF; --brand-soft:#E6EBFB; --hot:#D92D2A; --hot-soft:#FDE8E7;
+  --tile:#EEF1F6; --tile-ink:#3A4560; --closed:#9AA3B2; --chip:#F0F2F7; --star:#E8A400;
+  --green:#0E7C5B; --green-soft:#E1F4EC;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -19,63 +35,104 @@
   :root:not([data-theme="light"]){
     --bg:#0F1524; --surface:#172036; --ink:#E8ECF5; --muted:#9AA6BD; --line:#2A3550;
     --brand:#7C95FF; --brand-soft:#212C4D; --hot:#FF6B66; --hot-soft:#3A1F27;
-    --open:#4CC4C1; --open-soft:#15333A; --closed:#5E6880;
+    --tile:#1E2840; --tile-ink:#C3CBDD; --closed:#5E6880; --chip:#212B44; --star:#FFC233;
+    --green:#4CD3A5; --green-soft:#15332B;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0F1524; --surface:#172036; --ink:#E8ECF5; --muted:#9AA6BD; --line:#2A3550;
   --brand:#7C95FF; --brand-soft:#212C4D; --hot:#FF6B66; --hot-soft:#3A1F27;
-  --open:#4CC4C1; --open-soft:#15333A; --closed:#5E6880;
+  --tile:#1E2840; --tile-ink:#C3CBDD; --closed:#5E6880; --chip:#212B44; --star:#FFC233;
+  --green:#4CD3A5; --green-soft:#15332B;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:720px;margin:0 auto;padding:0 16px 48px}
-header{padding:28px 0 18px}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px;border-radius:12px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:"Black Han Sans",sans-serif;font-size:15px;line-height:1.05;text-align:center;flex:none}
-h1{margin:0;font-family:"Black Han Sans","IBM Plex Sans KR",sans-serif;font-weight:400;font-size:28px;letter-spacing:-.5px;line-height:1.15}
-.tagline{margin:12px 0 4px;font-size:17px;font-weight:600}
-.updated{font-size:13px;color:var(--muted)}
-.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{appearance:none;border:0;background:none;color:var(--muted);font:inherit;font-weight:600;padding:12px 10px;white-space:nowrap;border-bottom:3px solid transparent;cursor:pointer}
-.tab .n{font-weight:500;font-size:13px;margin-left:3px}
-.tab[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand)}
-.toggle{width:100%;margin:14px 0 0;padding:12px;border:2px solid var(--hot);border-radius:12px;background:var(--surface);color:var(--hot);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
-.panel{display:none;margin-top:10px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px 40px}
+
+/* 헤더: 첫 화면에 카드가 2~3개 보이도록 압축 */
+header{padding:12px 0 8px;display:flex;align-items:center;gap:10px}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:"Black Han Sans",sans-serif;font-size:12px;line-height:1.05;text-align:center;flex:none}
+h1{margin:0;font-family:"Black Han Sans","IBM Plex Sans KR",sans-serif;font-weight:400;font-size:21px;letter-spacing:-.3px;line-height:1.15}
+.sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* 검색창 + 필터 */
+.searchbar{display:flex;gap:8px;margin:4px 0 10px}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px}
+.search svg{flex:none;color:var(--muted)}
+.search input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;padding:11px 0;outline:none}
+.search:focus-within{border-color:var(--brand)}
+.fbtn{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:0 14px;font-weight:600;font-size:14px;cursor:pointer;position:relative}
+.fbtn[data-on="true"]::after{content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--brand)}
+.panel{display:none;margin:-2px 0 10px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
 .panel.open{display:block}
-.panel label.h{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:12px 0 6px}
-.panel label.h:first-child{margin-top:0}
-input[type=search]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.panel .h{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 6px}
+.panel .h:first-child{margin-top:0}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{appearance:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:13px;padding:6px 11px;border-radius:999px;cursor:pointer}
+.chip{appearance:none;border:1px solid var(--line);background:var(--bg);font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
-.reset{margin-top:14px;appearance:none;border:0;background:none;color:var(--muted);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
-.summary{margin:16px 2px 8px;font-size:14px;color:var(--muted)}
+.reset{margin-top:12px;appearance:none;border:0;background:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
+
+/* 탭: 잘리면 오른쪽 페이드로 스크롤 힌트 */
+.tabs-wrap{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs-wrap::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:36px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;opacity:0;transition:opacity .2s}
+.tabs-wrap.more::after{opacity:1}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{appearance:none;border:0;background:none;color:var(--muted);font-weight:600;font-size:14px;padding:11px 9px;white-space:nowrap;border-bottom:3px solid transparent;cursor:pointer}
+.tab .n{font-weight:500;font-size:12px;margin-left:2px}
+.tab[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand)}
+
+.summary{margin:10px 2px 8px;font-size:13px;color:var(--muted)}
 .summary b{color:var(--ink)}
 .summary .hot{color:var(--hot);font-weight:700}
-.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.item a{display:flex;gap:14px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none}
-.item a:hover{border-color:var(--brand)}
-.item a:focus-visible,.tab:focus-visible,.chip:focus-visible,.toggle:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
-.dd{flex:none;width:64px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;text-align:center}
-.dd .big{font-family:"Black Han Sans",sans-serif;font-size:24px;line-height:1}
-.dd .sm{font-size:11px;margin-top:4px;font-weight:600}
-.dd.open{background:var(--open-soft);color:var(--open)}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+
+/* 채용공고 카드: 기관명 → 공고명 → 조건 칩 → 마감 */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.job .main{display:flex;gap:12px;padding:12px 12px 8px;color:inherit;text-decoration:none}
+.dd{flex:none;width:58px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;text-align:center;background:var(--tile);color:var(--tile-ink);align-self:flex-start;min-height:62px}
+.dd .big{font-family:"Black Han Sans",sans-serif;font-size:21px;line-height:1}
+.dd .sm{font-size:10.5px;margin-top:4px;font-weight:600}
 .dd.hot{background:var(--hot-soft);color:var(--hot)}
 .dd.closed{background:var(--bg);color:var(--closed)}
-.dd.info{background:var(--brand-soft);color:var(--brand)}
-.dd.info .big{font-size:15px;line-height:1.2}
+.dd .big.dday{font-size:16px}
+.dd.none .big{font-size:13px;font-family:inherit;font-weight:700}
 .body{min-width:0;flex:1}
-.cat{display:inline-block;font-size:12px;font-weight:600;color:var(--brand);margin-bottom:2px}
-.title{margin:0;font-size:16px;font-weight:700;line-height:1.4;word-break:keep-all}
-.desc{margin:4px 0 6px;font-size:14px;color:var(--muted);word-break:keep-all}
-.meta{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
-.meta .due{color:var(--ink);font-weight:600}
-.item.is-closed .title{color:var(--muted)}
-.empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px}
+.org{font-size:13px;font-weight:700;color:var(--brand);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.org .rg{color:var(--muted);font-weight:500}
+.new{font-size:10px;font-weight:700;color:#fff;background:var(--hot);border-radius:4px;padding:0 4px;line-height:16px}
+.title{margin:2px 0 6px;font-size:15.5px;font-weight:700;line-height:1.38;word-break:keep-all}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.tag{font-size:12px;background:var(--chip);color:var(--ink);border-radius:6px;padding:1px 7px}
+.tag.n{font-weight:700}
+.due{font-size:13px;font-weight:600}
+.due.hot{color:var(--hot)}
+.due.closed{color:var(--closed);font-weight:500}
+.actions{display:flex;border-top:1px solid var(--line)}
+.actions > *{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:9px 4px;font-size:12.5px;color:var(--muted);text-decoration:none;background:none;border:0;cursor:pointer;white-space:nowrap}
+.actions > * + *{border-left:1px solid var(--line)}
+.save[aria-pressed="true"]{color:var(--star);font-weight:700}
+.is-closed .title,.is-closed .org{color:var(--closed)}
+
+/* 취업준비·정책 글: 작은 카드 */
+.mini{display:flex;align-items:stretch}
+.mini .main{flex:1;min-width:0;display:block;padding:10px 12px;color:inherit;text-decoration:none}
+.mini .kind{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px;margin-bottom:2px}
+.pill{font-weight:700;border-radius:5px;padding:0 6px;line-height:18px}
+.pill.p{background:var(--brand-soft);color:var(--brand)}
+.pill.m{background:var(--green-soft);color:var(--green)}
+.mini .meta{color:var(--muted)}
+.mini .t{font-size:14.5px;font-weight:600;line-height:1.4;word-break:keep-all}
+.mini .save{flex:none;width:46px;border:0;border-left:1px solid var(--line);background:none;color:var(--muted);font-size:18px;cursor:pointer;border-radius:0 14px 14px 0}
+.mini .save[aria-pressed="true"]{color:var(--star)}
+
+.empty{padding:36px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px}
 .empty button{margin-top:10px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
+/* 광고 */
 .ad{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .ad-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
 .ad-head b{font-size:14px}
@@ -92,12 +149,33 @@ input[type=search]{width:100%;padding:11px 12px;border:1px solid var(--line);bor
 .promo img{display:block;width:100%;height:auto;aspect-ratio:3/2}
 .promo .ad-tag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);color:#5B6475;border-color:transparent}
 .adpick-note{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.45;color:var(--ink);word-break:keep-all}
-.ad-dot{flex:none;width:20px;height:20px;border-radius:50%;background:var(--muted);color:var(--surface);font-size:9px;font-weight:700;display:grid;place-items:center}
 .adpick-note img{flex:none;width:20px;height:20px;border-radius:4px}
 .adpick-note img[src*="adpick"]{border-radius:50%}
-.ad-slot{display:none}
-footer{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
+
+/* 홈 화면 추가 · 저장 공고 알림 */
+header{justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.addbtn{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--brand);white-space:nowrap}
+.addbtn[hidden]{display:none}
+.notice{display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 12px;border-radius:12px;font-size:13.5px;line-height:1.4;border:1px solid var(--line);background:var(--surface)}
+.notice[hidden]{display:none}
+.notice.alert{background:var(--hot-soft);border-color:transparent;color:var(--hot);font-weight:600;cursor:pointer}
+.notice .grow{flex:1}
+.notice .go{appearance:none;border:0;background:var(--brand);color:#fff;border-radius:8px;padding:6px 10px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.notice .x{appearance:none;border:0;background:none;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;padding:2px 4px}
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(10,15,30,.45);display:none;align-items:flex-end;justify-content:center}
+.sheet.open{display:flex}
+.sheet-box{background:var(--surface);color:var(--ink);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet-box h3{margin:0 0 10px;font-size:17px}
+.sheet-box ol{margin:0 0 14px;padding-left:20px;font-size:14.5px;line-height:1.7}
+.sheet-box .row{display:flex;gap:8px}
+.sheet-box .row > *{flex:1;text-align:center;border-radius:10px;padding:11px;font-weight:700;font-size:14px;text-decoration:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.sheet-box .row .primary{background:var(--brand);border-color:var(--brand);color:#fff}
+
+footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
+footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+footer .src b{color:var(--ink)}
 @media (prefers-reduced-motion:no-preference){.panel.open{animation:drop .18s ease-out}@keyframes drop{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}}
 </style>
 </head>
@@ -106,66 +184,93 @@ footer a{color:inherit}
   <header>
     <div class="brand">
       <div class="logo" aria-hidden="true">취업<br>정책</div>
-      <h1>취업/정책 지원소</h1>
+      <div>
+        <h1>취업/정책 지원소</h1>
+        <div class="sub" id="updated">공채·공무직·정책 정보를 마감순으로</div>
+      </div>
     </div>
-    <p class="tagline">놓치면 끝나는 공채·공무직·정책 정보, 마감순으로 한눈에</p>
-    <div class="updated" id="updated"></div>
+    <button class="addbtn" id="addbtn" hidden>＋ 홈 화면에 추가</button>
   </header>
 
-  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
+  <div class="notice" id="addHint" hidden>
+    <span class="grow">자주 오신다면 <b>홈 화면에 추가</b>해 두세요. 앱처럼 한 번에 열려요.</span>
+    <button class="go" id="addHintGo">추가</button>
+    <button class="x" id="addHintX" aria-label="닫기">×</button>
+  </div>
 
-  <button class="toggle" id="toggle" aria-expanded="false" aria-controls="panel">☰ 검색·필터</button>
+  <div class="searchbar">
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="q" placeholder="기관명·직무 검색 (예: 간호, 인턴, 공무직)" aria-label="검색">
+    </label>
+    <button class="fbtn" id="toggle" aria-expanded="false" aria-controls="panel" data-on="false">필터</button>
+  </div>
   <div class="panel" id="panel">
-    <label class="h" for="q">검색</label>
-    <input type="search" id="q" placeholder="기관명, 직무, 키워드 (예: 인턴, 간호사, 공무직)">
-    <label class="h">빠른 키워드</label>
+    <span class="h">빠른 키워드</span>
     <div class="chips" id="quick"></div>
-    <label class="h">분야</label>
+    <span class="h">분야</span>
     <div class="chips" id="cats"></div>
-    <label class="h">모집 상태</label>
+    <span class="h">모집 상태</span>
     <div class="chips" id="status"></div>
-    <label class="h">정렬</label>
+    <span class="h">정렬</span>
     <div class="chips" id="sort"></div>
     <button class="reset" id="reset">필터 초기화</button>
   </div>
 
+  <div class="tabs-wrap" id="tabs-wrap"><nav class="tabs" role="tablist" id="tabs"></nav></div>
+
   <p class="summary" id="summary"></p>
-
-  <!-- 쿠팡 파트너스 등 배너를 넣으려면 아래 div의 class에서 ad-slot을 지우고 코드를 붙여넣으세요 -->
-  <div class="ad-slot" id="ad-top"></div>
-
   <ul class="list" id="list"></ul>
 
   <footer>
-    글을 누르면 네이버 블로그 원문으로 이동합니다.<br>
+    <div class="src">
+      <b>정보 출처 안내</b><br>
+      각 공고는 기관이 게시한 공식 채용공고 원문을 확인해 정리한 블로그 글을 바탕으로 합니다. 마감 시각·자격 요건은 바뀔 수 있으니 지원 전 반드시 공식 공고를 확인하세요.<br>
+      공공기관 공식 공고: <a href="https://job.alio.go.kr" target="_blank" rel="noopener">잡알리오</a> · <a href="https://www.gojobs.go.kr" target="_blank" rel="noopener">나라일터</a> · <a href="https://www.work24.go.kr" target="_blank" rel="noopener">고용24</a>
+    </div>
     <a href="https://m.blog.naver.com/hid4989-3" target="_blank" rel="noopener">블로그 바로가기</a>
   </footer>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-box"><h3 id="sheetTitle">홈 화면에 추가하기</h3><div id="sheetBody"></div></div>
 </div>
 
 <script>
 let POSTS = [], UPDATED = null, ADS = [];
 const pad = n => String(n).padStart(2,"0");
 const kst = d => new Date(d.getTime() + 9*3600e3);
-function dueText(d, hasTime){
+const WD = ["일","월","화","수","목","금","토"];
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+const md = d => { const k = kst(d); return `${k.getUTCMonth()+1}.${k.getUTCDate()}`; };
+function dueLong(d, hasTime){
   const k = kst(d);
-  return `${k.getUTCMonth()+1}.${k.getUTCDate()}` + (hasTime ? ` ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())}` : "");
+  return `${k.getUTCMonth()+1}.${k.getUTCDate()}(${WD[k.getUTCDay()]})` + (hasTime ? ` ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())}` : "");
 }
+
+// ── 관심 공고 저장 (이 기기에만 저장) ──
+let SAVED = new Set();
+try { SAVED = new Set(JSON.parse(localStorage.getItem("saved") || "[]")); } catch(e) {}
+function toggleSave(id){
+  SAVED.has(id) ? SAVED.delete(id) : SAVED.add(id);
+  try { localStorage.setItem("saved", JSON.stringify([...SAVED])); } catch(e) {}
+}
+
 async function load(){
   try{
     const r = await fetch("posts.json?t=" + Date.now(), {cache:"no-store"});
     if(!r.ok) throw new Error(r.status);
     const j = await r.json();
     UPDATED = j.updated;
-    POSTS = j.posts.map(p => {
-      const due = p.due ? new Date(p.due) : null;
-      return {...p, pub:new Date(p.pub), due, dueText: due ? dueText(due, p.dueHasTime) : ""};
-    });
+    POSTS = j.posts.map(p => ({...p, pub:new Date(p.pub), due: p.due ? new Date(p.due) : null}));
   }catch(e){
     $("list").innerHTML = '<li class="empty">글 목록을 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</li>';
     return;
   }
   const k = kst(new Date(UPDATED));
-  $("updated").textContent = `${k.getUTCFullYear()}.${pad(k.getUTCMonth()+1)}.${pad(k.getUTCDate())} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트, 글 ${POSTS.length}개`;
+  $("updated").textContent = `${k.getUTCMonth()+1}.${k.getUTCDate()} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트 · 글 ${POSTS.length}개`;
   refresh();
   try{
     const a = await fetch("ads.json?t=" + Date.now(), {cache:"no-store"});
@@ -173,7 +278,7 @@ async function load(){
   }catch(e){}
 }
 
-// 제휴 배너 목록: 캠페인을 추가하려면 아래 형식대로 항목을 하나 더 넣으면 됩니다.
+// ── 제휴 배너 (방문할 때마다 캠페인을 번갈아 노출) ──
 const PROMOS = [
   {
     name: "크몽 (애드픽)",
@@ -189,13 +294,12 @@ const PROMOS = [
     name: "숨고 (애드릭스)",
     url: "https://appu.kr/?i=12539674",
     images: [
-      {src: "banner3.webp", alt: "취업 준비, 지금이 바로 그때! 면접·스피닝·이력서·자소서·취업 컨설팅, 숨고에서 전문가 찾기"}
+      {src: "banner3.webp", alt: "취업 준비, 지금이 바로 그때! 면접·이력서·자소서·취업 컨설팅, 숨고에서 전문가 찾기"}
     ],
     note: "이 배너는 애드릭스 제휴 광고로, 배너를 통해 구매가 이루어지면 사이트 운영자에게 수수료가 지급됩니다.",
     noteIcon: "adlix_icon.png"
   }
 ];
-// 방문할 때마다 캠페인을 번갈아 보여줌 (저장이 막힌 환경에서는 무작위)
 const PROMO_PICK = (() => {
   let i;
   try {
@@ -208,13 +312,12 @@ const PROMO_PICK = (() => {
 })();
 function promoBlock(){
   const {c, img} = PROMO_PICK;
-  const icon = c.noteIcon ? `<img src="${c.noteIcon}" alt="" width="20" height="20">` : `<span class="ad-dot">AD</span>`;
+  const icon = c.noteIcon ? `<img src="${c.noteIcon}" alt="" width="20" height="20">` : "";
   return `<li class="promo"><a href="${c.url}" target="_blank" rel="sponsored noopener">
     <img src="${img.src}" alt="${esc(img.alt)}" width="1200" height="800" loading="lazy"></a>
     <span class="ad-tag">광고</span><p class="adpick-note">${icon}${c.note}</p></li>`;
 }
 const DISCLOSURE = "이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
-function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function adBlock(n){
   const picks = ADS.slice(n*3, n*3 + 3);
   if(picks.length < 3) return "";
@@ -227,94 +330,139 @@ function adBlock(n){
     <p class="ad-note">${DISCLOSURE}</p></li>`;
 }
 
+// ── 화면 상태 ──
 const TABS = [
-  {key:"all", label:"전체"},
-  {key:"j", label:"채용공고"},
-  {key:"p", label:"취업준비"},
-  {key:"m", label:"정책·재테크"}
+  {key:"all", label:"전체"}, {key:"j", label:"채용공고"}, {key:"p", label:"취업준비"},
+  {key:"m", label:"정책·재테크"}, {key:"saved", label:"★ 관심"}
 ];
-const QUICK = ["인턴","공무직","정규직","간호","병원","연구직","경력","필기 없음"];
+const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
-const SORTS = [["new","최신순"],["due","마감 가까운 순"]];
+const SORTS = [["due","마감 가까운 순"],["new","최신순"]];
+const state = {tab:"all", q:"", cat:null, status:"all", sort:"due"};
 
-const state = {tab:"all", q:"", cat:null, status:"all", sort:"new"};
-const $ = id => document.getElementById(id);
-const fmt = d => { const k = kst(d); return `${k.getUTCMonth()+1}.${k.getUTCDate()}`; };
-
-function kstDay(d){ const k = new Date(d.getTime() + 9*3600e3); return Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()); }
+function kstDay(d){ const k = kst(d); return Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()); }
 function dday(p, now){
   if(!p.due) return null;
   if(now > p.due) return {cls:"closed", big:"마감", n:Infinity};
   const n = Math.round((kstDay(p.due) - kstDay(now)) / 864e5);
   return {cls: n <= 3 ? "hot" : "open", big: n === 0 ? "D-DAY" : `D-${n}`, n};
 }
-function statusOf(p, now){
-  const d = dday(p, now);
-  if(!d) return "none";
-  if(d.cls === "closed") return "closed";
-  return d.cls === "hot" ? "hot" : "open";
-}
+const statusOf = (p, now) => { const d = dday(p, now); return !d ? "none" : d.cls === "closed" ? "closed" : d.cls; };
+const inTab = p => state.tab === "all" || (state.tab === "saved" ? SAVED.has(p.id) : p.type === state.tab);
+const isNew = (p, now) => now - p.pub < 24*3600e3;
+const haystack = p => [p.title, p.desc, p.cat, p.org, p.region, ...(p.emp||[]), ...(p.edu||[]), ...(p.exam||[])].join(" ").toLowerCase();
 
 function renderTabs(){
   $("tabs").innerHTML = TABS.map(t => {
-    const n = t.key === "all" ? POSTS.length : POSTS.filter(p => p.type === t.key).length;
+    const n = t.key === "all" ? POSTS.length : t.key === "saved" ? POSTS.filter(p => SAVED.has(p.id)).length : POSTS.filter(p => p.type === t.key).length;
     return `<button class="tab" role="tab" data-tab="${t.key}" aria-selected="${state.tab===t.key}">${t.label}<span class="n">${n}</span></button>`;
   }).join("");
+  fadeHint();
+}
+function fadeHint(){
+  const t = $("tabs");
+  $("tabs-wrap").classList.toggle("more", t.scrollWidth - t.clientWidth - t.scrollLeft > 4);
 }
 function chipRow(el, items, current, attr){
-  el.innerHTML = items.map(([v,l]) => `<button class="chip" data-${attr}="${v}" aria-pressed="${current===v}">${l}</button>`).join("");
+  el.innerHTML = items.map(([v,l]) => `<button class="chip" data-${attr}="${esc(v)}" aria-pressed="${current===v}">${esc(l)}</button>`).join("");
 }
 function renderFilters(){
-  const inTab = POSTS.filter(p => state.tab === "all" || p.type === state.tab);
-  const cats = [...new Set(inTab.map(p => p.cat))];
+  const cats = [...new Set(POSTS.filter(inTab).map(p => p.cat))];
   if(state.cat && !cats.includes(state.cat)) state.cat = null;
   chipRow($("cats"), [["","전체"], ...cats.map(c => [c,c])], state.cat || "", "cat");
   chipRow($("quick"), QUICK.map(k => [k,k]), state.q, "quick");
   chipRow($("status"), STATUS, state.status, "status");
   chipRow($("sort"), SORTS, state.sort, "sort");
+  $("toggle").dataset.on = String(!!state.cat || state.status !== "all" || state.sort !== "due");
 }
+
+function calLink(p){
+  const f = d => { const k = kst(d); return `${k.getUTCFullYear()}${pad(k.getUTCMonth()+1)}${pad(k.getUTCDate())}T${pad(k.getUTCHours())}${pad(k.getUTCMinutes())}00`; };
+  const start = new Date(p.due.getTime() - 3600e3);
+  const name = `[마감] ${p.org ? p.org + " " : ""}${p.title}`;
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE"
+    + "&text=" + encodeURIComponent(name)
+    + "&dates=" + f(start) + "/" + f(p.due) + "&ctz=Asia/Seoul"
+    + "&details=" + encodeURIComponent("접수 마감 " + dueLong(p.due, p.dueHasTime) + "\n" + p.url);
+}
+function officialLink(p){
+  if(p.src) return {href:p.src, label:"공식 접수처"};
+  const q = (p.org || p.title) + " 채용공고";
+  return {href:"https://search.naver.com/search.naver?query=" + encodeURIComponent(q), label:"공식 공고 찾기"};
+}
+
+function jobCard(p, now){
+  const d = dday(p, now);
+  const tile = d
+    ? `<div class="dd ${d.cls}"><span class="big${d.n===0 ? " dday" : ""}">${d.big}</span><span class="sm">${d.cls==="closed" ? md(p.due) : "~" + md(p.due)}</span></div>`
+    : `<div class="dd none"><span class="big">상시<br>확인</span></div>`;
+  const tags = [];
+  if(p.n) tags.push(`<span class="tag n">${esc(p.n)}명</span>`);
+  (p.emp||[]).forEach(e => tags.push(`<span class="tag">${esc(e)}</span>`));
+  (p.edu||[]).forEach(e => tags.push(`<span class="tag">${esc(e)}</span>`));
+  const off = officialLink(p);
+  const saved = SAVED.has(p.id);
+  return `<li class="card job ${d && d.cls==="closed" ? "is-closed" : ""}">
+    <a class="main" href="${esc(p.url)}" target="_blank" rel="noopener">
+      ${tile}
+      <div class="body">
+        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
+        <h2 class="title">${esc(p.title)}</h2>
+        ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
+        ${p.due ? `<div class="due ${d.cls==="hot" ? "hot" : d.cls==="closed" ? "closed" : ""}">접수 마감 ${dueLong(p.due, p.dueHasTime)}</div>` : `<div class="due closed">마감일은 원문에서 확인</div>`}
+      </div>
+    </a>
+    <div class="actions">
+      <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}">${saved ? "★ 저장됨" : "☆ 저장"}</button>
+      ${p.due && d.cls !== "closed" ? `<a href="${calLink(p)}" target="_blank" rel="noopener">📅 캘린더</a>` : ""}
+      <a href="${esc(off.href)}" target="_blank" rel="noopener">${off.label} ↗</a>
+    </div></li>`;
+}
+function miniCard(p, now){
+  const saved = SAVED.has(p.id);
+  const d = dday(p, now);
+  const label = p.type === "m" ? "정책" : "취업준비";
+  const extra = p.type === "p" && p.exam && p.exam.length ? `<span class="meta">${esc(p.exam.join("·"))} 대비</span>`
+    : p.type === "m" && d && d.cls !== "closed" ? `<span class="meta" style="color:var(--hot)">신청 마감 ${md(p.due)}</span>` : "";
+  return `<li class="card mini">
+    <a class="main" href="${esc(p.url)}" target="_blank" rel="noopener">
+      <div class="kind">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}<span class="pill ${p.type}">${label}</span>${extra}<span class="meta">${md(p.pub)}</span></div>
+      <div class="t">${esc(p.title)}</div>
+    </a>
+    <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}" aria-label="${saved ? "저장 취소" : "관심 글 저장"}">${saved ? "★" : "☆"}</button></li>`;
+}
+
+function sortKey(p, now){
+  // 마감순: 모집 중인 채용공고(마감 빠른 순) → 신청 마감 있는 정책 → 나머지(최신순) → 마감 지난 글
+  const d = dday(p, now);
+  if(d && d.cls === "closed") return [3, -p.pub];
+  if(p.type === "j" && d) return [0, d.n, p.due.getTime()];
+  if(d) return [1, d.n];
+  if(p.type === "j") return [1.5, -p.pub];
+  return [2, -p.pub];
+}
+function cmp(a, b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const x=a[i]??0, y=b[i]??0; if(x!==y) return x<y?-1:1; } return 0; }
 
 function render(){
   const now = new Date();
   const q = state.q.trim().toLowerCase();
-  let rows = POSTS.filter(p =>
-    (state.tab === "all" || p.type === state.tab) &&
-    (!state.cat || p.cat === state.cat) &&
-    (!q || (p.title + " " + p.desc + " " + p.cat).toLowerCase().includes(q))
-  );
+  let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && (!q || haystack(p).includes(q)));
   if(state.status !== "all") rows = rows.filter(p => statusOf(p, now) === state.status);
-  if(state.sort === "due"){
-    rows.sort((a,b) => {
-      const da = dday(a,now), db = dday(b,now);
-      return (da ? da.n : 1e9) - (db ? db.n : 1e9) || b.pub - a.pub;
-    });
-  } else rows.sort((a,b) => b.pub - a.pub);
+  rows.sort(state.sort === "due" ? (a,b) => cmp(sortKey(a,now), sortKey(b,now)) : (a,b) => b.pub - a.pub);
 
-  const jobs = rows.filter(p => p.due);
-  const open = jobs.filter(p => statusOf(p,now) !== "closed").length;
-  const hot = jobs.filter(p => statusOf(p,now) === "hot").length;
-  $("summary").innerHTML = `글 <b>${rows.length}</b>개 / 모집 중인 공고 <b>${open}</b>건` + (hot ? ` (마감 임박 <span class="hot">${hot}</span>건)` : "");
+  const open = rows.filter(p => p.type === "j" && ["open","hot"].includes(statusOf(p,now))).length;
+  const hot = rows.filter(p => p.type === "j" && statusOf(p,now) === "hot").length;
+  $("summary").innerHTML = (state.tab === "p" || state.tab === "m")
+    ? `글 <b>${rows.length}</b>개`
+    : `모집 중인 공고 <b>${open}</b>건` + (hot ? ` · 3일 내 마감 <span class="hot">${hot}</span>건` : "") + ` · 전체 글 ${rows.length}개`;
 
   if(!rows.length){
-    $("list").innerHTML = `<li class="empty">조건에 맞는 글이 없습니다. 검색어나 필터를 바꿔 보세요.<br><button class="chip" id="empty-reset">필터 초기화</button></li>`;
+    $("list").innerHTML = state.tab === "saved"
+      ? `<li class="empty">아직 저장한 글이 없어요.<br>공고의 ☆ 저장을 누르면 여기에 모입니다. (이 기기에만 저장돼요)</li>`
+      : `<li class="empty">조건에 맞는 글이 없습니다.<br><button class="chip" id="empty-reset">필터 초기화</button></li>`;
     return;
   }
-  const cards = rows.map(p => {
-    const d = dday(p, now);
-    const tile = d
-      ? `<div class="dd ${d.cls}"><span class="big">${d.big}</span><span class="sm">${d.cls==="closed" ? fmt(p.due) : "마감 " + fmt(p.due)}</span></div>`
-      : `<div class="dd info"><span class="big">${p.type==="p" ? "취업<br>준비" : "정책<br>정보"}</span></div>`;
-    return `<li class="item ${d && d.cls==="closed" ? "is-closed" : ""}">
-      <a href="${p.url}" target="_blank" rel="noopener">
-        ${tile}
-        <div class="body">
-          <span class="cat">${p.cat}</span>
-          <h2 class="title">${p.title}</h2>
-          <p class="desc">${p.desc}</p>
-          <div class="meta">${p.due ? `<span class="due">접수 마감 ${p.dueText}</span>` : ""}<span>${fmt(p.pub)} 게시</span></div>
-        </div>
-      </a></li>`;
-  });
+  const cards = rows.map(p => p.type === "j" ? jobCard(p, now) : miniCard(p, now));
   const n = cards.length;
   if(ADS.length){
     cards.push(adBlock(1));
@@ -323,22 +471,94 @@ function render(){
   cards.splice(Math.min(3, n), 0, promoBlock());
   $("list").innerHTML = cards.join("");
 }
-function refresh(){ renderTabs(); renderFilters(); render(); }
-
-
+function refresh(){ renderTabs(); renderFilters(); render(); savedAlert(); }
 
 document.addEventListener("click", e => {
   const t = e.target.closest("button");
   if(!t) return;
-  if(t.dataset.tab){ state.tab = t.dataset.tab; refresh(); }
+  if(t.dataset.save){ toggleSave(t.dataset.save); renderTabs(); render(); savedAlert(); }
+  else if(t.dataset.tab){ state.tab = t.dataset.tab; refresh(); }
   else if(t.dataset.cat !== undefined){ state.cat = t.dataset.cat || null; refresh(); }
   else if(t.dataset.quick){ state.q = state.q === t.dataset.quick ? "" : t.dataset.quick; $("q").value = state.q; refresh(); }
   else if(t.dataset.status){ state.status = t.dataset.status; refresh(); }
   else if(t.dataset.sort){ state.sort = t.dataset.sort; refresh(); }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
-  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,status:"all",sort:"new"}); $("q").value=""; refresh(); }
+  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,status:"all",sort:"due"}); $("q").value=""; refresh(); }
 });
 $("q").addEventListener("input", e => { state.q = e.target.value; renderFilters(); render(); });
+$("tabs").addEventListener("scroll", fadeHint, {passive:true});
+window.addEventListener("resize", fadeHint);
+
+
+// ── 홈 화면 추가(즐겨찾기) ──
+// 브라우저 보안 정책상 즐겨찾기를 자동으로 만들 수는 없어서, 지원되는 곳은 설치 창을 띄우고 나머지는 방법을 안내함
+const UA = navigator.userAgent;
+const IS_STANDALONE = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const IS_IOS = /iPhone|iPad|iPod/.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const IS_ANDROID = /Android/.test(UA);
+const INAPP = /KAKAOTALK|Instagram|Barcelona|Threads|FBAN|FBAV|NAVER\(inapp|Line\/|everytimeApp|DaumApps/i.test(UA);
+let installEvt = null;
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(() => {}); }
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; });
+window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("addHint").hidden = true; });
+
+function sheet(html){ $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); }
+function closeSheet(){ $("sheet").classList.remove("open"); }
+async function addToHome(){
+  if(installEvt){ installEvt.prompt(); const r = await installEvt.userChoice; installEvt = null; if(r.outcome === "accepted") $("addHint").hidden = true; return; }
+  const here = location.href.split("#")[0];
+  if(INAPP && UA.includes("KAKAOTALK")){
+    sheet(`<ol><li>아래 버튼으로 기본 브라우저에서 사이트를 여세요.</li><li>열린 브라우저에서 다시 <b>＋ 홈 화면에 추가</b>를 누르세요.</li></ol>
+      <div class="row"><a class="primary" href="kakaotalk://web/openExternal?url=${encodeURIComponent(here)}">브라우저로 열기</a><button onclick="closeSheet()">닫기</button></div>`);
+  }else if(INAPP && IS_ANDROID){
+    const intent = "intent://" + here.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+    sheet(`<ol><li>지금은 앱 안의 브라우저라 홈 화면 추가가 안 돼요.</li><li>아래 버튼으로 크롬에서 연 뒤 <b>＋ 홈 화면에 추가</b>를 누르세요.</li></ol>
+      <div class="row"><a class="primary" href="${intent}">크롬으로 열기</a><button onclick="closeSheet()">닫기</button></div>`);
+  }else if(INAPP){
+    sheet(`<ol><li>오른쪽 위 <b>⋯</b> 또는 공유 메뉴를 누르세요.</li><li><b>Safari로 열기</b>(또는 '브라우저에서 열기')를 선택하세요.</li><li>Safari에서 아래쪽 <b>공유 버튼(□↑)</b> → <b>홈 화면에 추가</b>를 누르세요.</li></ol>
+      <div class="row"><button class="primary" onclick="copyLink()">주소 복사</button><button onclick="closeSheet()">닫기</button></div>`);
+  }else if(IS_IOS){
+    sheet(`<ol><li>Safari 아래쪽(또는 위쪽)의 <b>공유 버튼(□↑)</b>을 누르세요.</li><li>목록을 내려 <b>홈 화면에 추가</b>를 누르세요.</li><li>오른쪽 위 <b>추가</b>를 누르면 끝이에요.</li></ol>
+      <div class="row"><button onclick="closeSheet()">확인</button></div>`);
+  }else if(IS_ANDROID){
+    sheet(`<ol><li>브라우저 오른쪽 위(삼성 인터넷은 아래쪽) <b>메뉴(⋮ 또는 ≡)</b>를 누르세요.</li><li><b>홈 화면에 추가</b> 또는 <b>현재 페이지 추가 → 홈 화면</b>을 누르세요.</li></ol>
+      <div class="row"><button onclick="closeSheet()">확인</button></div>`);
+  }else{
+    const mac = /Mac/.test(navigator.platform);
+    sheet(`<ol><li>키보드에서 <b>${mac ? "⌘ + D" : "Ctrl + D"}</b>를 누르면 즐겨찾기에 추가돼요.</li><li>크롬·엣지는 주소창 오른쪽의 <b>설치 아이콘</b>으로 앱처럼 설치할 수도 있어요.</li></ol>
+      <div class="row"><button onclick="closeSheet()">확인</button></div>`);
+  }
+}
+function copyLink(){ navigator.clipboard?.writeText(location.href.split("#")[0]).then(() => { closeSheet(); alert("주소를 복사했어요. Safari나 크롬 주소창에 붙여넣어 주세요."); }).catch(() => {}); }
+$("sheet").addEventListener("click", e => { if(e.target.id === "sheet") closeSheet(); });
+
+(function setupAddPrompts(){
+  if(IS_STANDALONE) return;
+  $("addbtn").hidden = false;
+  $("addbtn").onclick = addToHome;
+  let visits = 1, dismissed = false;
+  try{
+    visits = parseInt(localStorage.getItem("visits") || "0", 10) + 1;
+    localStorage.setItem("visits", String(visits));
+    dismissed = localStorage.getItem("addHintOff") === "1";
+  }catch(e){}
+  if(visits >= 2 && !dismissed) $("addHint").hidden = false;  // 두 번째 방문부터 안내
+  $("addHintGo").onclick = addToHome;
+  $("addHintX").onclick = () => { $("addHint").hidden = true; try{ localStorage.setItem("addHintOff","1"); }catch(e){} };
+})();
+
+// ── 저장한 공고 마감 임박 알림 ──
+function savedAlert(){
+  const now = new Date();
+  const soon = POSTS.filter(p => SAVED.has(p.id) && p.due && now < p.due && (p.due - now) < 3*864e5)
+                    .sort((a,b) => a.due - b.due);
+  const el = $("savedAlert");
+  if(!soon.length){ el.hidden = true; return; }
+  const first = soon[0];
+  el.innerHTML = `⏰ 저장한 공고 ${soon.length}건이 3일 안에 마감돼요 · ${esc(first.org || first.title.slice(0,14))} ${dueLong(first.due, first.dueHasTime)}`;
+  el.hidden = false;
+  el.onclick = () => { state.tab = "saved"; state.sort = "due"; refresh(); el.scrollIntoView({block:"start"}); };
+}
 
 load();
 setInterval(() => POSTS.length && render(), 60000);
