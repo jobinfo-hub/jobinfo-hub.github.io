@@ -144,7 +144,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 .ad-price{font-size:13px;font-weight:700;margin-top:2px}
 .ad-rocket{color:var(--brand);font-size:11px;font-weight:600}
 .ad-note{font-size:11px;color:var(--muted);margin:8px 0 0}
-.promo{position:relative}
+.promo{position:relative;width:100%;max-width:480px;align-self:center}
 .promo a{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
 .promo img{display:block;width:100%;height:auto;aspect-ratio:3/2}
 .promo .ad-tag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);color:#5B6475;border-color:transparent}
@@ -238,6 +238,9 @@ footer .src b{color:var(--ink)}
 </div>
 
 <script>
+// ── 설정 ──
+const NAVER_WA = "";      // 네이버 애널리틱스 사이트 ID (analytics.naver.com에서 발급, 예: "1a2b3c4d5e6f7g")
+const COUPANG = false;    // 쿠팡 추천 상품 표시 (ads.py 설정 후 true로)
 let POSTS = [], UPDATED = null, ADS = [];
 const pad = n => String(n).padStart(2,"0");
 const kst = d => new Date(d.getTime() + 9*3600e3);
@@ -272,7 +275,7 @@ async function load(){
   const k = kst(new Date(UPDATED));
   $("updated").textContent = `${k.getUTCMonth()+1}.${k.getUTCDate()} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트 · 글 ${POSTS.length}개`;
   refresh();
-  try{
+  if(COUPANG) try{
     const a = await fetch("ads.json?t=" + Date.now(), {cache:"no-store"});
     if(a.ok){ ADS = ((await a.json()).products || []).sort(() => Math.random() - .5); render(); }
   }catch(e){}
@@ -391,6 +394,18 @@ function officialLink(p){
   return {href:"https://search.naver.com/search.naver?query=" + encodeURIComponent(q), label:"공식 공고 찾기"};
 }
 
+// 제목 속 'D-7', '10.6 마감' 같은 작성 당시 마감 표시는 시간이 지나면 틀리므로 화면에서만 제거
+function cleanTitle(t){
+  const s = t
+    .replace(/\s*D-(?:DAY|\d{1,3})/gi, "")
+    .replace(/\s*\d{1,2}[./]\d{1,2}\.?\s*(?:\([^)]*\))?\s*(?:(?:오전|오후|낮)\s*)?(?:\d{1,2}(?::\d{2}|시))?\s*마감(?:\s*전)?/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s*([,—–])\s*(?=[,—–]|$)/g, "")
+    .replace(/^[\s,—–]+|[\s,—–]+$/g, "")
+    .replace(/\s+,/g, ",")
+    .replace(/\s*—\s*,\s*/g, " — ");
+  return s.length >= 6 ? s : t;
+}
 function jobCard(p, now){
   const d = dday(p, now);
   const tile = d
@@ -407,7 +422,7 @@ function jobCard(p, now){
       ${tile}
       <div class="body">
         <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
-        <h2 class="title">${esc(p.title)}</h2>
+        <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
         ${p.due ? `<div class="due ${d.cls==="hot" ? "hot" : d.cls==="closed" ? "closed" : ""}">접수 마감 ${dueLong(p.due, p.dueHasTime)}</div>` : `<div class="due closed">마감일은 원문에서 확인</div>`}
       </div>
@@ -558,6 +573,15 @@ function savedAlert(){
   el.innerHTML = `⏰ 저장한 공고 ${soon.length}건이 3일 안에 마감돼요 · ${esc(first.org || first.title.slice(0,14))} ${dueLong(first.due, first.dueHasTime)}`;
   el.hidden = false;
   el.onclick = () => { state.tab = "saved"; state.sort = "due"; refresh(); el.scrollIntoView({block:"start"}); };
+}
+
+// ── 네이버 애널리틱스 ──
+if(NAVER_WA){
+  const s = document.createElement("script");
+  s.src = "https://wcs.naver.net/wcslog.js";
+  s.async = true;
+  s.onload = () => { window.wcs_add = window.wcs_add || {}; window.wcs_add["wa"] = NAVER_WA; if(window.wcs) window.wcs_do(); };
+  document.head.appendChild(s);
 }
 
 load();

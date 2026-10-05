@@ -17,7 +17,7 @@ RSS_URL = f"https://rss.blog.naver.com/{BLOG_ID}.xml"
 OUT = Path(__file__).parent / "posts.json"
 KST = timezone(timedelta(hours=9))
 MAX_POSTS = 300
-SCHEMA = 2  # 분류 규칙을 바꾸면 숫자를 올려 기존 글도 다시 분류
+SCHEMA = 3  # 분류 규칙을 바꾸면 숫자를 올려 기존 글도 다시 분류
 
 # ── 분류 기준 ─────────────────────────────────────────────
 JOB_RE = re.compile(r"채용|공채|재공고|모집|선발|인턴")
@@ -140,8 +140,16 @@ def extract_org(title):
 
 def extract_info(title, text, org):
     info = {}
-    m = re.search(r"(\d[\d,]*)\s*명", title) or re.search(r"총\s*(\d[\d,]*)\s*명", text) \
-        or re.search(r"(\d[\d,]*)\s*명", text[:250])
+    # 인원은 확실한 표현만: 제목의 N명 → 본문의 '총 N명' → 'N명(…)을 채용·뽑·모집·선발'
+    # (각 N명, 중 N명, 'A 1명과 B 1명'처럼 나뉜 경우는 틀릴 수 있어 표시하지 않음)
+    m = re.search(r"(\d[\d,]*)\s*명", title) or re.search(r"(?:총|모두|합계)\s*(\d[\d,]*)\s*명", text)
+    if not m:
+        for c in re.finditer(r"(\d[\d,]*)\s*명(?:\s*\([^)]{0,60}\))?(?:을|를)\s*[^.명]{0,22}?(?:채용|뽑|모집|선발)", text):
+            before = text[max(0, c.start() - 40):c.start()]
+            if re.search(r"[각중]\s*$", before) or re.search(r"명\s*(?:과|와|,|·)", before):
+                continue
+            m = c
+            break
     if m:
         info["n"] = m[1].replace(",", "")
     head = (title + " " + text[:450])
@@ -205,6 +213,12 @@ def build(pid, title, cat, text, pub, old=None):
     if typ == "j":
         post["org"] = extract_org(title)
         post.update(extract_info(title, text, post["org"]))
+        # 본문이 짧아 인원을 못 찾은 옛 글은 이전 값 유지 (단, 오인식이 잦던 '1명'은 버림)
+        if "n" not in post and old and str(old.get("n", "")).isdigit() and int(old["n"]) > 1:
+            post["n"] = old["n"]
+        for k in ("region", "src"):
+            if not post.get(k) and old and old.get(k):
+                post[k] = old[k]
     elif typ == "p":
         post["exam"] = extract_exam(title, text)
     return post
