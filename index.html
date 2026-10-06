@@ -172,6 +172,19 @@ header{justify-content:space-between}
 .sheet-box .row > *{flex:1;text-align:center;border-radius:10px;padding:11px;font-weight:700;font-size:14px;text-decoration:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
 .sheet-box .row .primary{background:var(--brand);border-color:var(--brand);color:#fff}
 
+/* 새로 올라온 글 */
+.newstrip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.newstrip .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.newstrip .hd b{font-size:14px}
+.newstrip .more{appearance:none;border:0;background:none;color:var(--brand);font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0}
+.newstrip a{display:flex;align-items:center;gap:8px;padding:7px 0;color:inherit;text-decoration:none;border-top:1px solid var(--line);font-size:14px}
+.newstrip a:first-of-type{border-top:0}
+.newstrip .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.newstrip .bd{flex:none;font-size:11.5px;font-weight:700;border-radius:5px;padding:0 6px;line-height:19px;background:var(--tile);color:var(--tile-ink)}
+.newstrip .bd.hot{background:var(--hot-soft);color:var(--hot)}
+.newstrip .bd.p{background:var(--brand-soft);color:var(--brand)}
+.newstrip .bd.m{background:var(--green-soft);color:var(--green)}
+
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -239,7 +252,6 @@ footer .src b{color:var(--ink)}
 
 <script>
 // ── 설정 ──
-const NAVER_WA = "1c5964c5d957290";      // 네이버 애널리틱스 사이트 ID (analytics.naver.com에서 발급, 예: "1a2b3c4d5e6f7g")
 const COUPANG = false;    // 쿠팡 추천 상품 표시 (ads.py 설정 후 true로)
 let POSTS = [], UPDATED = null, ADS = [];
 const pad = n => String(n).padStart(2,"0");
@@ -458,6 +470,22 @@ function sortKey(p, now){
 }
 function cmp(a, b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const x=a[i]??0, y=b[i]??0; if(x!==y) return x<y?-1:1; } return 0; }
 
+
+// 마감순 화면에서도 새 글이 묻히지 않도록, 최근 24시간 글을 목록 위에 따로 보여줌
+function newStrip(rows, now){
+  if(state.sort !== "due" || state.q || state.cat || state.status !== "all" || state.tab === "saved") return "";
+  const fresh = rows.filter(p => isNew(p, now)).sort((a,b) => b.pub - a.pub);
+  if(!fresh.length) return "";
+  const items = fresh.slice(0, 3).map(p => {
+    const d = dday(p, now);
+    const bd = p.type === "j"
+      ? (d ? `<span class="bd ${d.cls === "hot" ? "hot" : ""}">${d.big}</span>` : `<span class="bd">공고</span>`)
+      : `<span class="bd ${p.type}">${p.type === "m" ? "정책" : "준비"}</span>`;
+    const t = p.type === "j" ? cleanTitle(p.title) : p.title;
+    return `<a href="${esc(p.url)}" target="_blank" rel="noopener">${bd}<span class="tt">${esc(t)}</span></a>`;
+  }).join("");
+  return `<li class="newstrip"><div class="hd"><b>🆕 새로 올라온 글 ${fresh.length}개</b>${fresh.length > 3 ? '<button class="more" id="seeNew">최신순으로 모두 보기</button>' : ""}</div>${items}</li>`;
+}
 function render(){
   const now = new Date();
   const q = state.q.trim().toLowerCase();
@@ -484,6 +512,8 @@ function render(){
     if(n > 10) cards.splice(10, 0, adBlock(0));
   }
   cards.splice(Math.min(3, n), 0, promoBlock());
+  const strip = newStrip(rows, now);
+  if(strip) cards.unshift(strip);
   $("list").innerHTML = cards.join("");
 }
 function refresh(){ renderTabs(); renderFilters(); render(); savedAlert(); }
@@ -497,6 +527,7 @@ document.addEventListener("click", e => {
   else if(t.dataset.quick){ state.q = state.q === t.dataset.quick ? "" : t.dataset.quick; $("q").value = state.q; refresh(); }
   else if(t.dataset.status){ state.status = t.dataset.status; refresh(); }
   else if(t.dataset.sort){ state.sort = t.dataset.sort; refresh(); }
+  else if(t.id === "seeNew"){ state.sort = "new"; refresh(); }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
   else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,status:"all",sort:"due"}); $("q").value=""; refresh(); }
 });
@@ -575,17 +606,17 @@ function savedAlert(){
   el.onclick = () => { state.tab = "saved"; state.sort = "due"; refresh(); el.scrollIntoView({block:"start"}); };
 }
 
-// ── 네이버 애널리틱스 ──
-if(NAVER_WA){
-  const s = document.createElement("script");
-  s.src = "https://wcs.naver.net/wcslog.js";
-  s.async = true;
-  s.onload = () => { window.wcs_add = window.wcs_add || {}; window.wcs_add["wa"] = NAVER_WA; if(window.wcs) window.wcs_do(); };
-  document.head.appendChild(s);
-}
-
 load();
 setInterval(() => POSTS.length && render(), 60000);
+</script>
+<!-- 네이버 애널리틱스 (analytics.naver.com 공식 스크립트) -->
+<script type="text/javascript" src="https://wcs.pstatic.net/wcslog.js"></script>
+<script type="text/javascript">
+if(!wcs_add) var wcs_add = {};
+wcs_add["wa"] = "1c5b542575a2270";
+if(window.wcs) {
+wcs_do();
+}
 </script>
 </body>
 </html>
