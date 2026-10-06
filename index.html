@@ -59,7 +59,7 @@ h1{margin:0;font-family:"Black Han Sans","IBM Plex Sans KR",sans-serif;font-weig
 
 /* 검색창 + 필터 */
 .searchbar{display:flex;gap:8px;margin:4px 0 10px}
-.search{flex:1;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px}
+.search{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px}
 .search svg{flex:none;color:var(--muted)}
 .search input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;padding:11px 0;outline:none}
 .search:focus-within{border-color:var(--brand)}
@@ -185,6 +185,24 @@ header{justify-content:space-between}
 .newstrip .bd.p{background:var(--brand-soft);color:var(--brand)}
 .newstrip .bd.m{background:var(--green-soft);color:var(--green)}
 
+/* 맞춤 조건 */
+.prefcard{display:flex;align-items:center;gap:10px;background:var(--brand-soft);border-radius:14px;padding:11px 12px;font-size:13.5px;line-height:1.45}
+.prefcard .grow{flex:1}
+.prefcard b{color:var(--brand)}
+.prefcard .go{appearance:none;border:0;background:var(--brand);color:#fff;border-radius:8px;padding:6px 10px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.prefcard .x{appearance:none;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 4px}
+.linkbtn{appearance:none;border:0;background:none;color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;padding:0;margin-left:6px;text-decoration:underline}
+.sheet-box{max-height:86vh;overflow-y:auto}
+.sheet-box .grp{margin:0 0 12px}
+.sheet-box .grp > span{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.sheet-box input[type=text]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.sheet-box .hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+.sheet-box .live{font-size:13px;margin:4px 0 12px}
+.sheet-box .live b{color:var(--brand)}
+h1{white-space:nowrap}
+.brand > div{min-width:0}
+.sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:400px){ .addbtn .long{display:none} h1{font-size:19px} }
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -202,7 +220,7 @@ footer .src b{color:var(--ink)}
         <div class="sub" id="updated">공채·공무직·정책 정보를 마감순으로</div>
       </div>
     </div>
-    <button class="addbtn" id="addbtn" hidden>＋ 홈 화면에 추가</button>
+    <button class="addbtn" id="addbtn" hidden>＋ 홈 화면<span class="long">에 추가</span></button>
   </header>
 
   <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
@@ -284,6 +302,7 @@ async function load(){
     $("list").innerHTML = '<li class="empty">글 목록을 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</li>';
     return;
   }
+  initSeen();
   const k = kst(new Date(UPDATED));
   $("updated").textContent = `${k.getUTCMonth()+1}.${k.getUTCDate()} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트 · 글 ${POSTS.length}개`;
   refresh();
@@ -346,14 +365,55 @@ function adBlock(n){
 }
 
 // ── 화면 상태 ──
-const TABS = [
+const BASE_TABS = [
   {key:"all", label:"전체"}, {key:"j", label:"채용공고"}, {key:"p", label:"취업준비"},
   {key:"m", label:"정책·재테크"}, {key:"saved", label:"★ 관심"}
 ];
+const tabsNow = () => hasPrefs() ? [{key:"mine", label:"🎯 맞춤"}, ...BASE_TABS] : BASE_TABS;
+
+// ── 지난 방문 이후 새 글: 지난번에 본 글 목록을 기억해 두고, 그 뒤에 추가된 글을 '새 글'로 표시 ──
+let SEEN_BASE = null;   // 이번 방문 전에 이미 본 글 id들 (첫 방문이면 null → 최근 24시간 기준)
+function initSeen(){
+  try{
+    let base = sessionStorage.getItem("seenBase");
+    if(base === null){
+      base = localStorage.getItem("seenIds") || "";
+      sessionStorage.setItem("seenBase", base);   // 같은 방문 중 새로고침해도 기준 유지
+    }
+    SEEN_BASE = base ? new Set(JSON.parse(base)) : null;
+    localStorage.setItem("seenIds", JSON.stringify(POSTS.map(p => p.id)));
+  }catch(e){ SEEN_BASE = null; }
+}
+
+// ── 내 조건(맞춤 공고) ──
+const PREF_GROUPS = [
+  {key:"emp", label:"고용형태", items:["정규직","무기계약직","공무직","계약직","인턴","경력"]},
+  {key:"edu", label:"학력", items:["고졸 가능","학력무관"]},
+  {key:"region", label:"지역", items:["서울","경기","인천","부산","대구","광주","대전","세종","울산","강원","충북","충남","전북","전남","경북","경남","제주"]},
+];
+const PREF_RE = {
+  "정규직":/정규직/, "무기계약직":/무기계약/, "공무직":/공무직/, "계약직":/기간제|(?<!무기)계약직/, "인턴":/인턴/, "경력":/경력/,
+  "고졸 가능":/고졸/, "학력무관":/학력\s*(?:무관|제한\s*(?:이|은)?\s*없)/
+};
+let PREFS = {emp:[], edu:[], region:[], cat:[], kw:""};
+try { PREFS = Object.assign(PREFS, JSON.parse(localStorage.getItem("prefs") || "{}")); } catch(e) {}
+function hasPrefs(){ return PREFS.emp.length || PREFS.edu.length || PREFS.region.length || PREFS.cat.length || PREFS.kw.trim(); }
+function savePrefs(){ try { localStorage.setItem("prefs", JSON.stringify(PREFS)); } catch(e) {} }
+function matchPrefs(p, prefs = PREFS){
+  if(p.type !== "j") return false;
+  const all = [p.title, p.org, p.cat, p.region, p.text, p.desc, ...(p.emp||[]), ...(p.edu||[])].join(" ");
+  if(prefs.emp.length && !prefs.emp.some(e => (p.emp||[]).includes(e) || PREF_RE[e].test(all))) return false;
+  if(prefs.edu.length && !prefs.edu.some(e => (p.edu||[]).includes(e) || PREF_RE[e].test(all))) return false;
+  if(prefs.region.length && !prefs.region.some(r => p.region === r || all.includes(r))) return false;
+  if(prefs.cat.length && !prefs.cat.includes(p.cat)) return false;
+  const kws = prefs.kw.split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
+  if(kws.length && !kws.some(k => all.toLowerCase().includes(k.toLowerCase()))) return false;
+  return true;
+}
 const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
 const SORTS = [["due","마감 가까운 순"],["new","최신순"]];
-const state = {tab:"all", q:"", cat:null, status:"all", sort:"due"};
+const state = {tab: hasPrefs() ? "mine" : "all", q:"", cat:null, status:"all", sort:"due", onlyNew:false};
 
 function kstDay(d){ const k = kst(d); return Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()); }
 function dday(p, now){
@@ -363,13 +423,16 @@ function dday(p, now){
   return {cls: n <= 3 ? "hot" : "open", big: n === 0 ? "D-DAY" : `D-${n}`, n};
 }
 const statusOf = (p, now) => { const d = dday(p, now); return !d ? "none" : d.cls === "closed" ? "closed" : d.cls; };
-const inTab = p => state.tab === "all" || (state.tab === "saved" ? SAVED.has(p.id) : p.type === state.tab);
-const isNew = (p, now) => now - p.pub < 24*3600e3;
+const inTab = p => state.tab === "all" || (state.tab === "saved" ? SAVED.has(p.id) : state.tab === "mine" ? matchPrefs(p) : p.type === state.tab);
+const isNew = (p, now) => SEEN_BASE ? !SEEN_BASE.has(p.id) : now - p.pub < 24*3600e3;
 const haystack = p => [p.title, p.desc, p.cat, p.org, p.region, ...(p.emp||[]), ...(p.edu||[]), ...(p.exam||[])].join(" ").toLowerCase();
 
 function renderTabs(){
-  $("tabs").innerHTML = TABS.map(t => {
-    const n = t.key === "all" ? POSTS.length : t.key === "saved" ? POSTS.filter(p => SAVED.has(p.id)).length : POSTS.filter(p => p.type === t.key).length;
+  const now = new Date();
+  $("tabs").innerHTML = tabsNow().map(t => {
+    const n = t.key === "all" ? POSTS.length : t.key === "saved" ? POSTS.filter(p => SAVED.has(p.id)).length
+      : t.key === "mine" ? POSTS.filter(p => matchPrefs(p) && statusOf(p, now) !== "closed").length
+      : POSTS.filter(p => p.type === t.key).length;
     return `<button class="tab" role="tab" data-tab="${t.key}" aria-selected="${state.tab===t.key}">${t.label}<span class="n">${n}</span></button>`;
   }).join("");
   fadeHint();
@@ -473,7 +536,7 @@ function cmp(a, b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const x=a[i]
 
 // 마감순 화면에서도 새 글이 묻히지 않도록, 최근 24시간 글을 목록 위에 따로 보여줌
 function newStrip(rows, now){
-  if(state.sort !== "due" || state.q || state.cat || state.status !== "all" || state.tab === "saved") return "";
+  if(state.onlyNew || state.sort !== "due" || state.q || state.cat || state.status !== "all" || state.tab === "saved" || state.tab === "mine") return "";
   const fresh = rows.filter(p => isNew(p, now)).sort((a,b) => b.pub - a.pub);
   if(!fresh.length) return "";
   const items = fresh.slice(0, 3).map(p => {
@@ -484,23 +547,67 @@ function newStrip(rows, now){
     const t = p.type === "j" ? cleanTitle(p.title) : p.title;
     return `<a href="${esc(p.url)}" target="_blank" rel="noopener">${bd}<span class="tt">${esc(t)}</span></a>`;
   }).join("");
-  return `<li class="newstrip"><div class="hd"><b>🆕 새로 올라온 글 ${fresh.length}개</b>${fresh.length > 3 ? '<button class="more" id="seeNew">최신순으로 모두 보기</button>' : ""}</div>${items}</li>`;
+  return `<li class="newstrip"><div class="hd"><b>🆕 ${SEEN_BASE ? "지난 방문 이후 새 글" : "최근 24시간 새 글"} ${fresh.length}개</b>${fresh.length > 3 ? '<button class="more" id="seeNew">새 글만 모두 보기</button>' : ""}</div>${items}</li>`;
+}
+function prefSummary(){
+  const parts = [...PREFS.emp, ...PREFS.edu, ...PREFS.region, ...PREFS.cat];
+  if(PREFS.kw.trim()) parts.push(`"${PREFS.kw.trim()}"`);
+  return parts.length > 3 ? parts.slice(0,3).join("·") + ` 외 ${parts.length-3}` : parts.join("·");
+}
+function prefCard(){
+  if(state.tab !== "all" || state.q || state.onlyNew) return "";
+  if(hasPrefs()){
+    const n = POSTS.filter(p => matchPrefs(p) && statusOf(p, new Date()) !== "closed").length;
+    return `<li class="prefcard"><span class="grow">🎯 내 조건(${esc(prefSummary())})에 맞는 모집 중 공고 <b>${n}건</b></span><button class="go" data-tab="mine">보기</button></li>`;
+  }
+  let off = false; try { off = localStorage.getItem("prefCardOff") === "1"; } catch(e) {}
+  if(off) return "";
+  return `<li class="prefcard"><span class="grow"><b>내 조건</b>을 저장하면 맞는 공고만 맨 위에 모아 보여드려요. (고졸·인턴·지역 등)</span><button class="go" id="openPrefs">설정</button><button class="x" id="prefCardX" aria-label="닫기">×</button></li>`;
+}
+let DRAFT = null;
+function openPrefs(){
+  DRAFT = JSON.parse(JSON.stringify(PREFS));
+  const cats = [...new Set(POSTS.filter(p => p.type === "j").map(p => p.cat))];
+  const grp = (key, label, items) => `<div class="grp"><span>${label}</span><div class="chips">${items.map(v =>
+    `<button class="chip" data-pref="${key}" data-val="${esc(v)}" aria-pressed="${DRAFT[key].includes(v)}">${esc(v)}</button>`).join("")}</div></div>`;
+  $("sheetTitle").textContent = "🎯 내 조건 설정";
+  $("sheetBody").innerHTML = PREF_GROUPS.map(g => grp(g.key, g.label, g.items)).join("")
+    + grp("cat", "분야", cats)
+    + `<div class="grp"><span>키워드 (쉼표로 여러 개)</span><input type="text" id="prefKw" value="${esc(DRAFT.kw)}" placeholder="예: 간호, 전산, 사무"></div>`
+    + `<p class="hint">같은 항목 안에서는 하나만 맞아도 되고, 항목끼리는 모두 맞아야 해요. 이 기기에만 저장돼요.</p>`
+    + `<p class="live" id="prefLive"></p>`
+    + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
+  $("sheet").classList.add("open");
+  $("prefKw").addEventListener("input", e => { DRAFT.kw = e.target.value; prefLive(); });
+  prefLive();
+}
+function prefLive(){
+  const now = new Date();
+  const n = POSTS.filter(p => matchPrefs(p, DRAFT) && statusOf(p, now) !== "closed").length;
+  $("prefLive").innerHTML = `지금 조건에 맞는 모집 중 공고: <b>${n}건</b>`;
 }
 function render(){
   const now = new Date();
   const q = state.q.trim().toLowerCase();
   let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && (!q || haystack(p).includes(q)));
   if(state.status !== "all") rows = rows.filter(p => statusOf(p, now) === state.status);
-  rows.sort(state.sort === "due" ? (a,b) => cmp(sortKey(a,now), sortKey(b,now)) : (a,b) => b.pub - a.pub);
+  if(state.onlyNew) rows = rows.filter(p => isNew(p, now));
+  if(state.tab === "mine") rows = rows.filter(p => statusOf(p, now) !== "closed");
+  rows.sort(state.sort === "due" && !state.onlyNew ? (a,b) => cmp(sortKey(a,now), sortKey(b,now)) : (a,b) => b.pub - a.pub);
 
   const open = rows.filter(p => p.type === "j" && ["open","hot"].includes(statusOf(p,now))).length;
   const hot = rows.filter(p => p.type === "j" && statusOf(p,now) === "hot").length;
-  $("summary").innerHTML = (state.tab === "p" || state.tab === "m")
+  let sum = (state.tab === "p" || state.tab === "m")
     ? `글 <b>${rows.length}</b>개`
-    : `모집 중인 공고 <b>${open}</b>건` + (hot ? ` · 3일 내 마감 <span class="hot">${hot}</span>건` : "") + ` · 전체 글 ${rows.length}개`;
+    : `모집 중인 공고 <b>${open}</b>건` + (hot ? ` · 3일 내 마감 <span class="hot">${hot}</span>건` : "") + (state.tab === "mine" ? "" : ` · 전체 글 ${rows.length}개`);
+  if(state.tab === "mine") sum = `🎯 ${prefSummary()} ` + sum + `<button class="linkbtn" id="editPrefs">조건 수정</button>`;
+  if(state.onlyNew) sum = `🆕 새 글 <b>${rows.length}</b>개만 보는 중 <button class="linkbtn" id="offNew">전체 보기</button>`;
+  $("summary").innerHTML = sum;
 
   if(!rows.length){
-    $("list").innerHTML = state.tab === "saved"
+    $("list").innerHTML = state.tab === "mine"
+      ? `<li class="empty">지금 조건에 맞는 모집 중 공고가 없어요.<br>새 공고가 올라오면 여기에 바로 나타나요.<br><button class="chip" id="editPrefs">조건 수정</button></li>`
+      : state.tab === "saved"
       ? `<li class="empty">아직 저장한 글이 없어요.<br>공고의 ☆ 저장을 누르면 여기에 모입니다. (이 기기에만 저장돼요)</li>`
       : `<li class="empty">조건에 맞는 글이 없습니다.<br><button class="chip" id="empty-reset">필터 초기화</button></li>`;
     return;
@@ -514,6 +621,8 @@ function render(){
   cards.splice(Math.min(3, n), 0, promoBlock());
   const strip = newStrip(rows, now);
   if(strip) cards.unshift(strip);
+  const pc = prefCard();
+  if(pc) cards.splice(strip ? 1 : 0, 0, pc);
   $("list").innerHTML = cards.join("");
 }
 function refresh(){ renderTabs(); renderFilters(); render(); savedAlert(); }
@@ -527,7 +636,24 @@ document.addEventListener("click", e => {
   else if(t.dataset.quick){ state.q = state.q === t.dataset.quick ? "" : t.dataset.quick; $("q").value = state.q; refresh(); }
   else if(t.dataset.status){ state.status = t.dataset.status; refresh(); }
   else if(t.dataset.sort){ state.sort = t.dataset.sort; refresh(); }
-  else if(t.id === "seeNew"){ state.sort = "new"; refresh(); }
+  else if(t.id === "seeNew"){ state.onlyNew = true; refresh(); window.scrollTo({top:0}); }
+  else if(t.id === "offNew"){ state.onlyNew = false; refresh(); }
+  else if(t.id === "openPrefs" || t.id === "editPrefs"){ openPrefs(); }
+  else if(t.id === "prefCardX"){ try{ localStorage.setItem("prefCardOff","1"); }catch(e){} render(); }
+  else if(t.dataset.pref){
+    const arr = DRAFT[t.dataset.pref], v = t.dataset.val, i = arr.indexOf(v);
+    i >= 0 ? arr.splice(i,1) : arr.push(v);
+    t.setAttribute("aria-pressed", i < 0); prefLive();
+  }
+  else if(t.id === "prefClear"){
+    DRAFT = {emp:[], edu:[], region:[], cat:[], kw:""};
+    document.querySelectorAll("[data-pref]").forEach(b => b.setAttribute("aria-pressed","false"));
+    $("prefKw").value = ""; prefLive();
+  }
+  else if(t.id === "prefSave"){
+    PREFS = DRAFT; savePrefs(); closeSheet();
+    state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
+  }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
   else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,status:"all",sort:"due"}); $("q").value=""; refresh(); }
 });
@@ -548,7 +674,7 @@ if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catc
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; });
 window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("addHint").hidden = true; });
 
-function sheet(html){ $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); }
+function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); }
 function closeSheet(){ $("sheet").classList.remove("open"); }
 async function addToHome(){
   if(installEvt){ installEvt.prompt(); const r = await installEvt.userChoice; installEvt = null; if(r.outcome === "accepted") $("addHint").hidden = true; return; }
