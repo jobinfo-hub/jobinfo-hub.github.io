@@ -261,11 +261,16 @@ def main():
     ordered = sorted(posts.values(), key=lambda p: p["pub"], reverse=True)[:MAX_POSTS]
     after = json.dumps(sorted(ordered, key=lambda p: p["id"]), ensure_ascii=False)
     if after == before:
-        print("변경 없음")
-        return
-    data = {"updated": datetime.now(KST).isoformat(timespec="seconds"), "posts": ordered}
-    OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
-    print(f"posts.json 갱신: 글 {len(ordered)}개")
+        print("글 목록 변경 없음")
+    else:
+        data = {"updated": datetime.now(KST).isoformat(timespec="seconds"), "posts": ordered}
+        OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
+        print(f"posts.json 갱신: 글 {len(ordered)}개")
+    try:  # 검색엔진용 정적 페이지 (실패해도 글 목록 갱신에는 영향 없음)
+        import sitegen
+        sitegen.generate(ordered)
+    except Exception as err:
+        print("정적 페이지 생성 실패:", err)
 
 
 if __name__ == "__main__":
