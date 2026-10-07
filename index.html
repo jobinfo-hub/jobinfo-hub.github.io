@@ -160,6 +160,13 @@ header{justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .addbtn{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--brand);white-space:nowrap}
 .addbtn[hidden]{display:none}
+.hbtns{display:flex;gap:6px;flex:none}
+#sharebtn{display:inline-flex;align-items:center;gap:4px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#14213D;color:#fff;font-size:13.5px;padding:10px 16px;border-radius:999px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+.sharegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+.sharegrid > *{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer}
+.sharegrid .ic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff}
 .notice{display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 12px;border-radius:12px;font-size:13.5px;line-height:1.4;border:1px solid var(--line);background:var(--surface)}
 .notice[hidden]{display:none}
 .notice.alert{background:var(--hot-soft);border-color:transparent;color:var(--hot);font-weight:600;cursor:pointer}
@@ -205,7 +212,7 @@ header{justify-content:space-between}
 h1{white-space:nowrap}
 .brand > div{min-width:0}
 .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media (max-width:400px){ .addbtn .long{display:none} h1{font-size:19px} }
+@media (max-width:440px){ .addbtn .long{display:none} } @media (max-width:400px){ h1{font-size:19px} .addbtn{padding:6px 9px} }
 .guides{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px 0 0}
 .guides::-webkit-scrollbar{display:none}
 .guides a{flex:none;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none}
@@ -227,7 +234,10 @@ footer .src b{color:var(--ink)}
         <div class="sub" id="updated">공채·공무직·정책 정보를 마감순으로</div>
       </div>
     </div>
-    <button class="addbtn" id="addbtn" hidden>＋ 홈 화면<span class="long">에 추가</span></button>
+    <div class="hbtns">
+      <button class="addbtn" id="sharebtn" aria-label="사이트 공유하기"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg><span>공유<span class="long">하기</span></span></button>
+      <button class="addbtn" id="addbtn" hidden>＋ 홈 화면<span class="long">에 추가</span></button>
+    </div>
   </header>
 
   <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
@@ -735,6 +745,45 @@ window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("ad
 
 function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); }
 function closeSheet(){ $("sheet").classList.remove("open"); }
+
+// ── 공유하기 ──
+const SHARE_URL = "https://jobinfo-hub.github.io/?src=share";
+const SHARE_TEXT = "공기업·공공기관 채용공고를 마감순으로 한눈에 볼 수 있어요 📋";
+function toast(msg){
+  let t = document.querySelector(".toast");
+  if(!t){ t = document.createElement("div"); t.className = "toast"; t.setAttribute("role","status"); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toast.tm); toast.tm = setTimeout(() => t.classList.remove("on"), 2200);
+}
+async function copyShare(){
+  const text = SHARE_TEXT + "\n" + SHARE_URL;
+  try { await navigator.clipboard.writeText(text); }
+  catch(e){
+    const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch(_) {}
+    ta.remove();
+  }
+  closeSheet(); toast("링크를 복사했어요. 원하는 곳에 붙여넣어 주세요.");
+}
+async function shareSite(){
+  if(navigator.share && !INAPP){
+    try { await navigator.share({title:"취업/정책 지원소", text:SHARE_TEXT, url:SHARE_URL}); return; }
+    catch(e){ if(e && e.name === "AbortError") return; }
+  }
+  const u = encodeURIComponent(SHARE_URL), t = encodeURIComponent(SHARE_TEXT);
+  sheet(`<div class="sharegrid">
+      <button onclick="copyShare()"><span class="ic" style="background:#1F3FBF">🔗</span>링크 복사</button>
+      <a href="https://band.us/plugin/share?body=${encodeURIComponent(SHARE_TEXT + "\n" + SHARE_URL)}&route=jobinfo-hub.github.io" target="_blank" rel="noopener"><span class="ic" style="background:#06C755">B</span>밴드</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${u}" target="_blank" rel="noopener"><span class="ic" style="background:#1877F2">f</span>페이스북</a>
+      <a href="https://twitter.com/intent/tweet?text=${t}&url=${u}" target="_blank" rel="noopener"><span class="ic" style="background:#000">X</span>X</a>
+      <a href="https://www.threads.net/intent/post?text=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}" target="_blank" rel="noopener"><span class="ic" style="background:#000">@</span>스레드</a>
+      <a href="sms:?&body=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}"><span class="ic" style="background:#5B6475">✉</span>문자</a>
+    </div>
+    <p class="hint" style="font-size:12.5px;color:var(--muted);margin:0 0 12px">카카오톡은 링크 복사 후 대화방에 붙여넣으면 미리보기와 함께 보내져요.</p>
+    <div class="row"><button onclick="closeSheet()">닫기</button></div>`, "친구에게 공유하기");
+}
+$("sharebtn").addEventListener("click", shareSite);
 async function addToHome(){
   if(installEvt){ installEvt.prompt(); const r = await installEvt.userChoice; installEvt = null; if(r.outcome === "accepted") $("addHint").hidden = true; return; }
   const here = location.href.split("#")[0];
