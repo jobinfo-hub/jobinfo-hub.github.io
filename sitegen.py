@@ -136,6 +136,8 @@ def page(fname, title, desc, body):
 <meta property="og:image" content="{SITE}og.png"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon-192.png" type="image/png"><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1F3FBF">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4206368432511517"
+     crossorigin="anonymous"></script>
 <style>{CSS}</style>
 </head>
 <body>
