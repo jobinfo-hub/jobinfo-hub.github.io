@@ -256,6 +256,9 @@ h1{white-space:nowrap}
 .notice.kakao{background:#FEE500;border-color:#FEE500;color:#191600}
 .notice.kakao .kgo{background:#191600;color:#FEE500;text-decoration:none;display:inline-block}
 .notice.kakao .x{color:#5c5300}
+.ofc,.hae{font-size:10.5px;font-weight:700;border-radius:4px;padding:0 5px;line-height:16px}
+.ofc{background:var(--tile);color:var(--tile-ink)}
+.hae{background:var(--green-soft);color:var(--green)}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -404,6 +407,28 @@ function toggleSave(id){
   try { localStorage.setItem("saved", JSON.stringify([...SAVED])); } catch(e) {}
 }
 
+// ── 잡알리오 공식 공고 합치기 (블로그 해설이 있는 공고는 블로그 카드를 우선) ──
+const normOrg = s => String(s || "").replace(/\(주\)|주식회사|\s|[()·.,]/g, "");
+async function loadAlio(){
+  try{
+    const r = await fetch("alio.json?t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok) return;
+    const list = ((await r.json()).posts || []).map(p => ({...p, pub:new Date(p.pub), due:new Date(p.due)}));
+    const blogJobs = POSTS.filter(p => p.type === "j" && p.org && p.due);
+    const add = [];
+    for(const a of list){
+      const ao = normOrg(a.org);
+      const twin = ao && blogJobs.find(b => {
+        const bo = normOrg(b.org);
+        return bo.length > 1 && (ao.includes(bo) || bo.includes(ao)) && Math.abs(kstDay(b.due) - kstDay(a.due)) <= 864e5;
+      });
+      if(twin){ if(!twin.src) twin.src = a.src || a.url; twin.alioUrl = a.url; continue; }
+      add.push(a);
+    }
+    POSTS = POSTS.concat(add);
+  }catch(e){}
+}
+
 async function load(){
   try{
     const r = await fetch("posts.json?t=" + Date.now(), {cache:"no-store"});
@@ -416,8 +441,10 @@ async function load(){
     return;
   }
   initSeen();
+  await loadAlio();
   const k = kst(new Date(UPDATED));
-  $("updated").textContent = `${k.getUTCMonth()+1}.${k.getUTCDate()} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트 · 글 ${POSTS.length}개`;
+  const nA = POSTS.filter(p => p.alio).length;
+  $("updated").textContent = `${k.getUTCMonth()+1}.${k.getUTCDate()} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트 · 글 ${POSTS.length - nA}개` + (nA ? ` + 공식 공고 ${nA}건` : "");
   refresh();
   if(COUPANG) try{
     const a = await fetch("ads.json?t=" + Date.now(), {cache:"no-store"});
@@ -537,7 +564,7 @@ function dday(p, now){
 }
 const statusOf = (p, now) => { const d = dday(p, now); return !d ? "none" : d.cls === "closed" ? "closed" : d.cls; };
 const inTab = p => state.tab === "all" || (state.tab === "saved" ? SAVED.has(p.id) : state.tab === "mine" ? matchPrefs(p) : p.type === state.tab);
-const isNew = (p, now) => SEEN_BASE ? !SEEN_BASE.has(p.id) : now - p.pub < 24*3600e3;
+const isNew = (p, now) => p.alio ? now - p.pub < 36*3600e3 : SEEN_BASE ? !SEEN_BASE.has(p.id) : now - p.pub < 24*3600e3;
 const haystack = p => [p.title, p.desc, p.cat, p.org, p.region, ...(p.emp||[]), ...(p.edu||[]), ...(p.exam||[])].join(" ").toLowerCase();
 
 function renderTabs(){
@@ -578,6 +605,8 @@ function calLink(p){
     + "&details=" + encodeURIComponent("접수 마감 " + dueLong(p.due, p.dueHasTime) + "\n" + p.url);
 }
 function officialLink(p){
+  if(p.alio) return p.src ? {href:p.src, label:"접수처"} : {href:p.url, label:"잡알리오"};
+  if(p.alioUrl) return {href:p.alioUrl, label:"잡알리오"};
   if(p.src) return {href:p.src, label:"공식 접수처"};
   const q = (p.org || p.title) + " 채용공고";
   return {href:"https://search.naver.com/search.naver?query=" + encodeURIComponent(q), label:"공식 공고 찾기"};
@@ -612,7 +641,7 @@ function jobCard(p, now){
     <a class="main" href="${esc(p.url)}" target="_blank" rel="noopener">
       ${tile}
       <div class="body">
-        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
+        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
         <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
         ${p.due ? `<div class="due ${d.cls==="hot" ? "hot" : d.cls==="closed" ? "closed" : ""}">접수 마감 ${dueLong(p.due, p.dueHasTime)}</div>` : `<div class="due closed">마감일은 원문에서 확인</div>`}
@@ -654,7 +683,7 @@ function cmp(a, b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const x=a[i]
 // 마감순 화면에서도 새 글이 묻히지 않도록, 최근 24시간 글을 목록 위에 따로 보여줌
 function newStrip(rows, now){
   if(state.onlyNew || state.sort !== "due" || state.q || state.cat || state.status !== "all" || state.tab === "saved" || state.tab === "mine") return "";
-  const fresh = rows.filter(p => isNew(p, now)).sort((a,b) => b.pub - a.pub);
+  const fresh = rows.filter(p => !p.alio && isNew(p, now)).sort((a,b) => b.pub - a.pub);
   if(!fresh.length) return "";
   const items = fresh.slice(0, 3).map(p => {
     const d = dday(p, now);
