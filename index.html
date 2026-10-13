@@ -162,7 +162,7 @@ header{justify-content:space-between}
 .addbtn[hidden]{display:none}
 .hbtns{display:flex;gap:6px;flex:none}
 #sharebtn{display:inline-flex;align-items:center;gap:4px}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#14213D;color:#fff;font-size:13.5px;padding:10px 16px;border-radius:999px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#14213D;color:#fff;font-size:13.5px;padding:10px 16px;border-radius:999px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none;width:max-content;max-width:calc(100% - 32px);text-align:center;line-height:1.45}
 .toast.on{opacity:1}
 .sharegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
 .sharegrid > *{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer}
@@ -217,6 +217,42 @@ h1{white-space:nowrap}
 .guides::-webkit-scrollbar{display:none}
 .guides a{flex:none;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none}
 .flinks a{margin-right:12px}
+/* 지원 현황 관리 */
+.actions > *{min-width:0}
+.track[data-st]{color:var(--brand);font-weight:700}
+.stpill{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:0 6px;line-height:18px;margin-left:2px}
+.st-plan{background:var(--tile);color:var(--tile-ink)}
+.st-applied{background:var(--brand-soft);color:var(--brand)}
+.st-doc,.st-exam,.st-itv{background:#FFF4D6;color:#8A5A00}
+.st-pass{background:var(--green-soft);color:var(--green)}
+.st-fail{background:var(--bg);color:var(--closed)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .st-doc,:root:not([data-theme="light"]) .st-exam,:root:not([data-theme="light"]) .st-itv{background:#3A3016;color:#FFD27A} }
+.trk-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.trk-sum div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
+.trk-sum b{display:block;font-size:20px;font-family:"Black Han Sans",sans-serif;font-weight:400;color:var(--brand);line-height:1.1}
+.trk-sum span{font-size:12px;color:var(--muted)}
+.trk-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.trk-box h3{margin:0 0 6px;font-size:14.5px}
+.sch{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
+.sch:first-of-type{border-top:0}
+.sch .dt{flex:none;width:76px;font-weight:700}
+.sch .dt.hot{color:var(--hot)}
+.sch .kd{flex:none;font-size:11.5px;font-weight:700;border-radius:5px;padding:0 6px;line-height:19px;background:var(--tile);color:var(--tile-ink)}
+.sch .kd.exam{background:#FFF4D6;color:#8A5A00}
+.sch .kd.itv{background:var(--brand-soft);color:var(--brand)}
+.sch .kd.due{background:var(--hot-soft);color:var(--hot)}
+.sch .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clash{margin:6px 0 0;padding:8px 10px;border-radius:10px;background:var(--hot-soft);color:var(--hot);font-size:13px;font-weight:600}
+.trk-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 12px;display:flex;gap:10px;align-items:center}
+.trk-item .grow{flex:1;min-width:0}
+.trk-item .o{font-size:12.5px;font-weight:700;color:var(--brand)}
+.trk-item .t{font-size:14.5px;font-weight:700;line-height:1.35;word-break:keep-all}
+.trk-item .m{font-size:12.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk-item .ed{flex:none;appearance:none;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:7px 10px;font-size:12.5px;font-weight:600;cursor:pointer}
+.sheet-box .dates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sheet-box input[type=date],.sheet-box textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.sheet-box textarea{min-height:64px;resize:vertical}
+.sheet-box .danger{color:var(--hot)!important}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -436,7 +472,7 @@ function adBlock(n){
 // ── 화면 상태 ──
 const BASE_TABS = [
   {key:"all", label:"전체"}, {key:"j", label:"채용공고"}, {key:"p", label:"취업준비"},
-  {key:"m", label:"정책·재테크"}, {key:"saved", label:"★ 관심"}
+  {key:"m", label:"정책·재테크"}, {key:"saved", label:"★ 관심"}, {key:"track", label:"📋 내 지원"}
 ];
 const tabsNow = () => hasPrefs() ? [{key:"mine", label:"🎯 맞춤"}, ...BASE_TABS] : BASE_TABS;
 
@@ -500,6 +536,7 @@ function renderTabs(){
   const now = new Date();
   $("tabs").innerHTML = tabsNow().map(t => {
     const n = t.key === "all" ? POSTS.length : t.key === "saved" ? POSTS.filter(p => SAVED.has(p.id)).length
+      : t.key === "track" ? Object.keys(APPS).length
       : t.key === "mine" ? POSTS.filter(p => matchPrefs(p) && statusOf(p, now) !== "closed").length
       : POSTS.filter(p => p.type === t.key).length;
     return `<button class="tab" role="tab" data-tab="${t.key}" aria-selected="${state.tab===t.key}">${t.label}<span class="n">${n}</span></button>`;
@@ -561,6 +598,8 @@ function jobCard(p, now){
   (p.edu||[]).forEach(e => tags.push(`<span class="tag">${esc(e)}</span>`));
   const off = officialLink(p);
   const saved = SAVED.has(p.id);
+  const ap = APPS[p.id];
+  if(ap) tags.unshift(`<span class="stpill st-${ap.st}">${ST[ap.st].label}</span>`);
   return `<li class="card job ${d && d.cls==="closed" ? "is-closed" : ""}">
     <a class="main" href="${esc(p.url)}" target="_blank" rel="noopener">
       ${tile}
@@ -573,8 +612,9 @@ function jobCard(p, now){
     </a>
     <div class="actions">
       <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}">${saved ? "★ 저장됨" : "☆ 저장"}</button>
+      <button class="track" data-track="${esc(p.id)}"${ap ? ` data-st="${ap.st}"` : ""}>${ap ? "📋 " + ST[ap.st].short : "📋 지원기록"}</button>
       ${p.due && d.cls !== "closed" ? `<a href="${calLink(p)}" target="_blank" rel="noopener">📅 캘린더</a>` : ""}
-      <a href="${esc(off.href)}" target="_blank" rel="noopener">${off.label} ↗</a>
+      <a href="${esc(off.href)}" target="_blank" rel="noopener">${off.label === "공식 공고 찾기" ? "공식 공고" : off.label} ↗</a>
     </div></li>`;
 }
 function miniCard(p, now){
@@ -655,8 +695,101 @@ function prefLive(){
   const n = POSTS.filter(p => matchPrefs(p, DRAFT) && statusOf(p, now) !== "closed").length;
   $("prefLive").innerHTML = `지금 조건에 맞는 모집 중 공고: <b>${n}건</b>`;
 }
+// ── 지원 현황 관리 (이 기기에만 저장) ──
+const ST = {
+  plan:{label:"지원 예정", short:"지원예정"}, applied:{label:"지원 완료", short:"지원완료"},
+  doc:{label:"서류 합격", short:"서류합격"}, exam:{label:"필기 통과", short:"필기통과"},
+  itv:{label:"면접 진행", short:"면접"}, pass:{label:"최종 합격", short:"최종합격"}, fail:{label:"불합격", short:"불합격"}
+};
+const ST_ORDER = ["plan","applied","doc","exam","itv","pass","fail"];
+let APPS = {};
+try { APPS = JSON.parse(localStorage.getItem("apps") || "{}") || {}; } catch(e) {}
+function saveApps(){ try { localStorage.setItem("apps", JSON.stringify(APPS)); } catch(e) {} }
+const ymd = d => { const k = kst(d); return `${k.getUTCFullYear()}-${pad(k.getUTCMonth()+1)}-${pad(k.getUTCDate())}`; };
+const ymdLabel = s => { const [y,m,d] = s.split("-").map(Number); const w = new Date(Date.UTC(y,m-1,d)).getUTCDay(); return `${m}.${d}(${WD[w]})`; };
+function appEvents(now){
+  const today = ymd(now), ev = [];
+  for(const [id, a] of Object.entries(APPS)){
+    if(a.st === "pass" || a.st === "fail") continue;
+    const name = a.org || a.title;
+    if(a.due && ["plan"].includes(a.st)){ const s = ymd(new Date(a.due)); if(s >= today) ev.push({date:s, kind:"due", label:"마감", name, id}); }
+    if(a.exam && a.exam >= today) ev.push({date:a.exam, kind:"exam", label:"필기", name, id});
+    if(a.itv && a.itv >= today) ev.push({date:a.itv, kind:"itv", label:"면접", name, id});
+  }
+  return ev.sort((x,y) => x.date < y.date ? -1 : x.date > y.date ? 1 : 0);
+}
+function clashes(ev){
+  const by = {};
+  ev.filter(e => e.kind !== "due").forEach(e => (by[e.date] = by[e.date] || []).push(e));
+  return Object.entries(by).filter(([,v]) => v.length > 1);
+}
+function renderTrack(now){
+  const ids = Object.keys(APPS);
+  if(!ids.length){
+    $("summary").innerHTML = "📋 지원한 공고를 단계별로 관리해 보세요.";
+    $("list").innerHTML = `<li class="empty">아직 기록한 지원이 없어요.<br>공고 카드의 <b>📋 지원기록</b>을 눌러 지원 예정·완료·서류 합격 같은 단계와<br>필기·면접 날짜를 남겨 보세요. 날짜가 겹치면 알려드려요. (이 기기에만 저장돼요)</li>`;
+    return;
+  }
+  const cnt = s => ids.filter(id => APPS[id].st === s).length;
+  const active = ids.filter(id => !["pass","fail"].includes(APPS[id].st)).length;
+  $("summary").innerHTML = `📋 진행 중 <b>${active}</b>곳 · 전체 ${ids.length}곳`;
+  const ev = appEvents(now), today = ymd(now);
+  const soonLimit = ymd(new Date(now.getTime() + 3*864e5));
+  const cl = clashes(ev);
+  const parts = [];
+  parts.push(`<li class="trk-sum">
+    <div><b>${cnt("plan")}</b><span>지원 예정</span></div>
+    <div><b>${cnt("applied")}</b><span>지원 완료</span></div>
+    <div><b>${cnt("doc") + cnt("exam") + cnt("itv")}</b><span>전형 진행</span></div>
+    <div><b>${cnt("pass")}</b><span>최종 합격</span></div></li>`);
+  parts.push(`<li class="trk-box"><h3>🗓 다가오는 일정</h3>${ev.length ? ev.slice(0, 12).map(e =>
+    `<div class="sch"><span class="dt${e.date <= soonLimit ? " hot" : ""}">${e.date === today ? "오늘" : ymdLabel(e.date)}</span><span class="kd ${e.kind}">${e.label}</span><span class="nm">${esc(e.name)}</span></div>`).join("")
+    : `<div class="sch" style="color:var(--muted)">등록된 일정이 없어요. 📋 지원기록에서 필기·면접 날짜를 넣어 보세요.</div>`}
+    ${cl.map(([dte, v]) => `<p class="clash">⚠️ ${ymdLabel(dte)}에 일정 ${v.length}개가 겹쳐요: ${v.map(x => esc(x.name) + " " + x.label).join(", ")}</p>`).join("")}</li>`);
+  const sorted = ids.map(id => [id, APPS[id]]).sort((a,b) => ST_ORDER.indexOf(a[1].st) - ST_ORDER.indexOf(b[1].st) || (b[1].upd||0) - (a[1].upd||0));
+  sorted.forEach(([id, a]) => {
+    const meta = [];
+    if(a.st === "plan" && a.due) meta.push("마감 " + ymdLabel(ymd(new Date(a.due))));
+    if(a.exam) meta.push("필기 " + ymdLabel(a.exam));
+    if(a.itv) meta.push("면접 " + ymdLabel(a.itv));
+    if(a.memo) meta.push(a.memo);
+    parts.push(`<li class="trk-item"><div class="grow">
+      <div class="o">${esc(a.org || "")} <span class="stpill st-${a.st}">${ST[a.st].label}</span></div>
+      <a class="t" href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(cleanTitle(a.title))}</a>
+      ${meta.length ? `<div class="m">${esc(meta.join(" · "))}</div>` : ""}</div>
+      <button class="ed" data-track="${esc(id)}">수정</button></li>`);
+  });
+  $("list").innerHTML = parts.join("");
+}
+let TDRAFT = null, TID = null;
+function openTrack(id){
+  const p = POSTS.find(x => x.id === id);
+  const a = APPS[id] || {st:"plan"};
+  TID = id;
+  TDRAFT = {st:a.st, exam:a.exam || "", itv:a.itv || "", memo:a.memo || ""};
+  const name = p ? (p.org || "") + " " + cleanTitle(p.title) : (a.org || "") + " " + cleanTitle(a.title || "");
+  sheet(`<p style="margin:0 0 12px;font-weight:600;font-size:14px;line-height:1.45">${esc(name.trim())}</p>
+    <div class="grp"><span>진행 단계</span><div class="chips">${ST_ORDER.map(s =>
+      `<button class="chip" data-stpick="${s}" aria-pressed="${TDRAFT.st === s}">${ST[s].label}</button>`).join("")}</div></div>
+    <div class="grp"><span>전형 일정 (겹치면 알려드려요)</span><div class="dates">
+      <label style="font-size:12.5px;color:var(--muted)">필기시험일<input type="date" id="tExam" value="${esc(TDRAFT.exam)}"></label>
+      <label style="font-size:12.5px;color:var(--muted)">면접일<input type="date" id="tItv" value="${esc(TDRAFT.itv)}"></label></div></div>
+    <div class="grp"><span>메모</span><textarea id="tMemo" placeholder="예: 자소서 3번 문항 다시 보기, 수험번호 1234">${esc(TDRAFT.memo)}</textarea></div>
+    <div class="row">${APPS[id] ? '<button id="tDel" class="danger">기록 삭제</button>' : '<button onclick="closeSheet()">취소</button>'}<button class="primary" id="tSave">저장</button></div>`, "📋 지원 기록");
+}
+function saveTrack(){
+  const p = POSTS.find(x => x.id === TID), old = APPS[TID] || {};
+  APPS[TID] = {
+    st: TDRAFT.st, exam: $("tExam").value, itv: $("tItv").value, memo: $("tMemo").value.trim().slice(0, 200),
+    title: p ? p.title : old.title, org: p ? (p.org || "") : old.org, url: p ? p.url : old.url,
+    due: p && p.due ? p.due.toISOString() : old.due || null, upd: Date.now()
+  };
+  saveApps(); closeSheet(); renderTabs(); render(); savedAlert();
+  toast("지원 기록을 저장했어요. '📋 내 지원' 탭에서 모아 볼 수 있어요.");
+}
 function render(){
   const now = new Date();
+  if(state.tab === "track"){ renderTrack(now); return; }
   const q = state.q.trim().toLowerCase();
   let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && (!q || haystack(p).includes(q)));
   if(state.status !== "all") rows = rows.filter(p => statusOf(p, now) === state.status);
@@ -700,6 +833,10 @@ document.addEventListener("click", e => {
   const t = e.target.closest("button");
   if(!t) return;
   if(t.dataset.save){ toggleSave(t.dataset.save); renderTabs(); render(); savedAlert(); }
+  else if(t.dataset.track){ openTrack(t.dataset.track); }
+  else if(t.dataset.stpick){ TDRAFT.st = t.dataset.stpick; document.querySelectorAll("[data-stpick]").forEach(b => b.setAttribute("aria-pressed", b.dataset.stpick === TDRAFT.st)); }
+  else if(t.id === "tSave"){ saveTrack(); }
+  else if(t.id === "tDel"){ if(confirm("이 지원 기록을 삭제할까요?")){ delete APPS[TID]; saveApps(); closeSheet(); renderTabs(); render(); savedAlert(); } }
   else if(t.dataset.tab){ state.tab = t.dataset.tab; refresh(); }
   else if(t.dataset.cat !== undefined){ state.cat = t.dataset.cat || null; refresh(); }
   else if(t.dataset.quick){ state.q = state.q === t.dataset.quick ? "" : t.dataset.quick; $("q").value = state.q; refresh(); }
@@ -833,6 +970,14 @@ function savedAlert(){
   const soon = POSTS.filter(p => SAVED.has(p.id) && p.due && now < p.due && (p.due - now) < 3*864e5)
                     .sort((a,b) => a.due - b.due);
   const el = $("savedAlert");
+  const ev = appEvents(now).filter(e => e.kind !== "due" && e.date <= ymd(new Date(now.getTime() + 3*864e5)));
+  if(ev.length){
+    const f = ev[0];
+    el.innerHTML = `🗓 ${f.date === ymd(now) ? "오늘" : ymdLabel(f.date)} ${esc(f.name)} ${f.label}` + (ev.length > 1 ? ` 외 ${ev.length - 1}건` : "") + " · 3일 안에 전형 일정이 있어요";
+    el.hidden = false;
+    el.onclick = () => { state.tab = "track"; refresh(); el.scrollIntoView({block:"start"}); };
+    return;
+  }
   if(!soon.length){ el.hidden = true; return; }
   const first = soon[0];
   el.innerHTML = `⏰ 저장한 공고 ${soon.length}건이 3일 안에 마감돼요 · ${esc(first.org || first.title.slice(0,14))} ${dueLong(first.due, first.dueHasTime)}`;
