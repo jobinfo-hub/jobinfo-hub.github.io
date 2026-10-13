@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 OUT = Path(__file__).parent / "alio.json"
+DETAIL = Path(__file__).parent / "alio-detail.json"   # 카드를 눌렀을 때만 불러오는 상세 내용
 KST = timezone(timedelta(hours=9))
 ENDPOINTS = ["https://apis.data.go.kr/1051000/recruitment/list",
              "http://apis.data.go.kr/1051000/recruitment/list"]
@@ -139,6 +140,23 @@ def convert(it, now):
     return post
 
 
+def detail_of(it):
+    """사이트 상세 화면용: 코드값을 뺀 글자 정보만 보관 (항목 이름은 API 그대로)"""
+    out = {}
+    for k, v in it.items():
+        if isinstance(v, dict) or (isinstance(v, list) and any(isinstance(x, (dict, list)) for x in v)):
+            continue
+        if isinstance(v, list):
+            v = ", ".join(str(x) for x in v if str(x).strip())
+        v = str(v).strip() if v is not None else ""
+        if not v or v.lower() in ("null", "none"):
+            continue
+        if k.endswith("Cd") or k.endswith("CdLst") or (k.endswith("Lst") and not k.endswith("NmLst")):
+            continue
+        out[k] = v[:3000]
+    return out
+
+
 def main():
     key = os.environ.get("ALIO_KEY", "").strip()
     if not key:
@@ -169,6 +187,7 @@ def main():
             break
     posts, seen = [], set()
     bad = 0
+    details = {}
     for it in items:
         try:
             p = convert(it, now) if isinstance(it, dict) else None
@@ -180,10 +199,18 @@ def main():
         if p and p["id"] not in seen:
             seen.add(p["id"])
             posts.append(p)
+            try:
+                details[p["id"]] = detail_of(it)
+            except Exception:
+                pass
     if not posts:
         print("가져온 공고가 없어 기존 alio.json 을 유지합니다.")
         return
     posts.sort(key=lambda p: p["due"])
+    det_text = json.dumps(details, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+    if not DETAIL.exists() or DETAIL.read_text("utf-8") != det_text:
+        DETAIL.write_text(det_text, "utf-8")
+        print(f"alio-detail.json 갱신: {len(details)}건")
     old = json.loads(OUT.read_text("utf-8")) if OUT.exists() else {}
     if old.get("posts") == posts:
         print("잡알리오 변경 없음")

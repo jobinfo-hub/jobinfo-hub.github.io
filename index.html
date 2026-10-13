@@ -252,6 +252,33 @@ h1{white-space:nowrap}
 .ofc,.hae{font-size:10.5px;font-weight:700;border-radius:4px;padding:0 5px;line-height:16px}
 .ofc{background:var(--tile);color:var(--tile-ink)}
 .hae{background:var(--green-soft);color:var(--green)}
+/* 공식 공고 상세 화면 */
+.jobview{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.jobview[hidden]{display:none}
+.jv-top{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:var(--bg);border-bottom:1px solid var(--line)}
+.jv-top button{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600;cursor:pointer}
+.jv-body{max-width:720px;margin:0 auto;padding:14px 14px calc(110px + env(safe-area-inset-bottom,0px))}
+.jv-head{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.jv-org{font-size:13.5px;font-weight:700;color:var(--brand);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.jv-title{margin:6px 0 10px;font-size:19px;line-height:1.4;font-weight:800;word-break:keep-all;white-space:normal;font-family:inherit;letter-spacing:0}
+.jv-due{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.jv-due .dd{width:auto;min-height:0;padding:3px 9px;flex-direction:row;gap:6px;border-radius:8px}
+.jv-due .dd .big{font-size:15px}
+.jv-grid{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:12px 0 0;padding:12px 0 0;border-top:1px solid var(--line);font-size:14px}
+.jv-grid dt{color:var(--muted);white-space:nowrap}
+.jv-grid dd{margin:0;font-weight:600;word-break:keep-all}
+.jv-sec{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px}
+.jv-sec h3{margin:0 0 8px;font-size:15px}
+.jv-sec p{margin:0;font-size:14.5px;line-height:1.75;white-space:pre-line;word-break:keep-all}
+.jv-note{font-size:12.5px;color:var(--muted);margin:12px 2px 0;line-height:1.6}
+.jv-bar{position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--surface);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.jv-bar .in{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.jv-bar .main-btns{display:flex;gap:8px}
+.jv-bar .main-btns a{flex:1;text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:14.5px;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:var(--bg)}
+.jv-bar .main-btns a.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.jv-bar .sub-btns{display:flex}
+.jv-bar .sub-btns > *{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 4px;font-size:12.5px;color:var(--muted);text-decoration:none;background:none;border:0;cursor:pointer}
+.jv-bar .save[aria-pressed="true"]{color:var(--star);font-weight:700}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -373,6 +400,10 @@ footer .src b{color:var(--ink)}
   </footer>
 </div>
 
+<div class="jobview" id="jobview" role="dialog" aria-modal="true" aria-label="공고 상세" hidden>
+  <div class="jv-top"><button class="jv-back" id="jvBack">← 목록</button><button class="jv-share" id="jvShare">공유</button></div>
+  <div class="jv-body" id="jvBody"></div>
+</div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <div class="sheet-box"><h3 id="sheetTitle">홈 화면에 추가하기</h3><div id="sheetBody"></div></div>
 </div>
@@ -435,6 +466,8 @@ async function load(){
   }
   initSeen();
   await loadAlio();
+  const jm = location.hash.match(/^#job=(.+)$/);
+  if(jm) setTimeout(() => openJob(decodeURIComponent(jm[1]), false), 0);
   const k = kst(new Date(UPDATED));
   const nA = POSTS.filter(p => p.alio).length;
   $("updated").textContent = `${k.getUTCMonth()+1}.${k.getUTCDate()} ${pad(k.getUTCHours())}:${pad(k.getUTCMinutes())} 업데이트 · 글 ${POSTS.length - nA}개` + (nA ? ` + 공식 공고 ${nA}건` : "");
@@ -592,7 +625,7 @@ function jobCard(p, now){
   const ap = APPS[p.id];
   if(ap) tags.unshift(`<span class="stpill st-${ap.st}">${ST[ap.st].label}</span>`);
   return `<li class="card job ${d && d.cls==="closed" ? "is-closed" : ""}">
-    <a class="main" href="${esc(p.url)}" target="_blank" rel="noopener">
+    <a class="main" href="${p.alio ? "#job=" + esc(p.id) : esc(p.url)}"${p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"'}>
       ${tile}
       <div class="body">
         <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
@@ -775,9 +808,112 @@ function saveTrack(){
     title: p ? p.title : old.title, org: p ? (p.org || "") : old.org, url: p ? p.url : old.url,
     due: p && p.due ? p.due.toISOString() : old.due || null, upd: Date.now()
   };
-  saveApps(); closeSheet(); renderTabs(); render(); savedAlert();
+  saveApps(); closeSheet(); renderTabs(); render(); savedAlert(); if(JV) refreshJobView();
   toast("지원 기록을 저장했어요. '📋 내 지원' 탭에서 모아 볼 수 있어요.");
 }
+// ── 공식 공고 상세 화면 (잡알리오) ──
+let ALIO_DETAIL = null, JV = null, JV_PUSHED = false;
+const JV_SUMMARY = [
+  ["recrutSeNm","채용 구분"], ["hireTypeNmLst","고용 형태"], ["recrutNope","모집 인원"], ["workRgnNmLst","근무 지역"],
+  ["acbgCondNmLst","학력 조건"], ["ncsCdNmLst","직무 분야"], ["replmprYn","대체인력 채용"]
+];
+const JV_SECTIONS = [
+  ["aplyQlfcCn","지원 자격"], ["prefCondCn","우대 조건"], ["prefCn","우대 사항"], ["scrnprcdrMthdExpln","전형 절차·방법"],
+  ["disqlfcRsn","결격 사유"], ["nonatchRsn","기타 안내"]
+];
+const JV_SKIP = new Set(["recrutPblntSn","instNm","recrutPbancTtl","pbancBgngYmd","pbancEndYmd","srcUrl","ongoingYn","decimalDay"]);
+function plainText(s){
+  const t = document.createElement("textarea");
+  t.innerHTML = String(s || "").replace(/<br\s*\/?>/gi, "\n").replace(/<\/(p|div|li)>/gi, "\n").replace(/<[^>]+>/g, "");
+  return t.value.replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
+}
+const ymdText = s => { const m = String(s || "").match(/(\d{4})-?(\d{2})-?(\d{2})/); if(!m) return ""; const w = new Date(Date.UTC(+m[1], +m[2]-1, +m[3])).getUTCDay(); return `${+m[2]}.${+m[3]}(${WD[w]})`; };
+async function alioDetail(){
+  if(ALIO_DETAIL) return ALIO_DETAIL;
+  try { const r = await fetch("alio-detail.json?t=" + encodeURIComponent(UPDATED || Date.now())); ALIO_DETAIL = r.ok ? await r.json() : {}; }
+  catch(e){ ALIO_DETAIL = {}; }
+  return ALIO_DETAIL;
+}
+async function openJob(id, push = true){
+  const p = POSTS.find(x => x.id === id);
+  if(!p) return;
+  JV = id;
+  if(push && location.hash !== "#job=" + id){ history.pushState({job:id}, "", "#job=" + id); JV_PUSHED = true; }
+  $("jobview").hidden = false; document.body.style.overflow = "hidden";
+  $("jvBody").innerHTML = jobViewHTML(p, null);
+  $("jobview").scrollTop = 0;
+  const det = (await alioDetail())[id] || {};
+  if(JV === id) $("jvBody").innerHTML = jobViewHTML(p, det);
+}
+function refreshJobView(){ const p = POSTS.find(x => x.id === JV); if(p) $("jvBody").innerHTML = jobViewHTML(p, (ALIO_DETAIL || {})[JV] || {}); }
+async function shareJob(){
+  const p = POSTS.find(x => x.id === JV); if(!p) return;
+  const url = "https://jobinfo-hub.github.io/?src=share#job=" + p.id;
+  const text = `${p.org} ${p.title} (${dueLong(p.due, false)} 마감)`;
+  if(navigator.share && !INAPP){ try { await navigator.share({title:p.title, text, url}); return; } catch(e){ if(e && e.name === "AbortError") return; } }
+  try { await navigator.clipboard.writeText(text + "\n" + url); toast("공고 링크를 복사했어요."); } catch(e){ toast(url); }
+}
+function closeJob(fromPop){
+  if(!JV) return;
+  JV = null; $("jobview").hidden = true; document.body.style.overflow = "";
+  if(!fromPop && location.hash.startsWith("#job=")){
+    if(JV_PUSHED) history.back(); else history.replaceState(null, "", location.pathname + location.search);
+  }
+  JV_PUSHED = false;
+}
+function jobViewHTML(p, det){
+  const now = new Date(), d = dday(p, now);
+  const saved = SAVED.has(p.id), ap = APPS[p.id];
+  const rows = [];
+  const period = det && det.pbancBgngYmd ? `${ymdText(det.pbancBgngYmd)} ~ ${dueLong(p.due, false)}` : `~ ${dueLong(p.due, false)}`;
+  rows.push(["접수 기간", period]);
+  for(const [k, label] of JV_SUMMARY){
+    let v = det ? det[k] : "";
+    if(!v){ if(k === "recrutNope" && p.n) v = p.n; else if(k === "workRgnNmLst" && p.region) v = p.region; else continue; }
+    if(k === "recrutNope") v = String(v).replace(/[^0-9]/g, "") + "명";
+    if(k === "replmprYn") v = /^y/i.test(v) ? "예" : "아니오";
+    rows.push([label, plainText(v).replace(/,\s*/g, ", ")]);
+  }
+  const secs = [];
+  if(det){
+    const used = new Set([...JV_SKIP, ...JV_SUMMARY.map(x => x[0])]);
+    for(const [k, label] of JV_SECTIONS){ if(det[k]){ secs.push([label, det[k]]); used.add(k); } }
+    for(const [k, v] of Object.entries(det)){
+      if(used.has(k) || /Ymd$|Yn$|Sn$|Cd$/.test(k)) continue;
+      const t = plainText(v);
+      if(t.length < 15 || !/[가-힣]/.test(t)) continue;
+      secs.push([/Rsn$/.test(k) ? "추가 안내" : "상세 내용", t]);
+    }
+  }
+  const off = p.src ? `<a href="${esc(p.src)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
+  return `<div class="jv-head">
+      <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
+      <h1 class="jv-title">${esc(p.title)}</h1>
+      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">접수 마감 ${dueLong(p.due, false)}</span></div>
+      <dl class="jv-grid">${rows.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
+    </div>
+    ${det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
+      : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
+      : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
+    <p class="jv-note">이 정보는 공공기관 경영정보 공개시스템(알리오)에 게시된 공고를 자동으로 정리한 것이에요. 마감 시각·제출 서류 등 세부 사항은 반드시 원문 공고에서 확인하세요.</p>
+    <div class="jv-bar"><div class="in">
+      <div class="main-btns"><a class="primary" href="${esc(p.url)}" target="_blank" rel="noopener">원문 공고 보기 ↗</a>${off}</div>
+      <div class="sub-btns">
+        <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}">${saved ? "★ 저장됨" : "☆ 저장"}</button>
+        <button data-track="${esc(p.id)}">${ap ? "📋 " + ST[ap.st].short : "📋 지원기록"}</button>
+        ${d && d.cls !== "closed" ? `<a href="${calLink(p)}" target="_blank" rel="noopener">📅 캘린더</a>` : ""}
+      </div></div></div>`;
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest("a[data-open]");
+  if(!a) return;
+  e.preventDefault(); openJob(a.dataset.open);
+});
+document.addEventListener("keydown", e => { if(e.key === "Escape" && JV && !$("sheet").classList.contains("open")) closeJob(false); });
+window.addEventListener("popstate", () => {
+  const m = location.hash.match(/^#job=(.+)$/);
+  if(m) openJob(decodeURIComponent(m[1]), false); else closeJob(true);
+});
 function render(){
   const now = new Date();
   if(state.tab === "track"){ renderTrack(now); return; }
@@ -822,7 +958,9 @@ function refresh(){ renderTabs(); renderFilters(); render(); savedAlert(); }
 document.addEventListener("click", e => {
   const t = e.target.closest("button");
   if(!t) return;
-  if(t.dataset.save){ toggleSave(t.dataset.save); renderTabs(); render(); savedAlert(); }
+  if(t.dataset.save){ toggleSave(t.dataset.save); renderTabs(); render(); savedAlert(); if(JV) refreshJobView(); }
+  else if(t.id === "jvBack"){ closeJob(false); }
+  else if(t.id === "jvShare"){ shareJob(); }
   else if(t.dataset.track){ openTrack(t.dataset.track); }
   else if(t.dataset.stpick){ TDRAFT.st = t.dataset.stpick; document.querySelectorAll("[data-stpick]").forEach(b => b.setAttribute("aria-pressed", b.dataset.stpick === TDRAFT.st)); }
   else if(t.id === "tSave"){ saveTrack(); }
