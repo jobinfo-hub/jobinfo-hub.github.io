@@ -279,6 +279,32 @@ h1{white-space:nowrap}
 .jv-bar .sub-btns{display:flex}
 .jv-bar .sub-btns > *{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 4px;font-size:12.5px;color:var(--muted);text-decoration:none;background:none;border:0;cursor:pointer}
 .jv-bar .save[aria-pressed="true"]{color:var(--star);font-weight:700}
+/* 보기 방식: 간단히 보기 + 넓은 화면 2열 */
+.sumrow{display:flex;align-items:center;gap:8px;margin:10px 2px 8px}
+.sumrow .summary{margin:0;flex:1;min-width:0}
+.viewbtn{flex:none;appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink)}
+.viewbtn[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.viewbtn[hidden]{display:none}
+.card.row{display:flex;align-items:center}
+.card.row .main{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:9px 4px 9px 10px;color:inherit;text-decoration:none}
+.card.row .rd{flex:none;min-width:50px;text-align:center;font-size:12.5px;font-weight:800;border-radius:7px;padding:4px 4px;background:var(--tile);color:var(--tile-ink)}
+.card.row .rd.hot{background:var(--hot-soft);color:var(--hot)}
+.card.row .rd.closed{background:var(--bg);color:var(--closed)}
+.card.row .rb{min-width:0;flex:1}
+.card.row .ro{display:block;font-size:12px;font-weight:700;color:var(--brand);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card.row .rt{font-size:14px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}
+.card.row .rm{display:block;font-size:11.5px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card.row .save{flex:none;width:42px;align-self:stretch;border:0;border-left:1px solid var(--line);background:none;color:var(--muted);font-size:17px;cursor:pointer;border-radius:0 14px 14px 0}
+.card.row .save[aria-pressed="true"]{color:var(--star)}
+.card.row.is-closed .rt{color:var(--muted)}
+@media (min-width:860px){
+  .wrap{max-width:1080px}
+  .list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+  .list > .card.job{display:flex;flex-direction:column}
+  .list > .card.job .main{flex:1}
+  .list > .newstrip,.list > .prefcard,.list > .empty,.list > .ad,.list > .trk-sum,.list > .trk-box,.list > .trk-item{grid-column:1 / -1}
+  .list > .trk-item{grid-column:auto}
+}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -336,7 +362,7 @@ footer .src b{color:var(--ink)}
   <div class="tabs-wrap" id="tabs-wrap"><nav class="tabs" role="tablist" id="tabs"></nav></div>
 
   <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
-  <p class="summary" id="summary"></p>
+  <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224434206433"><div class="kind"><span class="pill p">마감 10.13(화)</span></div><div class="t">농협사료 6급 채용, 필수체크</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224426850655"><div class="kind"><span class="pill p">마감 10.14(수) 11:00</span></div><div class="t">국토교통과학기술진흥원 채용 17명, 오전 11시 마감 주의</div></a></li>
@@ -412,6 +438,8 @@ footer .src b{color:var(--ink)}
 // ── 설정 ──
 const COUPANG = false;    // 쿠팡 추천 상품 표시 (ads.py 설정 후 true로)
 let POSTS = [], UPDATED = null, ADS = [];
+let COMPACT = false;
+try { COMPACT = localStorage.getItem("compact") === "1"; } catch(e) {}
 const pad = n => String(n).padStart(2,"0");
 const kst = d => new Date(d.getTime() + 9*3600e3);
 const WD = ["일","월","화","수","목","금","토"];
@@ -640,6 +668,24 @@ function jobCard(p, now){
       ${p.due && d.cls !== "closed" ? `<a href="${calLink(p)}" target="_blank" rel="noopener">📅 캘린더</a>` : ""}
       <a href="${esc(off.href)}" target="_blank" rel="noopener">${off.label === "공식 공고 찾기" ? "공식 공고" : off.label} ↗</a>
     </div></li>`;
+}
+function rowCard(p, now){
+  const d = dday(p, now), saved = SAVED.has(p.id), ap = APPS[p.id];
+  const meta = [];
+  if(ap) meta.push(ST[ap.st].label);
+  if(p.n) meta.push(p.n + "명");
+  if((p.emp||[])[0]) meta.push(p.emp[0]);
+  if(p.due) meta.push("마감 " + dueLong(p.due, p.dueHasTime));
+  const href = p.alio ? "#job=" + esc(p.id) : esc(p.url);
+  const attr = p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"';
+  return `<li class="card row ${d && d.cls === "closed" ? "is-closed" : ""}">
+    <a class="main" href="${href}"${attr}>
+      <span class="rd ${d ? d.cls : ""}">${d ? d.big : "상시"}</span>
+      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${p.alio ? "공식" : "해설"} · ${esc(p.org || p.cat)}${p.region ? " · " + esc(p.region) : ""}</span>
+      <span class="rt">${esc(cleanTitle(p.title))}</span>
+      <span class="rm">${esc(meta.join(" · "))}</span></span>
+    </a>
+    <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}" aria-label="${saved ? "저장 취소" : "관심 공고 저장"}">${saved ? "★" : "☆"}</button></li>`;
 }
 function miniCard(p, now){
   const saved = SAVED.has(p.id);
@@ -916,6 +962,9 @@ window.addEventListener("popstate", () => {
 });
 function render(){
   const now = new Date();
+  $("viewbtn").hidden = state.tab === "track";
+  $("viewbtn").setAttribute("aria-pressed", COMPACT);
+  $("viewbtn").textContent = COMPACT ? "▤ 자세히" : "☰ 간단히";
   if(state.tab === "track"){ renderTrack(now); return; }
   const q = state.q.trim().toLowerCase();
   let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && (!q || haystack(p).includes(q)));
@@ -941,7 +990,7 @@ function render(){
       : `<li class="empty">조건에 맞는 글이 없습니다.<br><button class="chip" id="empty-reset">필터 초기화</button></li>`;
     return;
   }
-  const cards = rows.map(p => p.type === "j" ? jobCard(p, now) : miniCard(p, now));
+  const cards = rows.map(p => p.type === "j" ? (COMPACT ? rowCard(p, now) : jobCard(p, now)) : miniCard(p, now));
   const n = cards.length;
   if(ADS.length){
     cards.push(adBlock(1));
@@ -960,6 +1009,7 @@ document.addEventListener("click", e => {
   if(!t) return;
   if(t.dataset.save){ toggleSave(t.dataset.save); renderTabs(); render(); savedAlert(); if(JV) refreshJobView(); }
   else if(t.id === "jvBack"){ closeJob(false); }
+  else if(t.id === "viewbtn"){ COMPACT = !COMPACT; try { localStorage.setItem("compact", COMPACT ? "1" : "0"); } catch(e) {} render(); }
   else if(t.id === "jvShare"){ shareJob(); }
   else if(t.dataset.track){ openTrack(t.dataset.track); }
   else if(t.dataset.stpick){ TDRAFT.st = t.dataset.stpick; document.querySelectorAll("[data-stpick]").forEach(b => b.setAttribute("aria-pressed", b.dataset.stpick === TDRAFT.st)); }
