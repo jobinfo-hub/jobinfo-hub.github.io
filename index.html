@@ -306,6 +306,7 @@ h1{white-space:nowrap}
   .list > .trk-item{grid-column:auto}
 }
 img.logo{display:block;background:#F3EEFF;object-fit:cover;padding:0}
+.jv-org-link{display:block;margin-top:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;color:var(--brand);font-weight:700;font-size:14px;text-decoration:none}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -362,7 +363,7 @@ footer .src b{color:var(--ink)}
 
   <div class="tabs-wrap" id="tabs-wrap"><nav class="tabs" role="tablist" id="tabs"></nav></div>
 
-  <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
+  <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="orgs.html">🏢 기관별 정보</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224426850655"><div class="kind"><span class="pill p">마감 10.14(수) 11:00</span></div><div class="t">국토교통과학기술진흥원 채용 17명, 오전 11시 마감 주의</div></a></li>
@@ -495,6 +496,8 @@ async function load(){
   }
   initSeen();
   await loadAlio();
+  const qp = new URLSearchParams(location.search).get("q");
+  if(qp){ state.q = qp; state.tab = "all"; $("q").value = qp; }
   const jm = location.hash.match(/^#job=(.+)$/);
   if(jm) setTimeout(() => openJob(decodeURIComponent(jm[1]), false), 0);
   const k = kst(new Date(UPDATED));
@@ -908,6 +911,7 @@ function closeJob(fromPop){
   }
   JV_PUSHED = false;
 }
+const orgFile = org => "org-" + encodeURIComponent(String(org || "").replace(/\((주|재|사)\)/g, "").replace(/[\s\\/:*?"<>|().,·'\[\]]/g, "")) + ".html";
 function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
   const saved = SAVED.has(p.id), ap = APPS[p.id];
@@ -943,6 +947,7 @@ function jobViewHTML(p, det){
     ${det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
+    <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
     <p class="jv-note">이 정보는 공공기관 경영정보 공개시스템(알리오)에 게시된 공고를 자동으로 정리한 것이에요. 마감 시각·제출 서류 등 세부 사항은 반드시 원문 공고에서 확인하세요.</p>
     <div class="jv-bar"><div class="in">
       <div class="main-btns"><a class="primary" href="${esc(p.url)}" target="_blank" rel="noopener">원문 공고 보기 ↗</a>${off}</div>

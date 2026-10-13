@@ -165,6 +165,11 @@ def week_label(d):
     return f"{d.month}월 {names[min(wk, 6) - 1]} 주"
 
 
+def orgs_fname(org):
+    import orgs
+    return orgs.fname(org)
+
+
 def calendar_html(rows, skipped, st, now):
     import html
     import sitegen
@@ -197,7 +202,7 @@ def calendar_html(rows, skipped, st, now):
             basis = " · ".join(f'{yfmt(b["date"])} {e(b["hire"])}{(" " + str(b["n"]) + "명") if b["n"] else ""}' for b in r["basis"])
             title = r["basis"][0]["title"]
             body.append(
-                f'<li class="item"><a href="https://search.naver.com/search.naver?query={e(r["org"])}+채용" target="_blank" rel="noopener">'
+                f'<li class="item"><a href="{e(orgs_fname(r["org"]))}">'
                 f'<span class="dd{" hot" if r["conf"] == "매년" else ""}">{d.month}.{d.day}<br><small>경</small></span>'
                 f'<span class="bd"><span class="org">{e(r["org"])} · {"매년 이 시기" if r["conf"] == "매년" else "작년 이 시기"}</span>'
                 f'<span class="tt">{e(title)}</span><span class="meta">지난 공고: {basis}</span></span></a></li>')
@@ -216,10 +221,19 @@ def run(key, call, open_items):
     now = datetime.now(KST)
     st = load()
     # 모집 중 공고도 기록에 더해 두면, 마감된 뒤에도 '지난 공고'로 남음
+    details = st.setdefault("details", {})
     for it in open_items:
         r = record(it)
         if r:
             st["items"][str(it.get("recrutPblntSn"))] = r
+            aply = str(it.get("aplyQlfcCn") or "").strip()
+            old = details.get(r[0])
+            m = is_major(r)
+            better = (not old) or (m and not old.get("major")) or (m == bool(old.get("major")) and r[1] >= old.get("date", ""))
+            if aply and better:
+                details[r[0]] = {"date": r[1], "title": r[5], "major": is_major(r), "aply": aply[:2000],
+                                 "pref": str(it.get("prefCondCn") or "").strip()[:1200],
+                                 "proc": str(it.get("scrnprcdrMthdExpln") or "").strip()[:1200]}
     if not st.get("done"):
         backfill(st, call, key, now)
     oldest = (now - timedelta(days=365 * KEEP_YEARS)).strftime("%Y%m%d")
@@ -235,3 +249,8 @@ def run(key, call, open_items):
     if not cal.exists() or cal.read_text("utf-8") != page:
         cal.write_text(page, "utf-8")
     print(f"공고 예정 달력: 예상 {len(rows)}곳 · 이미 공고 {len(skipped)}곳 제외")
+    try:
+        import orgs
+        orgs.generate(st, open_items, rows, skipped, now)
+    except Exception as err:
+        print("기관 페이지 생성 오류(무시하고 계속):", repr(err))

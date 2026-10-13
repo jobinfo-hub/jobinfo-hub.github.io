@@ -8,6 +8,7 @@
 - sitemap.xml
 """
 import html
+import json
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -117,7 +118,7 @@ ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;ga
 footer{margin-top:28px;font-size:12.5px;color:var(--muted)}
 footer a{color:inherit;margin-right:10px}
 """
-NAV = [("index.html", "전체 공고"), ("deadline-week.html", "이번 주 마감"), ("calendar.html", "공고 예정 달력"), ("intern.html", "인턴 모음"), ("highschool.html", "고졸 가능")]
+NAV = [("index.html", "전체 공고"), ("deadline-week.html", "이번 주 마감"), ("calendar.html", "공고 예정 달력"), ("orgs.html", "기관별 정보"), ("intern.html", "인턴 모음"), ("highschool.html", "고졸 가능")]
 
 
 def page(fname, title, desc, body):
@@ -285,7 +286,12 @@ document.getElementById("cp").onclick = async () => {{
 
 
 def gen_sitemap(now):
-    pages = ["", "deadline-week.html", "calendar.html", "intern.html", "highschool.html"] + STATIC_PAGES
+    pages = ["", "deadline-week.html", "calendar.html", "orgs.html", "intern.html", "highschool.html"] + STATIC_PAGES
+    try:  # 기관별 페이지 (orgs.py 가 만든 목록)
+        import urllib.parse
+        pages += [urllib.parse.quote(f) for f in json.loads((ROOT / "orgs.json").read_text("utf-8"))]
+    except Exception:
+        pass
     urls = "".join(f"<url><loc>{SITE}{p}</loc><lastmod>{now:%Y-%m-%d}</lastmod></url>\n" for p in pages)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
