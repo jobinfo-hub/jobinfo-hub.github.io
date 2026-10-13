@@ -24,6 +24,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -42,7 +44,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for f in posts.json index.html deadline-week.html intern.html highschool.html sitemap.xml open-jobs.txt kakao.txt kakao.html alio.json; do [ -f "$f" ] && git add "$f"; done
-          git diff --cached --quiet || (git commit -m "글 목록 자동 업데이트" && git push)
+          if ! git diff --cached --quiet; then
+            git commit -m "글 목록 자동 업데이트"
+            git push || (git pull --rebase -X theirs origin main && git push)
+          fi
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
