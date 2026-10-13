@@ -58,9 +58,9 @@ def unwrap(data):
     return data if isinstance(data, dict) else {"result": data}
 
 
-def call(key, page):
+def call(key, page, ongoing="Y"):
     q = urllib.parse.urlencode({"serviceKey": key, "resultType": "json", "pageNo": page,
-                                "numOfRows": PER_PAGE, "ongoingYn": "Y"})
+                                "numOfRows": PER_PAGE, "ongoingYn": ongoing})
     last = None
     for base in ENDPOINTS:
         try:
@@ -96,6 +96,7 @@ def convert(it, now):
     due = end.replace(hour=23, minute=59)
     if due < now:
         return None
+    always = due > now + timedelta(days=365)   # 2050-12-31 같은 상시모집
     hire = " ".join(as_list(pick(it, "hireTypeNmLst", "hireTypeNm")))
     emp = []
     for k, label in EMP_MAP:
@@ -126,7 +127,7 @@ def convert(it, now):
         "desc": " · ".join(ncs[:3]),
         "url": f"https://job.alio.go.kr/recruitview.do?idx={sn}",
         "pub": (start or now).isoformat(),
-        "due": due.isoformat(),
+        "due": None if always else due.isoformat(),
         "dueHasTime": False,
         "emp": emp[:3],
         "edu": edu,
@@ -137,6 +138,8 @@ def convert(it, now):
         post["n"] = nope
     if src.startswith("http"):
         post["src"] = src
+    if always:
+        post["always"] = True
     return post
 
 
@@ -161,7 +164,7 @@ def main():
     key = os.environ.get("ALIO_KEY", "").strip()
     if not key:
         print("ALIO_KEY 가 없어 잡알리오 연동을 건너뜁니다.")
-        return
+        return None
     now = datetime.now(KST)
     items, total = [], None
     for page in range(1, MAX_PAGES + 1):
@@ -205,8 +208,8 @@ def main():
                 pass
     if not posts:
         print("가져온 공고가 없어 기존 alio.json 을 유지합니다.")
-        return
-    posts.sort(key=lambda p: p["due"])
+        return items
+    posts.sort(key=lambda p: p["due"] or "9999")
     det_text = json.dumps(details, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
     if not DETAIL.exists() or DETAIL.read_text("utf-8") != det_text:
         DETAIL.write_text(det_text, "utf-8")
@@ -214,14 +217,22 @@ def main():
     old = json.loads(OUT.read_text("utf-8")) if OUT.exists() else {}
     if old.get("posts") == posts:
         print("잡알리오 변경 없음")
-        return
+        return items
     OUT.write_text(json.dumps({"updated": now.isoformat(timespec="seconds"), "posts": posts},
                               ensure_ascii=False, indent=1), "utf-8")
     print(f"alio.json 갱신: 모집 중 공식 공고 {len(posts)}건 (API 전체 {total})")
+    return items
 
 
 if __name__ == "__main__":
+    items = None
     try:
-        main()
+        items = main()
     except Exception as err:  # 어떤 오류가 나도 사이트 업데이트는 계속되게
         print("잡알리오 연동 오류(무시하고 계속):", repr(err))
+    if items is not None:   # 공고 예정 달력 (지난 공고 수집·예상 계산)
+        try:
+            import history
+            history.run(os.environ.get("ALIO_KEY", "").strip(), call, [it for it in items if isinstance(it, dict)])
+        except Exception as err:
+            print("공고 예정 달력 오류(무시하고 계속):", repr(err))

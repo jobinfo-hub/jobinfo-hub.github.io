@@ -117,7 +117,7 @@ ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;ga
 footer{margin-top:28px;font-size:12.5px;color:var(--muted)}
 footer a{color:inherit;margin-right:10px}
 """
-NAV = [("index.html", "전체 공고"), ("deadline-week.html", "이번 주 마감"), ("intern.html", "인턴 모음"), ("highschool.html", "고졸 가능")]
+NAV = [("index.html", "전체 공고"), ("deadline-week.html", "이번 주 마감"), ("calendar.html", "공고 예정 달력"), ("intern.html", "인턴 모음"), ("highschool.html", "고졸 가능")]
 
 
 def page(fname, title, desc, body):
@@ -128,7 +128,7 @@ def page(fname, title, desc, body):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{e(title)} | 취업/정책 지원소</title>
+<title>{e(title)} | 커리어픽</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="article"><meta property="og:title" content="{e(title)}">
@@ -142,7 +142,7 @@ def page(fname, title, desc, body):
 </head>
 <body>
 <div class="wrap">
-<a class="top" href="./"><span class="logo">취업<br>정책</span><b>취업/정책 지원소</b></a>
+<a class="top" href="./"><img class="logo" src="icon-192.png" alt="" width="34" height="34" style="background:#F3EEFF;object-fit:cover"><b>커리어픽</b></a>
 <nav class="links">{nav}</nav>
 {body}
 <footer>
@@ -285,7 +285,7 @@ document.getElementById("cp").onclick = async () => {{
 
 
 def gen_sitemap(now):
-    pages = ["", "deadline-week.html", "intern.html", "highschool.html"] + STATIC_PAGES
+    pages = ["", "deadline-week.html", "calendar.html", "intern.html", "highschool.html"] + STATIC_PAGES
     urls = "".join(f"<url><loc>{SITE}{p}</loc><lastmod>{now:%Y-%m-%d}</lastmod></url>\n" for p in pages)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")

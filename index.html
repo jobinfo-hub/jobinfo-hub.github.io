@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>취업/정책 지원소 · 마감순 채용공고 모음</title>
+<title>커리어픽 · 마감순 채용공고 모음</title>
 <meta name="description" content="공기업·공공기관·공무직 채용공고를 마감순으로 한눈에. 기관명, 인원, 고용형태, 접수 마감 시각까지 정리했습니다.">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4206368432511517"
      crossorigin="anonymous"></script>
@@ -11,11 +11,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="취업지원소">
+<meta name="apple-mobile-web-app-title" content="커리어픽">
 <link rel="canonical" href="https://jobinfo-hub.github.io/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="취업/정책 지원소">
-<meta property="og:title" content="취업/정책 지원소 · 마감순 채용공고 모음">
+<meta property="og:site_name" content="커리어픽">
+<meta property="og:title" content="커리어픽 · 마감순 채용공고 모음">
 <meta property="og:description" content="공기업·공공기관·공무직 채용공고를 마감순으로 한눈에. 기관명, 인원, 고용형태, 접수 마감 시각까지 정리했습니다.">
 <meta property="og:url" content="https://jobinfo-hub.github.io/">
 <meta property="og:image" content="https://jobinfo-hub.github.io/og.png">
@@ -305,6 +305,7 @@ h1{white-space:nowrap}
   .list > .newstrip,.list > .prefcard,.list > .empty,.list > .ad,.list > .trk-sum,.list > .trk-box,.list > .trk-item{grid-column:1 / -1}
   .list > .trk-item{grid-column:auto}
 }
+img.logo{display:block;background:#F3EEFF;object-fit:cover;padding:0}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -316,10 +317,10 @@ footer .src b{color:var(--ink)}
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo" aria-hidden="true">취업<br>정책</div>
+      <img class="logo" src="icon-192.png" alt="" width="38" height="38">
       <div>
-        <h1>취업/정책 지원소</h1>
-        <div class="sub" id="updated">공채·공무직·정책 정보를 마감순으로</div>
+        <h1>커리어픽</h1>
+        <div class="sub" id="updated">내 커리어에 필요한 정보를 한눈에</div>
       </div>
     </div>
     <div class="hbtns">
@@ -361,7 +362,7 @@ footer .src b{color:var(--ink)}
 
   <div class="tabs-wrap" id="tabs-wrap"><nav class="tabs" role="tablist" id="tabs"></nav></div>
 
-  <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
+  <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224434206433"><div class="kind"><span class="pill p">마감 10.13(화)</span></div><div class="t">농협사료 6급 채용, 필수체크</div></a></li>
@@ -465,14 +466,14 @@ async function loadAlio(){
   try{
     const r = await fetch("alio.json?t=" + Date.now(), {cache:"no-store"});
     if(!r.ok) return;
-    const list = ((await r.json()).posts || []).map(p => ({...p, pub:new Date(p.pub), due:new Date(p.due)}));
+    const list = ((await r.json()).posts || []).map(p => ({...p, pub:new Date(p.pub), due: p.due ? new Date(p.due) : null}));
     const blogJobs = POSTS.filter(p => p.type === "j" && p.org && p.due);
     const add = [];
     for(const a of list){
       const ao = normOrg(a.org);
       const twin = ao && blogJobs.find(b => {
         const bo = normOrg(b.org);
-        return bo.length > 1 && (ao.includes(bo) || bo.includes(ao)) && Math.abs(kstDay(b.due) - kstDay(a.due)) <= 864e5;
+        return a.due && bo.length > 1 && (ao.includes(bo) || bo.includes(ao)) && Math.abs(kstDay(b.due) - kstDay(a.due)) <= 864e5;
       });
       if(twin){ if(!twin.src) twin.src = a.src || a.url; twin.alioUrl = a.url; continue; }
       add.push(a);
@@ -659,7 +660,7 @@ function jobCard(p, now){
         <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
         <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
-        ${p.due ? `<div class="due ${d.cls==="hot" ? "hot" : d.cls==="closed" ? "closed" : ""}">접수 마감 ${dueLong(p.due, p.dueHasTime)}</div>` : `<div class="due closed">마감일은 원문에서 확인</div>`}
+        ${p.due ? `<div class="due ${d.cls==="hot" ? "hot" : d.cls==="closed" ? "closed" : ""}">접수 마감 ${dueLong(p.due, p.dueHasTime)}</div>` : `<div class="due closed">${p.always ? "상시 모집 (채용 시 마감)" : "마감일은 원문에서 확인"}</div>`}
       </div>
     </a>
     <div class="actions">
@@ -895,7 +896,7 @@ function refreshJobView(){ const p = POSTS.find(x => x.id === JV); if(p) $("jvBo
 async function shareJob(){
   const p = POSTS.find(x => x.id === JV); if(!p) return;
   const url = "https://jobinfo-hub.github.io/?src=share#job=" + p.id;
-  const text = `${p.org} ${p.title} (${dueLong(p.due, false)} 마감)`;
+  const text = `${p.org} ${p.title}` + (p.due ? ` (${dueLong(p.due, false)} 마감)` : "");
   if(navigator.share && !INAPP){ try { await navigator.share({title:p.title, text, url}); return; } catch(e){ if(e && e.name === "AbortError") return; } }
   try { await navigator.clipboard.writeText(text + "\n" + url); toast("공고 링크를 복사했어요."); } catch(e){ toast(url); }
 }
@@ -911,7 +912,8 @@ function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
   const saved = SAVED.has(p.id), ap = APPS[p.id];
   const rows = [];
-  const period = det && det.pbancBgngYmd ? `${ymdText(det.pbancBgngYmd)} ~ ${dueLong(p.due, false)}` : `~ ${dueLong(p.due, false)}`;
+  const endTxt = p.due ? dueLong(p.due, false) : "상시 모집";
+  const period = det && det.pbancBgngYmd ? `${ymdText(det.pbancBgngYmd)} ~ ${endTxt}` : `~ ${endTxt}`;
   rows.push(["접수 기간", period]);
   for(const [k, label] of JV_SUMMARY){
     let v = det ? det[k] : "";
@@ -935,7 +937,7 @@ function jobViewHTML(p, det){
   return `<div class="jv-head">
       <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
       <h1 class="jv-title">${esc(p.title)}</h1>
-      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">접수 마감 ${dueLong(p.due, false)}</span></div>
+      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">${p.due ? "접수 마감 " + dueLong(p.due, false) : "상시 모집 (마감 시 종료)"}</span></div>
       <dl class="jv-grid">${rows.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
     </div>
     ${det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
@@ -1083,7 +1085,7 @@ async function copyShare(){
 }
 async function shareSite(){
   if(navigator.share && !INAPP){
-    try { await navigator.share({title:"취업/정책 지원소", text:SHARE_TEXT, url:SHARE_URL}); return; }
+    try { await navigator.share({title:"커리어픽", text:SHARE_TEXT, url:SHARE_URL}); return; }
     catch(e){ if(e && e.name === "AbortError") return; }
   }
   const u = encodeURIComponent(SHARE_URL), t = encodeURIComponent(SHARE_TEXT);

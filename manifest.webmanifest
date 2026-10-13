@@ -1,6 +1,6 @@
 {
-  "name": "취업/정책 지원소",
-  "short_name": "취업지원소",
+  "name": "커리어픽",
+  "short_name": "커리어픽",
   "description": "공채·공무직 채용공고를 마감순으로 한눈에",
   "start_url": "/?src=app",
   "scope": "/",
