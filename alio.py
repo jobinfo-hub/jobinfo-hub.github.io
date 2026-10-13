@@ -44,6 +44,19 @@ def ymd(v):
         return None
 
 
+def unwrap(data):
+    """{result:[...]} 형식과 data.go.kr 표준 {response:{header,body:{items:{item:[...]}}}} 형식 모두 지원"""
+    if isinstance(data, dict) and "response" in data:
+        resp = data.get("response") or {}
+        head, body = resp.get("header") or {}, resp.get("body") or {}
+        items = body.get("items")
+        if isinstance(items, dict):
+            items = items.get("item")
+        return {"resultCode": head.get("resultCode", "200"), "resultMsg": head.get("resultMsg"),
+                "totalCount": body.get("totalCount"), "result": items or []}
+    return data if isinstance(data, dict) else {"result": data}
+
+
 def call(key, page):
     q = urllib.parse.urlencode({"serviceKey": key, "resultType": "json", "pageNo": page,
                                 "numOfRows": PER_PAGE, "ongoingYn": "Y"})
@@ -53,9 +66,13 @@ def call(key, page):
             req = urllib.request.Request(f"{base}?{q}", headers={"User-Agent": "jobinfo-hub"})
             with urllib.request.urlopen(req, timeout=30) as r:
                 text = r.read().decode("utf-8", "replace")
-            data = json.loads(text)
+            try:
+                data = json.loads(text)
+            except ValueError:
+                raise RuntimeError("JSON 이 아닌 응답: " + text[:300].replace("\n", " "))
+            data = unwrap(data)
             code = str(data.get("resultCode", "200"))
-            if code not in ("200", "00", "0"):
+            if code not in ("200", "00", "0", "INFO-000", "NORMAL_SERVICE"):
                 raise RuntimeError(f"API 오류 {code}: {data.get('resultMsg')}")
             return data
         except Exception as e:  # https 실패 시 http 로 한 번 더
@@ -140,14 +157,26 @@ def main():
             rows = [rows]
         if page == 1:
             total = data.get("totalCount")
+            print(f"총 {total}건 응답")
             if rows:
                 print("응답 필드:", ", ".join(sorted(rows[0].keys())))
         items += rows
-        if len(rows) < PER_PAGE or (total and len(items) >= int(total)):
+        try:
+            done = bool(total) and len(items) >= int(total)
+        except (TypeError, ValueError):
+            done = False
+        if len(rows) < PER_PAGE or done:
             break
     posts, seen = [], set()
+    bad = 0
     for it in items:
-        p = convert(it, now)
+        try:
+            p = convert(it, now) if isinstance(it, dict) else None
+        except Exception as e:
+            bad += 1
+            if bad <= 3:
+                print("공고 변환 실패:", e, str(it)[:200])
+            continue
         if p and p["id"] not in seen:
             seen.add(p["id"])
             posts.append(p)
@@ -165,4 +194,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as err:  # 어떤 오류가 나도 사이트 업데이트는 계속되게
+        print("잡알리오 연동 오류(무시하고 계속):", repr(err))
