@@ -17,16 +17,21 @@ RSS_URL = f"https://rss.blog.naver.com/{BLOG_ID}.xml"
 OUT = Path(__file__).parent / "posts.json"
 KST = timezone(timedelta(hours=9))
 MAX_POSTS = 300
-SCHEMA = 3  # 분류 규칙을 바꾸면 숫자를 올려 기존 글도 다시 분류
+SCHEMA = 4  # 분류 규칙을 바꾸면 숫자를 올려 기존 글도 다시 분류
 
 # ── 분류 기준 ─────────────────────────────────────────────
-JOB_RE = re.compile(r"채용|공채|재공고|모집|선발|인턴")
-MONEY_CATS = {"국가지원금·세금·재테크", "정부지원금"}
+JOB_RE = re.compile(r"채용|공채|재공고|모집|선발|인턴|\d+\s*명|D-\d")
+JOB_CATS = {"채용 공고", "채용정보", "보건·복지·기타", "철도·교통·SOC", "금융·공제", "에너지·발전",
+            "청년인턴·체험형", "대기업 채용정보"}
+MONEY_CATS = {"국가지원금·세금·재테크", "정부지원금", "지원금·재테크"}
 MONEY_WORDS = ["대출", "금리", "연말정산", "연금", "펀드", "청약", "육아휴직", "지원금", "재테크",
-               "통장", "ISA", "세금", "환급", "적금", "이용권", "바우처", "수당", "장려금"]
-PREP_CATS = {"자소서·NCS·필기·면접", "자격증/시험", "자격증·시험", "전형별 준비", "필기, NCS", "취업준비"}
-PREP_WORDS = ["자소서", "자기소개서", "면접", "합격선", "공부", "계획표", "인적성", "skct", "작성법",
-              "독학", " vs ", "기출", "자격증", "준비법", "보건증", "직업"]
+               "통장", "ISA", "세금", "환급", "적금", "이용권", "바우처", "수당", "장려금", "실업급여", "정책자금", "특례대출"]
+PREP_CATS = {"자소서·NCS·필기·면접", "자격증/시험", "자격증·시험", "전형별 준비", "필기, NCS", "취업준비", "자기소개서"}
+# 이 말이 제목에 있으면 공고가 아니라 준비 글 (면접·자격증처럼 공고 제목에도 흔한 말은 약한 신호로만 사용)
+PREP_STRONG = ["자소서", "자기소개서", "합격선", "공부", "계획표", "인적성", "skct", "작성법", "독학",
+               "기출", "준비 총정리", "준비법", "심층검사", "캘린더", "체크리스트", "보건증", "직업 리스트"]
+PREP_WEAK = ["면접", "자격증", "직업", " vs "]
+JOB_WORD = re.compile(r"채용|공채|재공고|모집|선발")
 EXAMS = [  # 취업준비 글에 붙일 '대비 시험' 표시
     (r"NCS", "NCS"), (r"PSAT", "PSAT"), (r"SKCT", "SKCT"), (r"GSAT", "GSAT"), (r"인적성", "인적성"),
     (r"한국사", "한국사"), (r"토익|TOEIC", "토익"), (r"컴퓨터활용능력|컴활", "컴활"),
@@ -108,13 +113,16 @@ def deadline_for(title, text, pub):
 
 
 def classify(cat, title, has_due):
-    is_job = bool(JOB_RE.search(title))
     low = title.lower()
+    is_job = bool(JOB_RE.search(title))
+    strong = any(w.lower() in low for w in PREP_STRONG)
     if cat in MONEY_CATS or (not is_job and any(w in title for w in MONEY_WORDS)):
         return "m"
-    if not is_job and (cat in PREP_CATS or any(w.lower() in low for w in PREP_WORDS)):
+    if cat in PREP_CATS:  # 준비 카테고리는 마감일 있는 진짜 공고만 예외
+        return "j" if (JOB_WORD.search(title) and has_due and not strong) else "p"
+    if strong:
         return "p"
-    if is_job or has_due:
+    if cat in JOB_CATS or is_job or has_due:
         return "j"
     return "p"
 
