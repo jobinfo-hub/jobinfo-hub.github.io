@@ -13,7 +13,7 @@ ROOT = Path(__file__).parent
 STORE = ROOT / "history.json"       # 지난 공고 기록 (사이트에서는 쓰지 않음)
 FORECAST = ROOT / "forecast.json"   # 예상 일정 결과
 KST = timezone(timedelta(hours=9))
-PAGES_PER_RUN = 15                  # 1시간에 지난 공고 15페이지(1,500건)씩 수집
+PAGES_PER_RUN = 25                  # 1시간에 지난 공고 25페이지(2,500건)씩 수집 (하루 최대 600회)
 KEEP_YEARS = 3
 WINDOW_DAYS = 60                    # 앞으로 60일 안의 예상 공고
 ALREADY_DAYS = 75                   # 최근 75일 안에 이미 공고했으면 '이미 공고'로 제외
@@ -100,6 +100,11 @@ def backfill(st, call, key, now):
             if r and r[1] >= oldest:
                 st["items"][str(it.get("recrutPblntSn"))] = r
         st["next_page"] = page + 1
+        dates = [str(it.get("pbancBgngYmd") or "")[:8] for it in rows if isinstance(it, dict)]
+        if dates and max(dates) < oldest:   # 최신순으로 오므로, 3년보다 오래된 페이지가 나오면 끝
+            st["done"] = True
+            print(f"지난 공고 수집 완료(3년 치): {len(st['items'])}건")
+            return
         if len(rows) < 100:
             st["done"] = True
             print(f"지난 공고 수집 완료: {len(st['items'])}건")
