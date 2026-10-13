@@ -212,6 +212,78 @@ def is_highschool(p):
     return "고졸 가능" in edu or "학력무관" in edu or "고졸" in p["title"]
 
 
+OPENCHAT = "https://open.kakao.com/o/gcWQTaQi"
+
+
+def gen_open_jobs_txt(posts, now):
+    """블로그 글쓰기 프롬프트에 붙여넣을 모집 중 공고 목록 (관련 공고 추천용)"""
+    jobs = open_jobs(posts, now)
+    lines = [f"[모집 중 채용공고 목록] {now:%Y.%m.%d %H:%M} 기준 · {len(jobs)}건 (마감 빠른 순)",
+             "형식: 마감 | 기관 | 공고 제목 | 분야·조건 | 블로그 링크", ""]
+    for p in jobs:
+        cond = [p["cat"]] + (p.get("emp") or []) + (p.get("edu") or [])
+        if p.get("n"):
+            cond.append(f'{p["n"]}명')
+        if p.get("region"):
+            cond.append(p["region"])
+        lines.append(" | ".join([due_text(p), p.get("org") or "-", clean_title(p["title"]),
+                                 " · ".join(cond), p["url"]]))
+    lines += ["", "전체 공고(마감순): " + SITE]
+    return "\n".join(lines) + "\n"
+
+
+def kakao_text(posts, now):
+    """카톡 오픈채팅방·채널에 붙여넣을 하루 알림 문구"""
+    jobs = open_jobs(posts, now)
+    today = now.date()
+    def line(p):
+        d = dt(p["due"]).astimezone(KST)
+        t = f" {d:%H:%M}" if p.get("dueHasTime") else ""
+        bits = [p.get("org") or clean_title(p["title"])[:18]]
+        if p.get("n"):
+            bits.append(f'{p["n"]}명')
+        emp = (p.get("emp") or [])[:1] + (p.get("edu") or [])[:1]
+        bits += emp
+        return "· " + " ".join(bits) + (f" ({t.strip()})" if t else "")
+    by = lambda n: [p for p in jobs if (dt(p["due"]).astimezone(KST).date() - today).days == n]
+    d0, d1 = by(0), by(1)
+    week = [p for p in jobs if 2 <= (dt(p["due"]).astimezone(KST).date() - today).days <= 6]
+    fresh = sorted([p for p in posts if p["type"] == "j" and dt(p["pub"]) > now - timedelta(hours=24)
+                    and (not p.get("due") or dt(p["due"]) > now)], key=lambda p: p["pub"], reverse=True)
+    out = [f"📋 {today.month}월 {today.day}일({WD[today.weekday()]}) 채용 마감 알림", ""]
+    if d0:
+        out += [f"⏰ 오늘 마감 {len(d0)}건"] + [line(p) for p in d0[:8]] + ([f"  외 {len(d0)-8}건"] if len(d0) > 8 else []) + [""]
+    if d1:
+        out += [f"⏳ 내일 마감 {len(d1)}건"] + [line(p) for p in d1[:8]] + ([f"  외 {len(d1)-8}건"] if len(d1) > 8 else []) + [""]
+    if fresh:
+        out += [f"🆕 새로 올라온 공고 {len(fresh)}건"] + [line(p) for p in fresh[:6]] + [""]
+    if not (d0 or d1 or fresh):
+        out += ["오늘·내일 마감 공고는 없어요.", ""]
+    if week:
+        out += [f"📌 이번 주 마감 예정 {len(week)}건 더 있어요", ""]
+    out += ["👉 마감순 전체 공고·마감 시각 확인", SITE + "?src=kakao", "",
+            "※ 지원 전 공식 공고문을 꼭 확인하세요"]
+    return "\n".join(out) + "\n"
+
+
+def gen_kakao_page(posts, now):
+    text = kakao_text(posts, now)
+    body = f"""<h1>오늘의 카톡 알림 문구</h1>
+<p class="lead">{date_label(now)} {now:%H:%M} 기준으로 자동 생성된 문구예요. 복사해서 오픈채팅방이나 카카오톡 채널에 붙여넣으세요.</p>
+<div class="box"><textarea id="kt" readonly style="width:100%;min-height:340px;border:0;background:transparent;color:inherit;font:inherit;font-size:14px;line-height:1.6;resize:vertical">{e(text)}</textarea></div>
+<p><button id="cp" style="width:100%;padding:13px;border:0;border-radius:12px;background:#1F3FBF;color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer">📋 전체 복사</button></p>
+<p class="lead">💬 <a href="{OPENCHAT}" target="_blank" rel="noopener">오픈채팅방 바로가기</a></p>
+<script>
+document.getElementById("cp").onclick = async () => {{
+  const t = document.getElementById("kt"); const b = document.getElementById("cp");
+  try {{ await navigator.clipboard.writeText(t.value); }} catch(e) {{ t.select(); document.execCommand("copy"); }}
+  b.textContent = "✅ 복사했어요"; setTimeout(() => b.textContent = "📋 전체 복사", 2000);
+}};
+</script>"""
+    html_text = page("kakao.html", "오늘의 카톡 알림 문구", "카카오톡 오픈채팅방용 오늘의 채용 마감 알림 문구", body)
+    return html_text.replace('<link rel="canonical"', '<meta name="robots" content="noindex">\n<link rel="canonical"', 1)
+
+
 def gen_sitemap(now):
     pages = ["", "deadline-week.html", "intern.html", "highschool.html"] + STATIC_PAGES
     urls = "".join(f"<url><loc>{SITE}{p}</loc><lastmod>{now:%Y-%m-%d}</lastmod></url>\n" for p in pages)
@@ -237,6 +309,9 @@ def generate(posts):
             "'학력무관'이어도 직렬에 따라 자격증이나 경력이 필수인 경우가 있습니다. "
             "고졸 전형은 졸업예정자 기준일을 꼭 확인하세요.", is_highschool),
     }
+    outs["open-jobs.txt"] = gen_open_jobs_txt(posts, now)
+    outs["kakao.txt"] = kakao_text(posts, now)
+    outs["kakao.html"] = gen_kakao_page(posts, now)
     for fname, text in outs.items():
         if write_if_changed(fname, text):
             changed.append(fname)

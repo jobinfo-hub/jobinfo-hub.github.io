@@ -253,6 +253,9 @@ h1{white-space:nowrap}
 .sheet-box input[type=date],.sheet-box textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
 .sheet-box textarea{min-height:64px;resize:vertical}
 .sheet-box .danger{color:var(--hot)!important}
+.notice.kakao{background:#FEE500;border-color:#FEE500;color:#191600}
+.notice.kakao .kgo{background:#191600;color:#FEE500;text-decoration:none;display:inline-block}
+.notice.kakao .x{color:#5c5300}
 footer{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:inherit}
 footer .src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
@@ -277,6 +280,11 @@ footer .src b{color:var(--ink)}
   </header>
 
   <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
+  <div class="notice kakao" id="kakaoBar" hidden>
+    <span class="grow">💬 <b>오늘·내일 마감 공고</b>를 카톡방에서 매일 받아보세요</span>
+    <a class="go kgo" href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener" id="kakaoGo">참여하기</a>
+    <button class="x" id="kakaoX" aria-label="닫기">×</button>
+  </div>
   <div class="notice" id="addHint" hidden>
     <span class="grow">자주 오신다면 <b>홈 화면에 추가</b>해 두세요. 앱처럼 한 번에 열려요.</span>
     <button class="go" id="addHintGo">추가</button>
@@ -365,7 +373,7 @@ footer .src b{color:var(--ink)}
       각 공고는 기관이 게시한 공식 채용공고 원문을 확인해 정리한 블로그 글을 바탕으로 합니다. 마감 시각·자격 요건은 바뀔 수 있으니 지원 전 반드시 공식 공고를 확인하세요.<br>
       공공기관 공식 공고: <a href="https://job.alio.go.kr" target="_blank" rel="noopener">잡알리오</a> · <a href="https://www.gojobs.go.kr" target="_blank" rel="noopener">나라일터</a> · <a href="https://www.work24.go.kr" target="_blank" rel="noopener">고용24</a>
     </div>
-    <nav class="flinks"><a href="about.html">사이트 소개</a><a href="privacy.html">개인정보처리방침</a><a href="contact.html">문의</a><a href="https://m.blog.naver.com/hid4989-3" target="_blank" rel="noopener">블로그</a></nav>
+    <nav class="flinks"><a href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener">💬 카톡 알림방</a><a href="about.html">사이트 소개</a><a href="privacy.html">개인정보처리방침</a><a href="contact.html">문의</a><a href="https://m.blog.naver.com/hid4989-3" target="_blank" rel="noopener">블로그</a></nav>
   </footer>
 </div>
 
@@ -984,6 +992,17 @@ function savedAlert(){
   el.hidden = false;
   el.onclick = () => { state.tab = "saved"; state.sort = "due"; refresh(); el.scrollIntoView({block:"start"}); };
 }
+
+// ── 카톡 오픈채팅 안내 ──
+(function(){
+  let off = false; try { off = localStorage.getItem("kakaoOff") === "1"; } catch(e) {}
+  if(off) return;
+  $("kakaoBar").hidden = false;
+  $("addHint").hidden = true;   // 안내 줄은 한 번에 하나만
+  const hide = () => { $("kakaoBar").hidden = true; try { localStorage.setItem("kakaoOff","1"); } catch(e) {} };
+  $("kakaoX").onclick = hide;
+  $("kakaoGo").addEventListener("click", () => setTimeout(hide, 500));
+})();
 
 load();
 setInterval(() => POSTS.length && render(), 60000);
