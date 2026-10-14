@@ -139,7 +139,8 @@ def page(fname, title, desc, body):
 <meta name="theme-color" content="#1F3FBF">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4206368432511517"
      crossorigin="anonymous"></script>
-<style>{CSS}</style>
+<style>{CSS}.biz{{margin:8px 0 0;font-size:12.5px;color:var(--muted)}} .biz a{{color:var(--brand);font-weight:600;margin:0}}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -149,7 +150,9 @@ def page(fname, title, desc, body):
 <footer>
 <p>각 공고는 기관 공식 채용공고 원문을 확인해 정리한 블로그 글을 바탕으로 합니다. 지원 전 반드시 공식 공고(잡알리오·나라일터·기관 홈페이지)를 확인하세요.</p>
 <a href="about.html">사이트 소개</a><a href="privacy.html">개인정보처리방침</a><a href="contact.html">문의</a>
+<p class="biz">📮 광고·제휴 문의: <a class="mail" href="contact.html" data-u="hid4989-3" data-d="naver.com">문의 페이지</a></p>
 </footer>
+<script>document.querySelectorAll("a.mail").forEach(function(a){{var m=a.dataset.u+"@"+a.dataset.d;a.href="mailto:"+m+"?subject="+encodeURIComponent("[커리어픽] 광고·제휴 문의");a.textContent=m;}});</script>
 </div>
 <script type="text/javascript" src="https://wcs.pstatic.net/wcslog.js"></script>
 <script type="text/javascript">if(!wcs_add) var wcs_add = {{}}; wcs_add["wa"] = "1c5b542575a2270"; if(window.wcs) {{ wcs_do(); }}</script>
