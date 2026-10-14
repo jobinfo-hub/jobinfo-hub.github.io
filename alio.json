@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T19:25:29+09:00",
+ "updated": "2026-10-14T20:24:54+09:00",
  "posts": [
   {
    "id": "a305887",
@@ -8066,6 +8066,75 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306022",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "인천적십자병원 비정규직 간호사(주사실) 채용공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306022",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "인천",
+   "text": "비정규직 학력무관 인천 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306021",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "인천적십자병원 육아휴직 대체인력(비정규직 간호사) 채용공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306021",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "인천",
+   "text": "비정규직 학력무관 인천 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306020",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "인천적십자병원 정규직 간호사 채용공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306020",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "인천",
+   "text": "정규직 학력무관 인천 보건.의료",
+   "n": "7",
+   "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
    "id": "a306014",
