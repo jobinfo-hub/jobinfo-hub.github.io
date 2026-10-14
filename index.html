@@ -412,6 +412,9 @@ footer .src b{color:var(--ink)}
   <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="orgs.html">🏢 기관별 정보</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224426850655"><div class="kind"><span class="pill p">마감 10.14(수) 11:00</span></div><div class="t">국토교통과학기술진흥원 채용 17명, 오전 11시 마감 주의</div></a></li>
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224425135559"><div class="kind"><span class="pill p">마감 10.14(수) 12:00</span></div><div class="t">서울대 · 2026 하반기 서울대 직원 채용 15명</div></a></li>
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224427320213"><div class="kind"><span class="pill p">마감 10.14(수) 14:00</span></div><div class="t">한국서부발전 하반기 채용 — 116명 모집 조건</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224426713755"><div class="kind"><span class="pill p">마감 10.14(수) 18:00</span></div><div class="t">한국보건복지인재원 교수직 채용 — 박사 지원자격 1분 확인</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224425984450"><div class="kind"><span class="pill p">마감 10.14(수) 18:00</span></div><div class="t">한국식품연구원 채용 9명, 필수체크</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224432694199"><div class="kind"><span class="pill p">마감 10.14(수)</span></div><div class="t">한국국토정보공사 채용 — 36명</div></a></li>
@@ -449,9 +452,6 @@ footer .src b{color:var(--ink)}
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224427080440"><div class="kind"><span class="pill p">마감 10.19(월)</span></div><div class="t">한국농어촌공사 채용 329명, 권역 모르면 손해</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433155457"><div class="kind"><span class="pill p">마감 10.20(화) 15:00</span></div><div class="t">자동차손해배상진흥원 전문직 채용 5명, 내 경력 2분 확인</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224432658020"><div class="kind"><span class="pill p">마감 10.20(화) 17:00</span></div><div class="t">부산대치과병원 의료사회복지사 채용, 지원 자격 1분 확인법</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433187856"><div class="kind"><span class="pill p">마감 10.20(화) 18:00</span></div><div class="t">한국언론진흥재단 채용, 놓치면 탈락하는 3가지</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435596158"><div class="kind"><span class="pill p">마감 10.20(화)</span></div><div class="t">중앙보훈병원 든든동행파트너, 면접 100% 승부</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433798757"><div class="kind"><span class="pill p">마감 10.21(수) 11:00</span></div><div class="t">코레일테크 채용, 오전 11시 마감 놓치면 끝</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224440240151"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">2026 40대 이후 취업 총정리｜방법·연봉·자격증</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224439563392"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">자소서 작성법 총정리｜2026 하반기 문항별 공식 12가지와 글자수 배분표｜무료 자소서 작성 AI프롬프트 배부</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435993032"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">산업안전기사 독학 합격 일정표, 2027 1회 16주 역산</div></a></li>
@@ -543,6 +543,7 @@ async function load(){
   initSeen();
   await loadAlio();
   const qp = new URLSearchParams(location.search).get("q");
+  if(new URLSearchParams(location.search).get("tab") === "spec") state.tab = "spec";
   if(qp){ state.q = qp; state.tab = "all"; $("q").value = qp; }
   const jm = location.hash.match(/^#job=(.+)$/);
   if(jm) setTimeout(() => openJob(decodeURIComponent(jm[1]), false), 0);
@@ -619,8 +620,26 @@ const SPEC_LIC = ["한국사","컴퓨터활용능력","정보처리기사","전�
   "에너지관리기사","운전면허(1종)","지게차","조리사","간호사","사회복지사","요양보호사","영양사","약사","보육교사","임상병리사","방사선사","물리치료사"];
 let SPEC = null;
 try { SPEC = JSON.parse(localStorage.getItem("spec") || "null"); } catch(e) {}
-const emptySpec = () => ({edu:"", career:"", age:"", toeic:"", region:"", lic:[], licEtc:"", special:[]});
-const hasSpecObj = o => !!(o && (o.edu || o.toeic || o.age || o.region || (o.lic||[]).length || String(o.licEtc||"").trim() || (o.special||[]).length || (o.career !== undefined && o.career !== "")));
+const emptySpec = () => ({edu:"", career:"", age:"", toeic:"", want:[], region:"", lic:[], licEtc:"", special:[]});
+// 예전 버전에서 '거주지'만 고른 사람은 그 지역을 희망 근무지역으로도 씀
+if(SPEC && !Array.isArray(SPEC.want)) SPEC.want = SPEC.region ? [SPEC.region] : [];
+// 공고의 근무지역 목록 (상세 데이터 우선, 없으면 카드의 지역)
+function workRegions(p){
+  const raw = String(((ALIO_DETAIL || {})[p.id] || {}).workRgnNmLst || p.region || "");
+  return raw.split(/[,|\s]+/).map(x => x.trim()).filter(Boolean);
+}
+function regionLabel(p){
+  if(!p.alio || !ALIO_DETAIL) return p.region || "";
+  const rs = workRegions(p);
+  return rs.length > 3 ? "전국" : rs.join("·") || p.region || "";
+}
+function inWant(p, want){
+  if(!want || !want.length) return true;
+  const rs = workRegions(p);
+  if(!rs.length) return true;                       // 근무지 정보가 없으면 빼지 않음
+  return rs.some(r => r === "전국" || want.some(w => r.includes(w)));
+}
+const hasSpecObj = o => !!(o && (o.edu || o.toeic || o.age || o.region || (o.want||[]).length || (o.lic||[]).length || String(o.licEtc||"").trim() || (o.special||[]).length || (o.career !== undefined && o.career !== "")));
 const hasSpec = () => hasSpecObj(SPEC);
 function saveSpec(){ try { SPEC ? localStorage.setItem("spec", JSON.stringify(SPEC)) : localStorage.removeItem("spec"); } catch(e) {} }
 
@@ -859,7 +878,7 @@ function jobCard(p, now){
     <a class="main" href="${p.alio ? "#job=" + esc(p.id) : esc(p.url)}"${p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"'}>
       ${tile}
       <div class="body">
-        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${p.region ? `<span class="rg">· ${esc(p.region)}</span>` : ""}</div>
+        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${regionLabel(p) ? `<span class="rg">· ${esc(regionLabel(p))}</span>` : ""}</div>
         <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
         ${spw && state.tab === "spec" ? `<div class="spwhy">${SPEC_V[spw[0]].icon} ${esc(spw[1])}${spr.why.filter(w => w[0] !== "ok").length > 1 ? ` 외 ${spr.why.filter(w => w[0] !== "ok").length - 1}건` : ""}</div>` : ""}
@@ -886,7 +905,7 @@ function rowCard(p, now){
   return `<li class="card row ${d && d.cls === "closed" ? "is-closed" : ""}">
     <a class="main" href="${href}"${attr}>
       <span class="rd ${d ? d.cls : ""}">${d ? d.big : "상시"}</span>
-      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${p.alio ? "공식" : "해설"} · ${esc(p.org || p.cat)}${p.region ? " · " + esc(p.region) : ""}</span>
+      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${p.alio ? "공식" : "해설"} · ${esc(p.org || p.cat)}${regionLabel(p) ? " · " + esc(regionLabel(p)) : ""}</span>
       <span class="rt">${esc(cleanTitle(p.title))}</span>
       <span class="rm">${esc(meta.join(" · "))}</span></span>
     </a>
@@ -976,7 +995,7 @@ function prefLive(){
 function specRows(now){
   const out = [];
   for(const p of POSTS){
-    if(!p.alio || statusOf(p, now) === "closed") continue;
+    if(!p.alio || statusOf(p, now) === "closed" || !inWant(p, SPEC && SPEC.want)) continue;
     const r = specOf(p); if(r) out.push({p, r});
   }
   return out;
@@ -988,7 +1007,8 @@ function specSummary(){
   if(SPEC.career !== "" && SPEC.career !== undefined) a.push(+SPEC.career ? `경력 ${SPEC.career}년+` : "신입");
   if(SPEC.toeic) a.push(`토익 ${SPEC.toeic}`);
   const l = specLics(SPEC); if(l.length) a.push(l.length > 2 ? `${l.slice(0,2).join("·")} 외 ${l.length-2}` : l.join("·"));
-  if(SPEC.region) a.push(SPEC.region);
+  if((SPEC.want||[]).length) a.push("근무 " + (SPEC.want.length > 2 ? SPEC.want.slice(0,2).join("·") + ` 외 ${SPEC.want.length-2}` : SPEC.want.join("·")));
+  if(SPEC.region) a.push("거주 " + SPEC.region);
   if(SPEC.age) a.push(`만 ${SPEC.age}세`);
   return a.join(" · ");
 }
@@ -1014,7 +1034,7 @@ function renderSpec(now){
   let rows = all.filter(x => v === "all" ? x.r.v !== "no" : x.r.v === v);
   const rank = {ok:0, check:1, no:2};
   rows.sort((a, b) => (v === "all" ? rank[a.r.v] - rank[b.r.v] : 0) || cmp(sortKey(a.p, now), sortKey(b.p, now)));
-  $("summary").innerHTML = `✅ ${esc(specSummary())} <button class="linkbtn" id="openSpec">스펙 수정</button>`;
+  $("summary").innerHTML = `✅ ${esc(specSummary())} <button class="linkbtn" id="openSpec">스펙 수정</button><button class="linkbtn" id="specShare">📤 친구에게 공유</button>`;
   const head = `<li class="spsum" style="list-style:none">
       <button data-specv="${v === "ok" ? "all" : "ok"}" aria-pressed="${v === "ok"}"><b style="color:var(--green)">${cnt.ok}</b><span>✅ 지원 가능</span></button>
       <button data-specv="${v === "check" ? "all" : "check"}" aria-pressed="${v === "check"}"><b style="color:#B7791F">${cnt.check}</b><span>🔍 확인 필요</span></button>
@@ -1023,14 +1043,22 @@ function renderSpec(now){
   if(!rows.length){ $("list").innerHTML = head + `<li class="empty">해당하는 공고가 없어요.${q ? "<br>검색어를 지워 보세요." : ""}</li>`; return; }
   $("list").innerHTML = head + note + rows.map(x => COMPACT ? rowCard(x.p, now) : jobCard(x.p, now)).join("");
 }
+function shareSpec(){
+  const now = new Date(), rows = specRows(now);
+  const ok = rows.filter(x => x.r.v === "ok").length, chk = rows.filter(x => x.r.v === "check").length;
+  const cond = [SPEC.edu, SPEC.career === "0" ? "신입" : "", (SPEC.want || []).slice(0, 2).join("·")].filter(Boolean).join("·");
+  const text = `내 조건${cond ? `(${cond})` : ""}으로 지원 가능한 공공기관 공고가 지금 ${ok}건 있어! (확인 필요 ${chk}건)\n학력·자격증·토익만 넣으면 지원 가능한 공고만 골라줘. 30초, 로그인 없음 👇`;
+  shareSite(text, "https://jobinfo-hub.github.io/?tab=spec&src=spec", "내 스펙 결과 공유하기");
+}
 function specBoxHTML(p, det){
   if(!p.alio || det === null) return "";
   if(!hasSpec()) return `<div class="spbox"><h3>✅ 내 스펙으로 지원 가능할까?</h3><p style="margin:0 0 10px;font-size:14px">학력·자격증·토익 등을 입력하면 이 공고에 지원할 수 있는지 바로 알려드려요.</p><button class="go" id="openSpec">내 스펙 입력하기</button></div>`;
   const r = specCheck(p, det, SPEC);
   if(!r) return "";
   const m = SPEC_V[r.v];
-  const items = r.why.length ? r.why.map(([k, t]) => `<li><span>${SPEC_V[k].icon}</span><span>${esc(t)}</span></li>`).join("")
-    : `<li><span>✅</span><span>지원 자격 문장에서 걸리는 조건을 찾지 못했어요</span></li>`;
+  const outW = !inWant(p, SPEC.want) ? `<li><span>📍</span><span>희망 근무지역(${esc(SPEC.want.join("·"))}) 밖의 공고예요 · 근무지 ${esc(workRegions(p).join(", "))}</span></li>` : "";
+  const items = outW + (r.why.length ? r.why.map(([k, t]) => `<li><span>${SPEC_V[k].icon}</span><span>${esc(t)}</span></li>`).join("")
+    : `<li><span>✅</span><span>지원 자격 문장에서 걸리는 조건을 찾지 못했어요</span></li>`);
   return `<div class="spbox"><h3>내 스펙 체크 <span class="sppill ${m.cls}">${m.icon} ${m.label}</span></h3><ul>${items}</ul>
     <p class="note">지원 자격을 자동으로 읽은 참고용 결과예요. 분야별 세부 자격은 아래 지원 자격·원문 공고에서 확인하세요. <button class="linkbtn" id="openSpec">스펙 수정</button></p></div>`;
 }
@@ -1047,7 +1075,8 @@ function openSpec(draft){
     + `<div class="grp"><span>경력</span>${one("career", SPEC_CAREER.map(x => [x[0], String(x[1])]))}</div>`
     + `<div class="two"><div class="grp"><span>만 나이</span><input type="number" id="specAge" inputmode="numeric" min="15" max="80" value="${esc(SDRAFT.age)}" placeholder="예: 27"></div>`
     + `<div class="grp"><span>토익 점수 (없으면 비움)</span><input type="number" id="specToeic" inputmode="numeric" min="10" max="990" value="${esc(SDRAFT.toeic)}" placeholder="예: 750"></div></div>`
-    + `<div class="grp"><span>거주지 (주민등록 기준)</span>${one("region", SIDO.map(x => [x, x]))}</div>`
+    + `<div class="grp"><span>희망 근무지역 (여러 개 선택, 안 고르면 전국)</span>${multi("want", SIDO)}</div>`
+    + `<div class="grp"><span>내 거주지 (주민등록 기준 · '그 지역 거주자만' 뽑는 공고 판정용, 선택)</span>${one("region", SIDO.map(x => [x, x]))}</div>`
     + `<div class="grp"><span>보유 자격증·면허</span>${multi("lic", SPEC_LIC)}</div>`
     + `<div class="grp"><span>그 밖의 자격증 (쉼표로 여러 개)</span><input type="text" id="specEtc" value="${esc(SDRAFT.licEtc)}" placeholder="예: 정보보안기사, 사회조사분석사"></div>`
     + `<div class="grp"><span>해당 사항 (제한경쟁 채용 판정용, 선택)</span>${multi("special", ["장애인", "보훈"])}</div>`
@@ -1066,7 +1095,7 @@ function specLive(){
   if(!ALIO_DETAIL){ el.textContent = "공고 정보를 불러오는 중…"; return; }
   if(!hasSpecObj(SDRAFT)){ el.innerHTML = "항목을 하나 이상 골라 주세요."; return; }
   const c = {ok:0, check:0, no:0}, now = new Date();
-  POSTS.forEach(p => { if(p.alio && statusOf(p, now) !== "closed"){ const r = specCheck(p, ALIO_DETAIL[p.id], SDRAFT); if(r) c[r.v]++; } });
+  POSTS.forEach(p => { if(p.alio && statusOf(p, now) !== "closed" && inWant(p, SDRAFT.want)){ const r = specCheck(p, ALIO_DETAIL[p.id], SDRAFT); if(r) c[r.v]++; } });
   el.innerHTML = `모집 중 공식 공고 중 ✅ 지원 가능 <b>${c.ok}건</b> · 🔍 확인 필요 <b>${c.check}건</b>`;
 }
 // ── 지원 현황 관리 (이 기기에만 저장) ──
@@ -1400,6 +1429,7 @@ document.addEventListener("click", e => {
   else if(t.id === "offNew"){ state.onlyNew = false; refresh(); }
   else if(t.id === "openPrefs" || t.id === "editPrefs"){ openPrefs(); }
   else if(t.id === "openSpec"){ openSpec(); }
+  else if(t.id === "specShare"){ shareSpec(); }
   else if(t.id === "specCardX"){ try{ localStorage.setItem("specCardOff","1"); }catch(e){} render(); }
   else if(t.dataset.specv){ state.specV = t.dataset.specv; render(); }
   else if(t.dataset.specone){
@@ -1463,7 +1493,8 @@ function closeSheet(){ $("sheet").classList.remove("open"); }
 
 // ── 공유하기 ──
 const SHARE_URL = "https://jobinfo-hub.github.io/?src=share";
-const SHARE_TEXT = "공기업·공공기관 채용공고를 마감순으로 한눈에 볼 수 있어요 📋";
+const SHARE_TEXT = "공기업·공공기관 채용공고를 마감순으로 한눈에! 내 스펙을 넣으면 지원 가능한 공고만 골라줘요 📋";
+let SH = {text:SHARE_TEXT, url:SHARE_URL};
 function toast(msg){
   let t = document.querySelector(".toast");
   if(!t){ t = document.createElement("div"); t.className = "toast"; t.setAttribute("role","status"); document.body.appendChild(t); }
@@ -1471,7 +1502,7 @@ function toast(msg){
   clearTimeout(toast.tm); toast.tm = setTimeout(() => t.classList.remove("on"), 2200);
 }
 async function copyShare(){
-  const text = SHARE_TEXT + "\n" + SHARE_URL;
+  const text = SH.text + "\n" + SH.url;
   try { await navigator.clipboard.writeText(text); }
   catch(e){
     const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
@@ -1481,24 +1512,26 @@ async function copyShare(){
   }
   closeSheet(); toast("링크를 복사했어요. 원하는 곳에 붙여넣어 주세요.");
 }
-async function shareSite(){
+async function shareSite(text, url, title){
+  SH = {text: typeof text === "string" ? text : SHARE_TEXT, url: url || SHARE_URL};
+  const SHARE_TEXT_ = SH.text, SHARE_URL_ = SH.url;
   if(navigator.share && !INAPP){
-    try { await navigator.share({title:"커리어픽", text:SHARE_TEXT, url:SHARE_URL}); return; }
+    try { await navigator.share({title:"커리어픽", text:SHARE_TEXT_, url:SHARE_URL_}); return; }
     catch(e){ if(e && e.name === "AbortError") return; }
   }
-  const u = encodeURIComponent(SHARE_URL), t = encodeURIComponent(SHARE_TEXT);
+  const u = encodeURIComponent(SHARE_URL_), t = encodeURIComponent(SHARE_TEXT_);
   sheet(`<div class="sharegrid">
       <button onclick="copyShare()"><span class="ic" style="background:#1F3FBF">🔗</span>링크 복사</button>
-      <a href="https://band.us/plugin/share?body=${encodeURIComponent(SHARE_TEXT + "\n" + SHARE_URL)}&route=jobinfo-hub.github.io" target="_blank" rel="noopener"><span class="ic" style="background:#06C755">B</span>밴드</a>
+      <a href="https://band.us/plugin/share?body=${encodeURIComponent(SHARE_TEXT_ + "\n" + SHARE_URL_)}&route=jobinfo-hub.github.io" target="_blank" rel="noopener"><span class="ic" style="background:#06C755">B</span>밴드</a>
       <a href="https://www.facebook.com/sharer/sharer.php?u=${u}" target="_blank" rel="noopener"><span class="ic" style="background:#1877F2">f</span>페이스북</a>
       <a href="https://twitter.com/intent/tweet?text=${t}&url=${u}" target="_blank" rel="noopener"><span class="ic" style="background:#000">X</span>X</a>
-      <a href="https://www.threads.net/intent/post?text=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}" target="_blank" rel="noopener"><span class="ic" style="background:#000">@</span>스레드</a>
-      <a href="sms:?&body=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}"><span class="ic" style="background:#5B6475">✉</span>문자</a>
+      <a href="https://www.threads.net/intent/post?text=${encodeURIComponent(SHARE_TEXT_ + " " + SHARE_URL_)}" target="_blank" rel="noopener"><span class="ic" style="background:#000">@</span>스레드</a>
+      <a href="sms:?&body=${encodeURIComponent(SHARE_TEXT_ + " " + SHARE_URL_)}"><span class="ic" style="background:#5B6475">✉</span>문자</a>
     </div>
     <p class="hint" style="font-size:12.5px;color:var(--muted);margin:0 0 12px">카카오톡은 링크 복사 후 대화방에 붙여넣으면 미리보기와 함께 보내져요.</p>
-    <div class="row"><button onclick="closeSheet()">닫기</button></div>`, "친구에게 공유하기");
+    <div class="row"><button onclick="closeSheet()">닫기</button></div>`, title || "친구에게 공유하기");
 }
-$("sharebtn").addEventListener("click", shareSite);
+$("sharebtn").addEventListener("click", () => shareSite());
 async function addToHome(){
   if(installEvt){ installEvt.prompt(); const r = await installEvt.userChoice; installEvt = null; if(r.outcome === "accepted") $("addHint").hidden = true; return; }
   const here = location.href.split("#")[0];
