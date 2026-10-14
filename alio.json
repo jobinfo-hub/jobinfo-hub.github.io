@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T15:27:09+09:00",
+ "updated": "2026-10-14T16:34:23+09:00",
  "posts": [
   {
    "id": "a305887",
@@ -4431,8 +4431,8 @@
    "edu": [
     "학력무관"
    ],
-   "region": "인천",
-   "text": "무기계약직 학력무관 인천 보건.의료",
+   "region": "서울",
+   "text": "무기계약직 학력무관 서울 보건.의료",
    "n": "1",
    "src": "https://www.comwel.or.kr/recruit/hp/main.do"
   },
@@ -7497,6 +7497,75 @@
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
   },
   {
+   "id": "a306007",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "예금보험공사 통신·시설관리직 채용 안내",
+   "org": "예금보험공사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306007",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.kdic.or.kr"
+  },
+  {
+   "id": "a306002",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 충남중부권지사 논산수도센터 특수직(기술관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "사업관리 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306002",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 사업관리 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "2",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a305999",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 충남중부권지사 논산수도센터 특수직(사무관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305999",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 경영.회계.사무",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
    "id": "a305995",
    "type": "j",
    "alio": true,
@@ -7948,6 +8017,144 @@
    "text": "비정규직 학력무관 중졸이하 고졸 대졸(2~3년) 대졸(4년) 석사 전남광주 경영.회계.사무 보건.의료 음식서비스",
    "n": "2",
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
+  },
+  {
+   "id": "a306006",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 2027년도 졸업예정 간호사 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306006",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 보건.의료",
+   "n": "50",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306005",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 정규직 간호조무사 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306005",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 보건.의료",
+   "n": "2",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306004",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 계약직 기능직(장애인제한경쟁) 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306004",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306003",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 정규직 간호사(병동) 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306003",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306001",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 정규직 간호사(내시경실) 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306001",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a305997",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 정규직 간호사(내과전담) 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305997",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
    "id": "a305904",
