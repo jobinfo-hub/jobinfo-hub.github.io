@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T17:26:07+09:00",
+ "updated": "2026-10-14T18:26:18+09:00",
  "posts": [
   {
    "id": "a305887",
@@ -7543,6 +7543,29 @@
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
   },
   {
+   "id": "a306015",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "제2026-4차 개방형 직위(경영지원본부장) 채용 공고",
+   "org": "국가생명윤리정책원",
+   "desc": "사업관리 · 경영.회계.사무 · 보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306015",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 사업관리 경영.회계.사무 보건.의료",
+   "n": "1",
+   "src": "https://recruit.incruit.com/nibp/"
+  },
+  {
    "id": "a306009",
    "type": "j",
    "alio": true,
@@ -8043,6 +8066,29 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306014",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 대한적십자사 전북특별자치도지사 비정규직(장애인) 채용 공고",
+   "org": "대한적십자사",
+   "desc": "경영.회계.사무 · 사회복지.종교",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306014",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 경영.회계.사무 사회복지.종교",
+   "n": "1",
+   "src": "https://www.kead.or.kr/"
   },
   {
    "id": "a305983",
