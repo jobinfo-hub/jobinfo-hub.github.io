@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T20:24:54+09:00",
+ "updated": "2026-10-14T23:25:00+09:00",
  "posts": [
   {
    "id": "a305887",
@@ -8066,6 +8066,75 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306025",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "계약직 간호사/응급구조사(인천응급의료지원센터, 충남응급의료지원센터-휴직대체) 채용 공고",
+   "org": "국립중앙의료원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306025",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "인천",
+   "text": "비정규직 학력무관 인천 충남 보건.의료",
+   "n": "2",
+   "src": "https://nmc.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=269322"
+  },
+  {
+   "id": "a306024",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "계약직 행정/연구원(응급의료인사총무팀, 대전응급의료지원센터, 전남응급의료지원센터, 울산응급의료지원센터) 채용 공고",
+   "org": "국립중앙의료원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306024",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전국",
+   "text": "비정규직 학력무관 대졸(4년) 석사 서울 대전 울산 전남광주 보건.의료",
+   "n": "5",
+   "src": "https://nmc.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=269319"
+  },
+  {
+   "id": "a306023",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "무기계약직 간호사/응급구조사(외상·필수의료관리팀) 채용 공고",
+   "org": "국립중앙의료원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306023",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "무기계약직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://nmc.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=269317"
   },
   {
    "id": "a306022",
