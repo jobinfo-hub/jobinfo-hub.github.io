@@ -1,673 +1,6 @@
 {
- "updated": "2026-10-14T23:25:00+09:00",
+ "updated": "2026-10-15T00:27:28+09:00",
  "posts": [
-  {
-   "id": "a305887",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한전KPS(주)강원충북전력지사 단기노무원(동해지점 송전업무정비보조) 채용 공고(34차)",
-   "org": "한전KPS(주)",
-   "desc": "전기.전자 · 환경.에너지.안전",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305887",
-   "pub": "2026-10-12T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "강원",
-   "text": "비정규직 학력무관 강원 전기.전자 환경.에너지.안전",
-   "n": "1",
-   "src": "https://www.kps.co.kr"
-  },
-  {
-   "id": "a305850",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 한국환경공단 하반기 개방형 직위(태백수도사업소장) 공개모집 연장공고",
-   "org": "한국환경공단",
-   "desc": "환경.에너지.안전",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305850",
-   "pub": "2026-10-08T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "강원",
-   "text": "비정규직 학력무관 강원 환경.에너지.안전",
-   "n": "1",
-   "src": "https://www.keco.or.kr/web/lay1/bbs/S1T1205C1207/A/22/view.do?article_seq=100714&cpage=1&rows=10&condition=&keyword="
-  },
-  {
-   "id": "a305808",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한국폴리텍대학 반도체융합캠퍼스 비정규직(행정지원직_휴직대체_기간제경비원) 공개 채용 공고",
-   "org": "학교법인한국폴리텍",
-   "desc": "경비.청소",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305808",
-   "pub": "2026-10-07T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "경기",
-   "text": "비정규직 학력무관 경기 경비.청소",
-   "n": "1",
-   "src": "https://www.kopo.ac.kr/semi/board.do?menu=3303&mode=view&post=786647"
-  },
-  {
-   "id": "a305805",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "[대전병원] 기간제(산업위생사) 채용 공고",
-   "org": "근로복지공단",
-   "desc": "보건.의료",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305805",
-   "pub": "2026-10-07T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "대전",
-   "text": "비정규직 학력무관 대전 보건.의료",
-   "n": "2",
-   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
-  },
-  {
-   "id": "a305727",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한국폴리텍대학 남대구캠퍼스 체험형 청년인턴(일반) 채용 공고",
-   "org": "학교법인한국폴리텍",
-   "desc": "경영.회계.사무",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305727",
-   "pub": "2026-10-06T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "인턴"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "대구",
-   "text": "청년인턴(체험형) 학력무관 대구 경영.회계.사무",
-   "n": "2",
-   "src": "https://www.kopo.ac.kr/namdaegu/board.do?menu=10548&mode=view&post=786424"
-  },
-  {
-   "id": "a305683",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "[태백병원] 공무직(전기기계통신기사-기계분야) 채용 공고",
-   "org": "근로복지공단",
-   "desc": "보건.의료",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305683",
-   "pub": "2026-10-02T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "무기계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "강원",
-   "text": "무기계약직 학력무관 강원 보건.의료",
-   "n": "1",
-   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
-  },
-  {
-   "id": "a305682",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "[태백병원] 기간제 의사(응급실전담의) 채용 공고",
-   "org": "근로복지공단",
-   "desc": "보건.의료",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305682",
-   "pub": "2026-10-02T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "강원",
-   "text": "비정규직 학력무관 강원 보건.의료",
-   "n": "1",
-   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
-  },
-  {
-   "id": "a305663",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한국폴리텍대학 부산캠퍼스 2026년 청년인턴(일반) 2차 채용",
-   "org": "학교법인한국폴리텍",
-   "desc": "경영.회계.사무",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305663",
-   "pub": "2026-10-02T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "인턴"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "부산",
-   "text": "청년인턴(체험형) 학력무관 부산 경영.회계.사무",
-   "n": "1",
-   "src": "https://www.kopo.ac.kr/busan/board.do?menu=5622&mode=view&post=786331"
-  },
-  {
-   "id": "a305662",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한국폴리텍대학 부산캠퍼스 2026년 행정지원직(휴직대체_냉난방원) 채용",
-   "org": "학교법인한국폴리텍",
-   "desc": "건설 · 기계",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305662",
-   "pub": "2026-10-02T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "부산",
-   "text": "비정규직 학력무관 부산 건설 기계",
-   "n": "1",
-   "src": "https://www.kopo.ac.kr/busan/board.do?menu=5622&mode=view&post=786330"
-  },
-  {
-   "id": "a305621",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "[한국장애인고용공단 경기남부직업능력개발원] 특정업무직(운영지원직) 시설정비원(3조3교대) 채용",
-   "org": "한국장애인고용공단",
-   "desc": "기계 · 환경.에너지.안전",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305621",
-   "pub": "2026-10-01T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "무기계약직",
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "경기",
-   "text": "무기계약직 비정규직 학력무관 경기 기계 환경.에너지.안전",
-   "n": "1",
-   "src": "https://www.kead.or.kr/bbs/deptgongji/bbsPage.do?menuId=MENU0895"
-  },
-  {
-   "id": "a305565",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 하반기 한국문화예술위원회 직원(기록물관리전문요원, 데이터관리, 전산) 채용",
-   "org": "한국문화예술위원회",
-   "desc": "경영.회계.사무 · 문화.예술.디자인.방송 · 정보통신",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305565",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "무기계약직",
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "서울",
-   "text": "무기계약직 비정규직 학력무관 석사 서울 전남광주 경영.회계.사무 문화.예술.디자인.방송 정보통신",
-   "n": "3",
-   "src": "https://arko.or.kr/board/view/4054?bid=&page=&cid=1811186"
-  },
-  {
-   "id": "a305559",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 하반기 별정직 신입사원 모집 공고",
-   "org": "한국서부발전(주)",
-   "desc": "보건.의료 · 화학 · 환경.에너지.안전",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305559",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "정규직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "충남",
-   "text": "정규직 학력무관 충남 보건.의료 화학 환경.에너지.안전",
-   "n": "5",
-   "src": "https://iwest.machuda.kr"
-  },
-  {
-   "id": "a305558",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 서민금융진흥원 제3차 기간제(육아휴직대체) 직원 채용공고",
-   "org": "서민금융진흥원",
-   "desc": "경영.회계.사무 · 금융.보험",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305558",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "서울",
-   "text": "비정규직 학력무관 서울 인천 경영.회계.사무 금융.보험",
-   "n": "5",
-   "src": "https://subkinfa2.scout.co.kr"
-  },
-  {
-   "id": "a305554",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 하반기 4직급 고졸 신입사원 모집 공고",
-   "org": "한국서부발전(주)",
-   "desc": "기계 · 전기.전자",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305554",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "정규직"
-   ],
-   "edu": [
-    "고졸 가능"
-   ],
-   "region": "전국",
-   "text": "정규직 고졸 인천 경기 충남 전북 전남광주 경북 기계 전기.전자",
-   "n": "18",
-   "src": "https://iwest.machuda.kr"
-  },
-  {
-   "id": "a305552",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 하반기 4직급 대졸 신입사원 모집 공고",
-   "org": "한국서부발전(주)",
-   "desc": "경영.회계.사무 · 건설 · 기계",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305552",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "정규직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "전국",
-   "text": "정규직 학력무관 인천 경기 충남 전북 전남광주 경북 경영.회계.사무 건설 기계 화학 전기.전자 정보통신",
-   "n": "93",
-   "src": "https://iwest.machuda.kr"
-  },
-  {
-   "id": "a305551",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026-04호 채용공고",
-   "org": "한국탄소산업진흥원",
-   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305551",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [],
-   "region": "전북",
-   "text": "비정규직 대졸(2~3년) 대졸(4년) 석사 박사 전북 사업관리 경영.회계.사무 교육.자연.사회과학 기계 재료 화학 섬유.의복 환경.에너지.안전 연구",
-   "n": "15",
-   "src": "https://www.kcarbon.or.kr/bbs/board.php?bo_id=employ"
-  },
-  {
-   "id": "a305550",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 태권도원 체험관[얍] 운영 기간제근로자(보조인력) 채용",
-   "org": "태권도진흥재단",
-   "desc": "이용.숙박.여행.오락.스포츠",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305550",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "전북",
-   "text": "비정규직 학력무관 전북 이용.숙박.여행.오락.스포츠",
-   "n": "4",
-   "src": "https://www.tpf.or.kr/tpf/contents/recruitment.do?&schM=view&page=1&viewCount=10&id=7185&schBdcode=&schGroupCode="
-  },
-  {
-   "id": "a305537",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "국립공원공단 기간제(사무행정) 직원 채용",
-   "org": "국립공원공단",
-   "desc": "경영.회계.사무 · 문화.예술.디자인.방송",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305537",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "강원",
-   "text": "비정규직 학력무관 강원 경영.회계.사무 문화.예술.디자인.방송",
-   "n": "1",
-   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019843"
-  },
-  {
-   "id": "a305524",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "기간제근로자 (대체인력)채용 공고[충북본부 진천지사]",
-   "org": "한국전력공사",
-   "desc": "전기.전자",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305524",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "충북",
-   "text": "비정규직 학력무관 충북 전기.전자",
-   "n": "1",
-   "src": "http://recruit.kepco.co.kr/sangsi"
-  },
-  {
-   "id": "a305523",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "국토연구원 2026년 제10차 위촉직(기간제) 공개채용",
-   "org": "국토연구원",
-   "desc": "연구",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305523",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "세종",
-   "text": "비정규직 학력무관 세종 연구",
-   "n": "4",
-   "src": "https://recruit.krihs.re.kr/ext/rec/rec_5010.do?ANNC_NO=26092901&SUPT_FLD_CD=0&DEG=0"
-  },
-  {
-   "id": "a305514",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 제3차 인재채용[NCS기반 능력중심 블라인드 채용] 공고",
-   "org": "국토교통과학기술진흥원",
-   "desc": "사업관리 · 연구",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305514",
-   "pub": "2026-09-29T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "인턴",
-    "계약직"
-   ],
-   "edu": [
-    "학력무관",
-    "고졸 가능"
-   ],
-   "region": "경기",
-   "text": "비정규직 청년인턴(체험형) 학력무관 중졸이하 고졸 대졸(2~3년) 대졸(4년) 석사 경기 사업관리 연구",
-   "n": "17",
-   "src": "https://www.kaia.re.kr/"
-  },
-  {
-   "id": "a305513",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "대한적십자사 서울남부혈액원 비정규직한시적 근로자(장애인 제한경쟁) 채용 공고",
-   "org": "대한적십자사",
-   "desc": "보건.의료",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305513",
-   "pub": "2026-09-29T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "서울",
-   "text": "비정규직 학력무관 서울 보건.의료",
-   "n": "1",
-   "src": "https://www.kead.or.kr/bbs/jobinfo/bbsView.do?pageIndex=1&bbsCode=jobinfo&bbsCnId=216541&bbsNm=%EC%B1%84%EC%9A%A9%EC%A0%95%EB%B3%B4&menuId=MENU2201&registDeptCode=&adt2Code=&adt3Code=&adt1Code=&searchKeyword=&recordCountPerPage=10"
-  },
-  {
-   "id": "a305512",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 대한적십자사 경상남도지사 비정규직 (대체인력) 채용 공고",
-   "org": "대한적십자사",
-   "desc": "경영.회계.사무",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305512",
-   "pub": "2026-09-29T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "경남",
-   "text": "비정규직 학력무관 경남 경영.회계.사무",
-   "n": "1",
-   "src": "https://www.redcross.or.kr/redrecruit"
-  },
-  {
-   "id": "a305504",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "대한적십자사 전남광주혈액원 비정규직 기간제(장애인) 채용 공고",
-   "org": "대한적십자사",
-   "desc": "보건.의료",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305504",
-   "pub": "2026-09-29T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "전남광주",
-   "text": "비정규직 학력무관 전남광주 보건.의료",
-   "n": "1",
-   "src": "https://www.kead.or.kr/"
-  },
-  {
-   "id": "a305414",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 제3차 신규직원(체험형 인턴) 채용 공고",
-   "org": "해양수산과학기술진흥원",
-   "desc": "경영.회계.사무",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305414",
-   "pub": "2026-09-29T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "서울",
-   "text": "비정규직 학력무관 서울 경영.회계.사무",
-   "n": "4",
-   "src": "https://kimst.recruiter.co.kr/"
-  },
-  {
-   "id": "a305385",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한국토지주택공사 경기북부지역본부 기간제근로자(안전관리자) 채용공고('26년 9월)",
-   "org": "한국토지주택공사",
-   "desc": "경영.회계.사무 · 환경.에너지.안전",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305385",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "경기",
-   "text": "비정규직 학력무관 경기 경영.회계.사무 환경.에너지.안전",
-   "n": "1",
-   "src": "https://www.lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734233&tag=&nPage=1"
-  },
-  {
-   "id": "a305378",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 제9차 경력사원(고위직) 선발",
-   "org": "한국수력원자력(주)",
-   "desc": "사업관리 · 경영.회계.사무 · 기계",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305378",
-   "pub": "2026-09-28T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "경북",
-   "text": "비정규직 학력무관 경북 사업관리 경영.회계.사무 기계 전기.전자 환경.에너지.안전",
-   "n": "1",
-   "src": "https://khnp.co.kr/recruit"
-  },
-  {
-   "id": "a305345",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "(제2026-7호) 한국보건복지인재원 교수직 채용 공고",
-   "org": "한국보건복지인재원",
-   "desc": "교육.자연.사회과학 · 보건.의료 · 사회복지.종교",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305345",
-   "pub": "2026-09-30T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "정규직"
-   ],
-   "edu": [],
-   "region": "충북",
-   "text": "정규직 박사 충북 교육.자연.사회과학 보건.의료 사회복지.종교",
-   "n": "3",
-   "src": "https://www.kohi.or.kr/user/bbs/BD_selectBbs.do?q_bbsCode=1116&q_bbscttSn=20260928082935167&q_currPage=&q_searchKeyTy=sj___1002&q_searchVal=&stateCk=S"
-  },
-  {
-   "id": "a305120",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 한국국토정보공사 신입사원 채용 공고",
-   "org": "한국국토정보공사",
-   "desc": "경영.회계.사무 · 건설",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305120",
-   "pub": "2026-09-17T00:00:00+09:00",
-   "due": "2026-10-14T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "인턴"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "전국",
-   "text": "청년인턴(채용형) 학력무관 서울 부산 대구 인천 대전 울산 세종 경기 강원 충북 충남 전북 전남광주 경북 경남 제주 경영.회계.사무 건설",
-   "n": "36",
-   "src": "https://www.lx.or.kr/kor/BBSMSTR_000000000001/25605/view.do"
-  },
   {
    "id": "a305873",
    "type": "j",
@@ -7840,6 +7173,27 @@
    "src": "https://k-water.recruiter.co.kr"
   },
   {
+   "id": "a305978",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[직원채용] 별정직 약무직(약제팀 약사) 공개 채용(재공고)",
+   "org": "동남권원자력의학원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305978",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "부산",
+   "text": "비정규직 대졸(4년) 부산 보건.의료",
+   "n": "1",
+   "src": "https://diramsjob.recruiter.co.kr/career/home"
+  },
+  {
    "id": "a305975",
    "type": "j",
    "alio": true,
@@ -8068,6 +7422,119 @@
    "src": "https://ibs.recruiter.co.kr/career/job"
   },
   {
+   "id": "a306030",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 체험형 인턴 채용 공고(장애인 채용)",
+   "org": "한국세라믹기술원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306030",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경남",
+   "text": "청년인턴(체험형) 학력무관 경남 경영.회계.사무",
+   "n": "2",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131290"
+  },
+  {
+   "id": "a306029",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 체험형 인턴 채용 공고(인턴사무원)",
+   "org": "한국세라믹기술원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306029",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경남",
+   "text": "청년인턴(체험형) 학력무관 경남 경영.회계.사무",
+   "n": "3",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131291"
+  },
+  {
+   "id": "a306028",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 체험형 인턴 채용 공고(인턴연구원)",
+   "org": "한국세라믹기술원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306028",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [],
+   "region": "경기",
+   "text": "청년인턴(체험형) 대졸(4년) 석사 경기 충북 경남 연구",
+   "n": "23",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131293"
+  },
+  {
+   "id": "a306027",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 위촉직 채용 공고(위촉행정원)",
+   "org": "한국세라믹기술원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306027",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 대졸(4년) 경기 경영.회계.사무",
+   "n": "2",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131285"
+  },
+  {
+   "id": "a306026",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 위촉직 채용 공고(위촉연구원)",
+   "org": "한국세라믹기술원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306026",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 대졸(4년) 석사 경기 충북 경남 연구",
+   "n": "20",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131288"
+  },
+  {
    "id": "a306025",
    "type": "j",
    "alio": true,
@@ -8206,6 +7673,92 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306019",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 위촉직 채용 공고(박사후연수연구원)",
+   "org": "한국세라믹기술원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306019",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "경기",
+   "text": "비정규직 박사 경기 충북 경남 연구",
+   "n": "8",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131289"
+  },
+  {
+   "id": "a306018",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 무기계약직 채용 공고(보훈특별고용)",
+   "org": "한국세라믹기술원",
+   "desc": "경비.청소",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306018",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충북",
+   "text": "무기계약직 학력무관 충북 경비.청소",
+   "n": "1",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131269"
+  },
+  {
+   "id": "a306017",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 정규직 채용 공고(행정직)",
+   "org": "한국세라믹기술원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306017",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [],
+   "region": "경남",
+   "text": "정규직 대졸(4년) 경남 경영.회계.사무",
+   "n": "1",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131258"
+  },
+  {
+   "id": "a306016",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제4분기 정규직 채용 공고(연구직)",
+   "org": "한국세라믹기술원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306016",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [],
+   "region": "경기",
+   "text": "정규직 박사 경기 연구",
+   "n": "1",
+   "src": "https://kicet.recruiter.co.kr/career/jobs/131253"
+  },
+  {
    "id": "a306014",
    "type": "j",
    "alio": true,
@@ -8227,6 +7780,29 @@
    "text": "비정규직 학력무관 전북 경영.회계.사무 사회복지.종교",
    "n": "1",
    "src": "https://www.redcross.or.kr/main/pt/pst/selectPstInfo.do?mi=2378&pstSn=505918&bbsId=1422"
+  },
+  {
+   "id": "a305998",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국토지주택공사 전북지역본부 기간제근로자 채용공고",
+   "org": "한국토지주택공사",
+   "desc": "경영.회계.사무 · 사회복지.종교",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305998",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 경영.회계.사무 사회복지.종교",
+   "n": "1",
+   "src": "https://lh.or.kr/"
   },
   {
    "id": "a305983",
@@ -8676,6 +8252,27 @@
    "text": "비정규직 박사 대전 연구",
    "n": "4",
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
+  },
+  {
+   "id": "a305958",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "국립암센터국제암대학원대학교 전임교원 초빙 공고",
+   "org": "국립암센터",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305958",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-11-13T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [],
+   "region": "경기",
+   "text": "정규직 박사 경기 보건.의료",
+   "n": "1",
+   "src": "https://ncc.recruiter.co.kr/career/jobs/131033"
   },
   {
    "id": "a305734",
