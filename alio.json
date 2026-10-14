@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T14:21:22+09:00",
+ "updated": "2026-10-14T15:27:09+09:00",
  "posts": [
   {
    "id": "a305887",
@@ -3936,6 +3936,29 @@
    "src": "https://www.nrf.re.kr/page/54?ac=view&searchType=&searchText=&pageNum=1&menuNo=54&boardNo=7&menuTypeCd=MENU_TYPE_02&code=&postNo=282771"
   },
   {
+   "id": "a305990",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[설악산] 설악산국립공원 기간제 직원[산불감시(한시인력)] 채용 공고",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305990",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-20T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 경비.청소 환경.에너지.안전",
+   "n": "5",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019898"
+  },
+  {
    "id": "a305952",
    "type": "j",
    "alio": true,
@@ -4366,6 +4389,29 @@
    "region": "울산",
    "text": "비정규직 학력무관 울산 정보통신",
    "n": "2"
+  },
+  {
+   "id": "a305993",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[경기요양병원] 공무직(전기기계통신기사-기계, 전기분야) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "기계 · 전기.전자",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305993",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-21T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "무기계약직 학력무관 경기 기계 전기.전자",
+   "n": "2",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
   },
   {
    "id": "a305986",
@@ -6360,6 +6406,29 @@
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
   },
   {
+   "id": "a305989",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[대전병원] 별정직 의사(직업환경의학과) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305989",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대전",
+   "text": "정규직 학력무관 대전 보건.의료",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
    "id": "a305967",
    "type": "j",
    "alio": true,
@@ -6905,6 +6974,29 @@
    "src": "https://www.kocca.kr/shortUrl/60Cq"
   },
   {
+   "id": "a305996",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 오대산사무소 기간제(한시인력 국립공원지킴이) 직원 채용(6차) 공고",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305996",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 경비.청소 환경.에너지.안전",
+   "n": "2",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019899"
+  },
+  {
    "id": "a305976",
    "type": "j",
    "alio": true,
@@ -7403,6 +7495,119 @@
    "text": "비정규직 박사 대전 연구",
    "n": "1",
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
+  },
+  {
+   "id": "a305995",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 대산산업용수관리단 대산해수담수센터 단기계약근로자(점검정비) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "기계 · 전기.전자",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305995",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 기계 전기.전자",
+   "n": "4",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a305994",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 대산산업용수관리단 대산해수담수센터 단기계약근로자(배출수처리시설) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "기계 · 전기.전자 · 정보통신",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305994",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a305992",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울올림픽기념국민체육진흥공단 경륜·경정 지원직 채용 공고",
+   "org": "서울올림픽기념국민체육진흥공단",
+   "desc": "영업판매 · 이용.숙박.여행.오락.스포츠",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305992",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "무기계약직 학력무관 경기 영업판매 이용.숙박.여행.오락.스포츠",
+   "n": "5",
+   "src": "https://www.kspo.or.kr/kspo/singl/empmn/view.do?empmnId=776&menuNo=200186&pageIndex=1"
+  },
+  {
+   "id": "a305991",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울올림픽기념국민체육진흥공단 경륜·경정 조리원 채용 공고",
+   "org": "서울올림픽기념국민체육진흥공단",
+   "desc": "음식서비스",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305991",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "무기계약직 학력무관 경기 음식서비스",
+   "n": "7",
+   "src": "https://www.kspo.or.kr/kspo/singl/empmn/view.do?empmnId=775&menuNo=200186&pageIndex=1"
+  },
+  {
+   "id": "a305988",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국조세재정연구원] 행정직(전문원) 신규인력채용_장애인제한경쟁",
+   "org": "한국조세재정연구원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=305988",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [],
+   "region": "세종",
+   "text": "무기계약직 대졸(4년) 석사 박사 세종 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.kipf.re.kr/kor/Plaza/Recruitment/kiRecruitment/view.do?cntNo=452"
   },
   {
    "id": "a305987",
