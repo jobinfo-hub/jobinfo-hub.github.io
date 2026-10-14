@@ -118,7 +118,7 @@ ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;ga
 footer{margin-top:28px;font-size:12.5px;color:var(--muted)}
 footer a{color:inherit;margin-right:10px}
 """
-NAV = [("index.html", "전체 공고"), ("deadline-week.html", "이번 주 마감"), ("calendar.html", "공고 예정 달력"), ("orgs.html", "기관별 정보"), ("intern.html", "인턴 모음"), ("highschool.html", "고졸 가능")]
+NAV = [("index.html", "전체 공고"), ("deadline-week.html", "이번 주 마감"), ("calendar.html", "공고 예정 달력"), ("orgs.html", "기관별 정보"), ("certs.html", "자격증 일정"), ("intern.html", "인턴 모음"), ("highschool.html", "고졸 가능")]
 
 
 def page(fname, title, desc, body):
@@ -289,7 +289,7 @@ document.getElementById("cp").onclick = async () => {{
 
 
 def gen_sitemap(now):
-    pages = ["", "deadline-week.html", "calendar.html", "orgs.html", "intern.html", "highschool.html"] + STATIC_PAGES
+    pages = ["", "deadline-week.html", "calendar.html", "orgs.html", "certs.html", "intern.html", "highschool.html"] + STATIC_PAGES
     try:  # 기관별 페이지 (orgs.py 가 만든 목록)
         import urllib.parse
         pages += [urllib.parse.quote(f) for f in json.loads((ROOT / "orgs.json").read_text("utf-8"))]

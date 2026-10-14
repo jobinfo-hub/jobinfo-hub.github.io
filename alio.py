@@ -236,3 +236,8 @@ if __name__ == "__main__":
             history.run(os.environ.get("ALIO_KEY", "").strip(), call, [it for it in items if isinstance(it, dict)])
         except Exception as err:
             print("공고 예정 달력 오류(무시하고 계속):", repr(err))
+    try:   # 자격증 시험일정 (큐넷, 하루 한 번)
+        import qnet
+        qnet.run(os.environ.get("ALIO_KEY", "").strip())
+    except Exception as err:
+        print("자격증 시험일정 오류(무시하고 계속):", repr(err))
