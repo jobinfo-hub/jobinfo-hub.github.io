@@ -338,6 +338,26 @@ footer .src b{color:var(--ink)}
 .spintro .go{appearance:none;border:0;background:var(--brand);color:#fff;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
 .sheet-box input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
 .sheet-box .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* 준비 체크리스트 */
+.cklist{display:flex;flex-direction:column;gap:2px}
+.ck{appearance:none;display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:0;background:none;padding:7px 2px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;border-radius:8px;line-height:1.4}
+.ck .bx{flex:none;width:20px;height:20px;border:2px solid var(--line);border-radius:6px;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff}
+.ck[aria-pressed="true"] .bx{background:var(--green);border-color:var(--green)}
+.ck[aria-pressed="true"] .tx{color:var(--muted);text-decoration:line-through}
+.ck .tg{margin-left:auto;flex:none;font-size:11.5px;font-weight:700;color:var(--hot)}
+.ck .rm{margin-left:auto;flex:none;color:var(--muted);font-size:16px;padding:0 4px}
+.ckadd{display:flex;gap:6px;margin-top:6px}
+.ckadd input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:13.5px}
+.ckadd button{flex:none;appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:0 12px;font-weight:700;cursor:pointer;color:var(--brand)}
+.ckbar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 2px}
+.ckbar i{display:block;height:100%;background:var(--green);border-radius:99px}
+.cknext{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px}
+.cknext .nx{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.cknext button{flex:none;appearance:none;border:1px solid var(--green);background:var(--green-soft);color:var(--green);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;cursor:pointer}
+.ckpct{font-size:12px;font-weight:700;color:var(--green)}
+.ckbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px}
+.ckbox h3{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:8px}
+.ckbox .go{appearance:none;border:0;background:var(--brand);color:#fff;border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -392,6 +412,8 @@ footer .src b{color:var(--ink)}
   <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="orgs.html">🏢 기관별 정보</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224426850655"><div class="kind"><span class="pill p">마감 10.14(수) 11:00</span></div><div class="t">국토교통과학기술진흥원 채용 17명, 오전 11시 마감 주의</div></a></li>
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224425135559"><div class="kind"><span class="pill p">마감 10.14(수) 12:00</span></div><div class="t">서울대 · 2026 하반기 서울대 직원 채용 15명</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224427320213"><div class="kind"><span class="pill p">마감 10.14(수) 14:00</span></div><div class="t">한국서부발전 하반기 채용 — 116명 모집 조건</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224426713755"><div class="kind"><span class="pill p">마감 10.14(수) 18:00</span></div><div class="t">한국보건복지인재원 교수직 채용 — 박사 지원자격 1분 확인</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224425984450"><div class="kind"><span class="pill p">마감 10.14(수) 18:00</span></div><div class="t">한국식품연구원 채용 9명, 필수체크</div></a></li>
@@ -430,8 +452,6 @@ footer .src b{color:var(--ink)}
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224427080440"><div class="kind"><span class="pill p">마감 10.19(월)</span></div><div class="t">한국농어촌공사 채용 329명, 권역 모르면 손해</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433155457"><div class="kind"><span class="pill p">마감 10.20(화) 15:00</span></div><div class="t">자동차손해배상진흥원 전문직 채용 5명, 내 경력 2분 확인</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224432658020"><div class="kind"><span class="pill p">마감 10.20(화) 17:00</span></div><div class="t">부산대치과병원 의료사회복지사 채용, 지원 자격 1분 확인법</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433187856"><div class="kind"><span class="pill p">마감 10.20(화) 18:00</span></div><div class="t">한국언론진흥재단 채용, 놓치면 탈락하는 3가지</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435596158"><div class="kind"><span class="pill p">마감 10.20(화)</span></div><div class="t">중앙보훈병원 든든동행파트너, 면접 100% 승부</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224440240151"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">2026 40대 이후 취업 총정리｜방법·연봉·자격증</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224439563392"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">자소서 작성법 총정리｜2026 하반기 문항별 공식 12가지와 글자수 배분표｜무료 자소서 작성 AI프롬프트 배부</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435993032"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">산업안전기사 독학 합격 일정표, 2027 1회 16주 역산</div></a></li>
@@ -1110,17 +1130,66 @@ function renderTrack(now){
     parts.push(`<li class="trk-item"><div class="grow">
       <div class="o">${esc(a.org || "")} <span class="stpill st-${a.st}">${ST[a.st].label}</span></div>
       <a class="t" href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(cleanTitle(a.title))}</a>
-      ${meta.length ? `<div class="m">${esc(meta.join(" · "))}</div>` : ""}</div>
+      ${meta.length ? `<div class="m">${esc(meta.join(" · "))}</div>` : ""}
+      ${a.ck && a.ck.length ? (() => { const n = ckDone(a.ck), nx = a.ck.indexOf(ckNext(a.ck));
+        return `<div class="ckbar"><i style="width:${Math.round(n * 100 / a.ck.length)}%"></i></div>
+        <div class="cknext"><span class="ckpct">${n}/${a.ck.length}</span>${nx >= 0 ? `<span class="nx">다음: ${esc(a.ck[nx].t)}</span><button data-ckid="${esc(id)}" data-ck="${nx}">✓ 완료</button>` : `<span class="nx" style="color:var(--green);font-weight:700">준비 완료!</span>`}</div>`; })()
+        : `<div class="cknext"><button data-track="${esc(id)}">+ 준비 체크리스트 만들기</button></div>`}</div>
       <button class="ed" data-track="${esc(id)}">수정</button></li>`);
   });
   $("list").innerHTML = parts.join("");
 }
+// ── 공고별 준비 체크리스트: 공고의 전형 절차 문장을 읽어 항목을 자동으로 만듦 ──
+function genChecklist(p, det){
+  const proc = plainQ(det && det.scrnprcdrMthdExpln), qual = plainQ(det && det.aplyQlfcCn) + " " + plainQ(det && det.prefCondCn) + " " + plainQ(det && det.prefCn);
+  const all = proc + " " + qual + " " + (p ? [p.title, p.desc, p.text].join(" ") : "");
+  const known = !!proc.trim();
+  const L = [];
+  const add = (t, ph, k) => L.push({t, d:0, ph, k: k || ""});
+  add("공고문·지원 자격 꼼꼼히 확인", "pre");
+  if(/자격증|면허|어학|TOEIC|토익|경력증명|증명서|증빙/.test(all)) add("증빙 서류 준비 (자격증·어학·경력증명서 등)", "pre");
+  if(/가점|우대|보훈|취업지원대상|장애/.test(qual)) add("가점·우대 해당 여부 확인", "pre");
+  add(/자기소개서|자소서/.test(proc) || !known ? "입사지원서·자기소개서 작성" : "입사지원서 작성", "pre");
+  add("서류 제출 (접수 완료 확인)", "pre", "submit");
+  if(/인성/.test(proc)) add("인성검사 응시", "post");
+  if(/NCS|직업기초/.test(proc)) add("필기 준비: NCS 직업기초능력", "post");
+  if(/전공\s*(?:시험|필기|평가)|직무\s*(?:지식|수행)\s*(?:평가|시험)/.test(proc)) add("필기 준비: 전공·직무 시험", "post");
+  else if(/필기/.test(proc) && !/NCS|직업기초/.test(proc)) add("필기시험 준비", "post");
+  if(/논술/.test(proc)) add("논술 준비", "post");
+  if(/실기|실습|시연/.test(proc)) add("실기 평가 준비", "post");
+  if(/PT|발표/.test(proc)) add("발표(PT) 면접 준비", "post");
+  if(/면접/.test(proc) || !known) add("면접 준비 (1분 자기소개·예상 질문)", "post");
+  if(/신체검사|채용검진|건강검진/.test(proc)) add("채용 신체검사 받기", "post");
+  if(/서류\s*(?:원본|제출)|증빙\s*서류|구비서류/.test(proc + qual) && L.length < 12) add("합격 후 제출 서류(원본) 챙기기", "post");
+  return L;
+}
+const ckDone = ck => (ck || []).filter(x => x.d).length;
+const ckNext = ck => (ck || []).find(x => !x.d);
+function ckListHTML(ck, attr, editable){
+  return `<div class="cklist">${ck.map((x, i) => `<button class="ck" ${attr}="${i}" aria-pressed="${!!x.d}"><span class="bx">${x.d ? "✓" : ""}</span><span class="tx">${esc(x.t)}</span>${editable ? `<span class="rm" data-ckrm="${i}" aria-label="항목 삭제">×</span>` : ""}</button>`).join("")}</div>`;
+}
+function ckToggle(id, i){
+  const a = APPS[id]; if(!a || !a.ck || !a.ck[i]) return;
+  a.ck[i].d = a.ck[i].d ? 0 : 1; a.upd = Date.now();
+  if(a.ck[i].k === "submit" && a.ck[i].d && a.st === "plan"){ a.st = "applied"; toast("서류 제출 완료! 단계를 '지원 완료'로 바꿨어요."); }
+  else if(ckDone(a.ck) === a.ck.length) toast("체크리스트를 모두 끝냈어요 👏");
+  saveApps(); renderTabs(); render(); savedAlert(); if(JV) refreshJobView();
+}
+function ckBoxHTML(p){
+  const a = APPS[p.id];
+  if(!a) return `<div class="ckbox"><h3>✅ 준비 체크리스트</h3><p style="margin:0 0 10px;font-size:14px;color:var(--muted)">이 공고의 전형 절차에 맞춰 할 일(자소서·서류·인성검사·면접 등)을 만들어 드려요.</p><button class="go" data-track="${esc(p.id)}">체크리스트 만들기</button></div>`;
+  if(!a.ck || !a.ck.length) return "";
+  const n = ckDone(a.ck), pct = Math.round(n * 100 / a.ck.length);
+  return `<div class="ckbox"><h3>✅ 준비 체크리스트 <span class="ckpct">${n}/${a.ck.length}</span></h3><div class="ckbar"><i style="width:${pct}%"></i></div>${ckListHTML(a.ck, `data-ckid="${esc(p.id)}" data-ck`, false)}</div>`;
+}
 let TDRAFT = null, TID = null;
-function openTrack(id){
+async function openTrack(id){
   const p = POSTS.find(x => x.id === id);
   const a = APPS[id] || {st:"plan"};
+  if(!a.ck && p && p.alio && !ALIO_DETAIL) await alioDetail();
   TID = id;
-  TDRAFT = {st:a.st, exam:a.exam || "", itv:a.itv || "", memo:a.memo || ""};
+  TDRAFT = {st:a.st, exam:a.exam || "", itv:a.itv || "", memo:a.memo || "",
+    ck: a.ck ? JSON.parse(JSON.stringify(a.ck)) : genChecklist(p, p && p.alio ? (ALIO_DETAIL || {})[id] : null)};
   const name = p ? (p.org || "") + " " + cleanTitle(p.title) : (a.org || "") + " " + cleanTitle(a.title || "");
   sheet(`<p style="margin:0 0 12px;font-weight:600;font-size:14px;line-height:1.45">${esc(name.trim())}</p>
     <div class="grp"><span>진행 단계</span><div class="chips">${ST_ORDER.map(s =>
@@ -1128,16 +1197,20 @@ function openTrack(id){
     <div class="grp"><span>전형 일정 (겹치면 알려드려요)</span><div class="dates">
       <label style="font-size:12.5px;color:var(--muted)">필기시험일<input type="date" id="tExam" value="${esc(TDRAFT.exam)}"></label>
       <label style="font-size:12.5px;color:var(--muted)">면접일<input type="date" id="tItv" value="${esc(TDRAFT.itv)}"></label></div></div>
+    <div class="grp"><span>준비 체크리스트 ${a.ck ? "" : "(이 공고의 전형 절차에 맞춰 자동으로 만들었어요)"}</span><div id="tCk">${ckListHTML(TDRAFT.ck, "data-tck", true)}</div>
+      <div class="ckadd"><input type="text" id="tCkNew" maxlength="40" placeholder="항목 추가 (예: 증명사진 준비)"><button id="tCkAdd">추가</button></div></div>
     <div class="grp"><span>메모</span><textarea id="tMemo" placeholder="예: 자소서 3번 문항 다시 보기, 수험번호 1234">${esc(TDRAFT.memo)}</textarea></div>
     <div class="row">${APPS[id] ? '<button id="tDel" class="danger">기록 삭제</button>' : '<button onclick="closeSheet()">취소</button>'}<button class="primary" id="tSave">저장</button></div>`, "📋 지원 기록");
+  $("tCkNew").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); $("tCkAdd").click(); } });
 }
 function saveTrack(){
   const p = POSTS.find(x => x.id === TID), old = APPS[TID] || {};
   APPS[TID] = {
-    st: TDRAFT.st, exam: $("tExam").value, itv: $("tItv").value, memo: $("tMemo").value.trim().slice(0, 200),
+    st: TDRAFT.st, ck: TDRAFT.ck, exam: $("tExam").value, itv: $("tItv").value, memo: $("tMemo").value.trim().slice(0, 200),
     title: p ? p.title : old.title, org: p ? (p.org || "") : old.org, url: p ? p.url : old.url,
     due: p && p.due ? p.due.toISOString() : old.due || null, upd: Date.now()
   };
+  if(TDRAFT.st !== "plan" && TDRAFT.st !== old.st) APPS[TID].ck.forEach(x => { if(x.ph === "pre") x.d = 1; });
   saveApps(); closeSheet(); renderTabs(); render(); savedAlert(); if(JV) refreshJobView();
   toast("지원 기록을 저장했어요. '📋 내 지원' 탭에서 모아 볼 수 있어요.");
 }
@@ -1225,6 +1298,7 @@ function jobViewHTML(p, det){
       <dl class="jv-grid">${rows.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
     </div>
     ${specBoxHTML(p, det)}
+    ${det === null ? "" : ckBoxHTML(p)}
     ${det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
@@ -1303,6 +1377,19 @@ document.addEventListener("click", e => {
   else if(t.dataset.track){ openTrack(t.dataset.track); }
   else if(t.dataset.stpick){ TDRAFT.st = t.dataset.stpick; document.querySelectorAll("[data-stpick]").forEach(b => b.setAttribute("aria-pressed", b.dataset.stpick === TDRAFT.st)); }
   else if(t.id === "tSave"){ saveTrack(); }
+  else if(t.dataset.tck !== undefined){
+    const i = +t.dataset.tck;
+    if(e.target.closest("[data-ckrm]")){ TDRAFT.ck.splice(i, 1); }
+    else TDRAFT.ck[i].d = TDRAFT.ck[i].d ? 0 : 1;
+    $("tCk").innerHTML = ckListHTML(TDRAFT.ck, "data-tck", true);
+  }
+  else if(t.id === "tCkAdd"){
+    const v = $("tCkNew").value.trim(); if(!v) return;
+    const at = TDRAFT.ck.findIndex(x => x.k === "submit");
+    TDRAFT.ck.splice(at >= 0 && TDRAFT.st === "plan" ? at : TDRAFT.ck.length, 0, {t:v.slice(0, 40), d:0, ph:"pre", k:""});
+    $("tCkNew").value = ""; $("tCk").innerHTML = ckListHTML(TDRAFT.ck, "data-tck", true);
+  }
+  else if(t.dataset.ckid){ ckToggle(t.dataset.ckid, +t.dataset.ck); }
   else if(t.id === "tDel"){ if(confirm("이 지원 기록을 삭제할까요?")){ delete APPS[TID]; saveApps(); closeSheet(); renderTabs(); render(); savedAlert(); } }
   else if(t.dataset.tab){ state.tab = t.dataset.tab; refresh(); }
   else if(t.dataset.cat !== undefined){ state.cat = t.dataset.cat || null; refresh(); }
@@ -1465,6 +1552,15 @@ function savedAlert(){
   if(ev.length){
     const f = ev[0];
     el.innerHTML = `🗓 ${f.date === ymd(now) ? "오늘" : ymdLabel(f.date)} ${esc(f.name)} ${f.label}` + (ev.length > 1 ? ` 외 ${ev.length - 1}건` : "") + " · 3일 안에 전형 일정이 있어요";
+    el.hidden = false;
+    el.onclick = () => { state.tab = "track"; refresh(); el.scrollIntoView({block:"start"}); };
+    return;
+  }
+  const todo = Object.entries(APPS).filter(([id, a]) => a.st === "plan" && a.due && a.ck && a.ck.some(x => x.ph === "pre" && !x.d))
+    .map(([id, a]) => ({id, a, due:new Date(a.due)})).filter(x => now < x.due && x.due - now < 3*864e5).sort((x, y) => x.due - y.due);
+  if(todo.length){
+    const f = todo[0], left = f.a.ck.filter(x => x.ph === "pre" && !x.d).length, d = dday({due:f.due}, now);
+    el.innerHTML = `✅ ${d ? d.big : "곧"} ${esc(f.a.org || cleanTitle(f.a.title).slice(0, 14))} 마감 · 제출 전 할 일 ${left}개 남았어요` + (todo.length > 1 ? ` (외 ${todo.length - 1}곳)` : "");
     el.hidden = false;
     el.onclick = () => { state.tab = "track"; refresh(); el.scrollIntoView({block:"start"}); };
     return;
