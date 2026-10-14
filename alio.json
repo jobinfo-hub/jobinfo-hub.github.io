@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T16:34:23+09:00",
+ "updated": "2026-10-14T17:26:07+09:00",
  "posts": [
   {
    "id": "a305887",
@@ -6406,6 +6406,52 @@
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
   },
   {
+   "id": "a306011",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[광주보훈병원] 의사직(일반의) 직원 채용",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306011",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "비정규직 학력무관 전남광주 보건.의료",
+   "n": "2",
+   "src": "https://www.bohun.or.kr/gwangju/na/ntt/selectNttInfo.do?mi=32890&bbsId=1158&bbsSysId=gwangju&nttSn=190404"
+  },
+  {
+   "id": "a306010",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[소백산] 소백산사무소 기간제(한시인력) 산불감시원 채용",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306010",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "비정규직 학력무관 경북 경비.청소 환경.에너지.안전",
+   "n": "2",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019900"
+  },
+  {
    "id": "a305989",
    "type": "j",
    "alio": true,
@@ -7497,6 +7543,52 @@
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
   },
   {
+   "id": "a306009",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제5회 공개채용",
+   "org": "한국기상산업기술원",
+   "desc": "사업관리 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306009",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 대전 충북 사업관리 환경.에너지.안전",
+   "n": "12",
+   "src": "https://kmiti.recruitlab.co.kr/"
+  },
+  {
+   "id": "a306008",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "자금운용 전문계약직(해외투자팀장) 채용 재공고",
+   "org": "공무원연금공단",
+   "desc": "금융.보험",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306008",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 금융.보험",
+   "n": "1",
+   "src": "https://www.geps.or.kr/notiCommunication_info_incruit/43372?curPage=1"
+  },
+  {
    "id": "a306007",
    "type": "j",
    "alio": true,
@@ -8442,6 +8534,27 @@
    "text": "비정규직 박사 대전 연구",
    "n": "4",
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
+  },
+  {
+   "id": "a306012",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "KDI 연구위원급 채용 공고",
+   "org": "한국개발연구원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306012",
+   "pub": "2026-10-14T00:00:00+09:00",
+   "due": "2026-12-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [],
+   "region": "세종",
+   "text": "정규직 박사 세종 연구",
+   "n": "8",
+   "src": "https://www.kdi.re.kr/share/recruitView?rec_no=307&pg=1&rec_type="
   },
   {
    "id": "a294385",
