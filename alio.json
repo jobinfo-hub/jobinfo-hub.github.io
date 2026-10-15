@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T09:24:28+09:00",
+ "updated": "2026-10-15T11:23:45+09:00",
  "posts": [
   {
    "id": "a305873",
@@ -3269,6 +3269,29 @@
    "src": "https://www.nrf.re.kr/page/54?ac=view&searchType=&searchText=&pageNum=1&menuNo=54&boardNo=7&menuTypeCd=MENU_TYPE_02&code=&postNo=282771"
   },
   {
+   "id": "a306039",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 10월 제2차 임시직원 모집 공고(간호조무, 기계설비, 응급구조사, 장례물품판매, 임상병리사)",
+   "org": "경북대학교병원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306039",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-20T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 보건.의료",
+   "n": "5",
+   "src": "https://www.knuh.kr/content/04information/02_01.asp"
+  },
+  {
    "id": "a305990",
    "type": "j",
    "alio": true,
@@ -4501,6 +4524,52 @@
    "text": "비정규직 학력무관 서울 경영.회계.사무 사회복지.종교",
    "n": "10",
    "src": "https://lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734317&tag=&nPage=1"
+  },
+  {
+   "id": "a306043",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 보령권지사 단기계약근로자(도수로 및 정수장 시설운영관리) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "건설 · 기계 · 전기.전자",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306043",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "2",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a306040",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] SKH산업용수관리단 단기계약근로자(수탁운영_산업용수 시설운영(교대근무)) 채용 공고(육아휴직 대체인력)",
+   "org": "한국수자원공사",
+   "desc": "건설 · 기계 · 전기.전자",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306040",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 경기 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr"
   },
   {
    "id": "a306033",
@@ -7445,6 +7514,75 @@
    "src": "https://ibs.recruiter.co.kr/career/job"
   },
   {
+   "id": "a306038",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[대구보훈병원] 계약직 기능직(간호조무사), 업무지원직(청소) 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료 · 경비.청소",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306038",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 보건.의료 경비.청소",
+   "n": "2",
+   "src": "https://www.bohun.or.kr/daegu/na/ntt/selectNttList.do?mi=33151&bbsId=1158"
+  },
+  {
+   "id": "a306037",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 영·섬유역협력단 김제현대화사업소 '26년 노후 상수관망 정비사업 특수직(기술관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "사업관리 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306037",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 사업관리 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "2",
+   "src": "https://k-water.recruiter.co.kr"
+  },
+  {
+   "id": "a306036",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 영·섬유역협력단 진안현대화사업소 '26년 노후 상수관망 정비사업 특수직(기술관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "사업관리 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306036",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 사업관리 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr"
+  },
+  {
    "id": "a306034",
    "type": "j",
    "alio": true,
@@ -7941,6 +8079,96 @@
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
   },
   {
+   "id": "a306045",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 대체인력(일반사무) 공개채용 공고",
+   "org": "영화진흥위원회",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306045",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "부산",
+   "text": "비정규직 학력무관 부산 경영.회계.사무",
+   "n": "1",
+   "src": "https://kofic.or.kr/kofic/business/board/selectBoardDetail.do?boardNumber=4&boardSeqNumber=76028"
+  },
+  {
+   "id": "a306042",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[KDI국제정책대학원] 2026년 제10차 위촉직 채용 공고(교육행정)",
+   "org": "KDI국제정책대학원",
+   "desc": "교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306042",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "세종",
+   "text": "비정규직 학력무관 세종 교육.자연.사회과학",
+   "n": "1",
+   "src": "https://kdischool.recruiter.co.kr"
+  },
+  {
+   "id": "a306041",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2027년도 간호직(졸업예정자) 채용공고",
+   "org": "국립암센터",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306041",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [],
+   "region": "경기",
+   "text": "정규직 대졸(2~3년) 대졸(4년) 경기 보건.의료",
+   "n": "320",
+   "src": "https://ncc.recruiter.co.kr/career/jobs/131278"
+  },
+  {
+   "id": "a306035",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울동부혈액원 비정규직 한시적 기간제(사무보조원) 채용 공고",
+   "org": "대한적십자사",
+   "desc": "경영.회계.사무 · 영업판매",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306035",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 경영.회계.사무 영업판매",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit/"
+  },
+  {
    "id": "a306006",
    "type": "j",
    "alio": true,
@@ -8190,6 +8418,29 @@
    "text": "비정규직 학력무관 서울 운전.운송",
    "n": "65",
    "src": "https://www.pola.or.kr"
+  },
+  {
+   "id": "a306046",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 6차 정규직 제한경쟁 채용 공고",
+   "org": "한국나노기술원",
+   "desc": "경영.회계.사무 · 보건.의료 · 연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306046",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "정규직 학력무관 박사 경기 경영.회계.사무 보건.의료 연구",
+   "n": "4",
+   "src": "https://www.kanc.re.kr/gnb04/snb02_02.do?mode=view&page=&cid=5716&hcid=39"
   },
   {
    "id": "a305911",
