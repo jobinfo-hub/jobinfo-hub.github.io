@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T16:35:00+09:00",
+ "updated": "2026-10-15T17:25:52+09:00",
  "posts": [
   {
    "id": "a305873",
@@ -7765,6 +7765,51 @@
    "src": "https://ibs.recruiter.co.kr/career/job"
   },
   {
+   "id": "a306069",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한전KDN(주) 용인지사 OA설비 유지보수 일용근로자 모집공고",
+   "org": "한전KDN",
+   "desc": "정보통신",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306069",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 경기 정보통신",
+   "n": "1"
+  },
+  {
+   "id": "a306066",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 국토안전관리원 장애인 체험형 인턴 채용 공고",
+   "org": "국토안전관리원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306066",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경남",
+   "text": "비정규직 학력무관 경남 경영.회계.사무",
+   "n": "10",
+   "src": "https://www.kalis.or.kr/www/brd/m_630/view.do?seq=324&srchFr=&srchTo=&srchWord=&srchTp=&itm_seq_1=0&itm_seq_2=0&multi_itm_seq=0&company_cd=&company_nm=&p_stat=&p_itmseq1=&diviTp="
+  },
+  {
    "id": "a306065",
    "type": "j",
    "alio": true,
@@ -8420,6 +8465,29 @@
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
   },
   {
+   "id": "a306067",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 사립학교교직원연금공단 공무직(운전원) 채용 공고",
+   "org": "사립학교교직원연금공단",
+   "desc": "경영.회계.사무 · 운전.운송",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306067",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "무기계약직 학력무관 서울 전남광주 경영.회계.사무 운전.운송",
+   "n": "2",
+   "src": "https://tp.careerlink.kr/"
+  },
+  {
    "id": "a306064",
    "type": "j",
    "alio": true,
@@ -8956,6 +9024,30 @@
    "text": "정규직 박사 경기 보건.의료",
    "n": "1",
    "src": "https://ncc.recruiter.co.kr/career/jobs/131033"
+  },
+  {
+   "id": "a306068",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[제2026-119호]2026년도 제6차 경기도장애아동·발달장애인지원센터 기간제 계약직(육휴대체) 및 체험형 청년인턴(제한경쟁) 채용 공고",
+   "org": "한국장애인개발원",
+   "desc": "사회복지.종교",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306068",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-11-16T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴",
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 청년인턴(체험형) 학력무관 경기 사회복지.종교",
+   "n": "2",
+   "src": "https://koddicpdd.fairyhr.com/"
   },
   {
    "id": "a305734",
