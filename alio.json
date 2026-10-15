@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T20:23:30+09:00",
+ "updated": "2026-10-15T21:28:32+09:00",
  "posts": [
   {
    "id": "a305873",
@@ -8532,6 +8532,140 @@
    "text": "비정규직 학력무관 중졸이하 고졸 대졸(2~3년) 대졸(4년) 석사 전남광주 경영.회계.사무 보건.의료 음식서비스",
    "n": "2",
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
+  },
+  {
+   "id": "a306088",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국석유공사 2026년 직원(기간제) 채용 공고",
+   "org": "한국석유공사",
+   "desc": "경영.회계.사무 · 문화.예술.디자인.방송",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306088",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "울산",
+   "text": "비정규직 학력무관 울산 경영.회계.사무 문화.예술.디자인.방송",
+   "n": "2",
+   "src": "https://knoc.recruitlab.co.kr/"
+  },
+  {
+   "id": "a306087",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국석유공사 2026년 직원(무기계약직) 채용 공고",
+   "org": "한국석유공사",
+   "desc": "경영.회계.사무 · 법률.경찰.소방.교도.국방",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306087",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "울산",
+   "text": "무기계약직 학력무관 울산 전남광주 경영.회계.사무 법률.경찰.소방.교도.국방",
+   "n": "2",
+   "src": "https://knoc.recruitlab.co.kr/"
+  },
+  {
+   "id": "a306086",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국석유공사 2026년 직원(경력직) 채용 공고",
+   "org": "한국석유공사",
+   "desc": "경영.회계.사무 · 법률.경찰.소방.교도.국방 · 건설",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306086",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "울산",
+   "text": "정규직 학력무관 대졸(4년) 울산 경영.회계.사무 법률.경찰.소방.교도.국방 건설 정보통신",
+   "n": "5",
+   "src": "https://knoc.recruitlab.co.kr/"
+  },
+  {
+   "id": "a306085",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국석유공사 2026년 직원(개방형 계약직) 채용 공고",
+   "org": "한국석유공사",
+   "desc": "건설 · 정보통신",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306085",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "울산",
+   "text": "비정규직 대졸(4년) 석사 박사 울산 건설 정보통신",
+   "n": "2",
+   "src": "https://knoc.recruitlab.co.kr/"
+  },
+  {
+   "id": "a306084",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 하반기 한국과학창의재단 직원(연구직) 채용 공고",
+   "org": "한국과학창의재단",
+   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306084",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 사업관리 경영.회계.사무 교육.자연.사회과학",
+   "n": "6",
+   "src": "https://kosac.careerlink.kr/"
+  },
+  {
+   "id": "a306083",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 한국산업기술시험원 위촉계약직 사회형평인재 특별채용",
+   "org": "한국산업기술시험원",
+   "desc": "경영.회계.사무 · 연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306083",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "서울",
+   "text": "비정규직 대졸(4년) 서울 경영.회계.사무 연구",
+   "n": "1",
+   "src": "https://ktl.careerlink.kr"
   },
   {
    "id": "a306082",
