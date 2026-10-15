@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T14:22:21+09:00",
+ "updated": "2026-10-15T15:27:56+09:00",
  "posts": [
   {
    "id": "a305873",
@@ -4618,6 +4618,75 @@
    "src": "https://lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734317&tag=&nPage=1"
   },
   {
+   "id": "a306062",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[정선병원] 청년(체험형)인턴 일반전형 채용 공고",
+   "org": "근로복지공단",
+   "desc": "경영.회계.사무 · 보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306062",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "청년인턴(체험형) 학력무관 강원 경영.회계.사무 보건.의료",
+   "n": "2",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306058",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[정선병원] 청년(체험형)인턴 장애전형 채용 공고",
+   "org": "근로복지공단",
+   "desc": "경영.회계.사무 · 보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306058",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "청년인턴(체험형) 학력무관 강원 경영.회계.사무 보건.의료",
+   "n": "2",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306056",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[정선병원] 공무직(영선·조경기사) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료 · 인쇄.목재.가구.공예",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306056",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "무기계약직 학력무관 강원 보건.의료 인쇄.목재.가구.공예",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
    "id": "a306055",
    "type": "j",
    "alio": true,
@@ -7127,6 +7196,29 @@
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
   },
   {
+   "id": "a306057",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국도로공사 교통처 기간제근로자(사무원) 채용공고",
+   "org": "한국도로공사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306057",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "비정규직 학력무관 경북 경영.회계.사무",
+   "n": "2",
+   "src": "https://www.ex.co.kr"
+  },
+  {
    "id": "a306015",
    "type": "j",
    "alio": true,
@@ -7671,6 +7763,29 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306060",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국특허기술진흥원 기간제계약직(보훈특별고용, 청소원) 채용 안내",
+   "org": "한국특허기술진흥원",
+   "desc": "법률.경찰.소방.교도.국방 · 경비.청소",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306060",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 대전 법률.경찰.소방.교도.국방 경비.청소",
+   "n": "2",
+   "src": "https://www.kipro.or.kr/board/recruitment/view/195"
   },
   {
    "id": "a306048",
