@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T13:23:14+09:00",
+ "updated": "2026-10-15T14:22:21+09:00",
  "posts": [
   {
    "id": "a305873",
@@ -2293,6 +2293,75 @@
    "src": "https://www.redcross.or.kr/redrecruit/"
   },
   {
+   "id": "a306054",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한전KPS(주) 신보령사업소 2026년도 경상정비공사 사무보조 단기노무원 모집",
+   "org": "한전KPS(주)",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306054",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-19T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.kps.co.kr"
+  },
+  {
+   "id": "a306050",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[팔공산동부] 2026년 팔공산국립공원동부사무소 한시인력(수익시설) 직원 채용",
+   "org": "국립공원공단",
+   "desc": "이용.숙박.여행.오락.스포츠",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306050",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-19T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 이용.숙박.여행.오락.스포츠",
+   "n": "2",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019904"
+  },
+  {
+   "id": "a306049",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[팔공산동부] 2026년 팔공산국립공원동부사무소 가을철 한시인력(산불감시) 직원 채용",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 농림어업",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306049",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-19T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 경비.청소 농림어업",
+   "n": "8",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019903"
+  },
+  {
    "id": "a305945",
    "type": "j",
    "alio": true,
@@ -4547,6 +4616,73 @@
    "text": "비정규직 학력무관 서울 경영.회계.사무 사회복지.종교",
    "n": "10",
    "src": "https://lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734317&tag=&nPage=1"
+  },
+  {
+   "id": "a306055",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[근로복지공단] 공단본부 장애인 청년(체험형)인턴 채용 공고",
+   "org": "근로복지공단",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306055",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "울산",
+   "text": "청년인턴(체험형) 학력무관 울산 경영.회계.사무",
+   "n": "3",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306053",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "채용형 인턴 채용공고(주택관리공단 전북지사)",
+   "org": "주택관리공단(주)",
+   "desc": "건설 · 기계 · 전기.전자",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306053",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "청년인턴(채용형) 학력무관 전북 건설 기계 전기.전자 환경.에너지.안전",
+   "n": "2"
+  },
+  {
+   "id": "a306051",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "육아휴직 대체직 채용공고(주택관리공단 대구경북지사)",
+   "org": "주택관리공단(주)",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306051",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 경북 경영.회계.사무",
+   "n": "1"
   },
   {
    "id": "a306043",
