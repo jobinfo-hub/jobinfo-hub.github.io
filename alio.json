@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T17:25:52+09:00",
+ "updated": "2026-10-15T18:26:17+09:00",
  "posts": [
   {
    "id": "a305873",
@@ -4618,6 +4618,52 @@
    "src": "https://lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734317&tag=&nPage=1"
   },
   {
+   "id": "a306073",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 한국폴리텍대학 영주캠퍼스 체험형 청년인턴(장애) 채용",
+   "org": "학교법인한국폴리텍",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306073",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "청년인턴(체험형) 학력무관 경북 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.kopo.ac.kr/yeongju/board.do?menu=6234&mode=view&post=787219"
+  },
+  {
+   "id": "a306072",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 의료요원(진료의사) 26차 초빙(긴급) 공고",
+   "org": "경북대학교병원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306072",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "정규직 학력무관 대구 보건.의료",
+   "n": "1",
+   "src": "https://www.knuh.kr/content/04information/02_01.asp"
+  },
+  {
    "id": "a306062",
    "type": "j",
    "alio": true,
@@ -5586,6 +5632,29 @@
    "text": "비정규직 학력무관 전북 경영.회계.사무 사회복지.종교",
    "n": "1",
    "src": "https://www.kywa.or.kr/about/about05_5_view.jsp?bgubun=&currPage=1&searchText=&searchColumn=&searchTextEn=&bgubun=&no=36828"
+  },
+  {
+   "id": "a306071",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[국립공원연구원] 국립공원연구원 기간제[제한경쟁(취업지원대상자), 한시인력, 사무행정] 직원 채용",
+   "org": "국립공원공단",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306071",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-23T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019908"
   },
   {
    "id": "a305961",
@@ -8465,6 +8534,30 @@
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
   },
   {
+   "id": "a306068",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[제2026-119호]2026년도 제6차 경기도장애아동·발달장애인지원센터 기간제 계약직(육휴대체) 및 체험형 청년인턴(제한경쟁) 채용 공고",
+   "org": "한국장애인개발원",
+   "desc": "사회복지.종교",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306068",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴",
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 청년인턴(체험형) 학력무관 경기 사회복지.종교",
+   "n": "2",
+   "src": "https://koddicpdd.fairyhr.com/"
+  },
+  {
    "id": "a306067",
    "type": "j",
    "alio": true,
@@ -8850,6 +8943,29 @@
    "src": "https://www.pola.or.kr"
   },
   {
+   "id": "a306070",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[전북혈액원] 비정규직 초단시간 근로자(임상병리사) 채용공고(3차)",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306070",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-11-01T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
    "id": "a306046",
    "type": "j",
    "alio": true,
@@ -9024,30 +9140,6 @@
    "text": "정규직 박사 경기 보건.의료",
    "n": "1",
    "src": "https://ncc.recruiter.co.kr/career/jobs/131033"
-  },
-  {
-   "id": "a306068",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "[제2026-119호]2026년도 제6차 경기도장애아동·발달장애인지원센터 기간제 계약직(육휴대체) 및 체험형 청년인턴(제한경쟁) 채용 공고",
-   "org": "한국장애인개발원",
-   "desc": "사회복지.종교",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=306068",
-   "pub": "2026-10-15T00:00:00+09:00",
-   "due": "2026-11-16T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "인턴",
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "경기",
-   "text": "비정규직 청년인턴(체험형) 학력무관 경기 사회복지.종교",
-   "n": "2",
-   "src": "https://koddicpdd.fairyhr.com/"
   },
   {
    "id": "a305734",
