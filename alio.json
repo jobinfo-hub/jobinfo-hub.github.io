@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T09:53:32+09:00",
+ "updated": "2026-10-16T10:26:06+09:00",
  "posts": [
   {
    "id": "a305980",
@@ -6915,6 +6915,29 @@
    "src": "https://ibs.recruiter.co.kr/career/job"
   },
   {
+   "id": "a306091",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국관세정보원 2026년도 제3차 직원(관세행정운영본부장) 채용공고",
+   "org": "한국관세정보원",
+   "desc": "경영.회계.사무 · 정보통신",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306091",
+   "pub": "2026-10-15T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대전",
+   "text": "비정규직 학력무관 대전 경영.회계.사무 정보통신",
+   "n": "1",
+   "src": "https://kcits.hubst.co.kr"
+  },
+  {
    "id": "a306069",
    "type": "j",
    "alio": true,
@@ -6958,29 +6981,6 @@
    "text": "비정규직 학력무관 경남 경영.회계.사무",
    "n": "10",
    "src": "https://www.kalis.or.kr/www/brd/m_630/view.do?seq=324&srchFr=&srchTo=&srchWord=&srchTp=&itm_seq_1=0&itm_seq_2=0&multi_itm_seq=0&company_cd=&company_nm=&p_stat=&p_itmseq1=&diviTp="
-  },
-  {
-   "id": "a306065",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "한국관세정보원 2026년도 제3차 직원(관세행정운영본부장) 채용공고",
-   "org": "한국관세정보원",
-   "desc": "경영.회계.사무 · 정보통신",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=306065",
-   "pub": "2026-10-15T00:00:00+09:00",
-   "due": "2026-10-29T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "대전",
-   "text": "비정규직 학력무관 대전 경영.회계.사무 정보통신",
-   "n": "1",
-   "src": "https://kcits.hubst.co.kr"
   },
   {
    "id": "a306063",
