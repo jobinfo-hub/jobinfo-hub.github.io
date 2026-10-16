@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T19:25:04+09:00",
+ "updated": "2026-10-16T22:33:45+09:00",
  "posts": [
   {
    "id": "a305980",
@@ -8685,6 +8685,31 @@
    "text": "비정규직 학력무관 전북 보건.의료",
    "n": "1",
    "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306125",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제1차 직원(일반정규직, 실무직(보훈제한경쟁 포함), 조사직, 기간제 근로자, 체험형 청년인턴(장애인 제한경쟁채용 포함) 채용 공고",
+   "org": "한국수산자원공단",
+   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306125",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "정규직",
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전국",
+   "text": "정규직 무기계약직 비정규직 청년인턴(체험형) 학력무관 대졸(2~3년) 대졸(4년) 석사 박사 부산 경기 강원 전북 전남광주 경북 제주 사업관리 경영.회계.사무 교육.자연.사회과학 건설 환경.에너지.안전 농림어업 연구",
+   "n": "79",
+   "src": "https://www.fira.or.kr/newfira/web/news/news01_02.jsp?mode=view&article_no=35879&board_wrapper=%2Fnewfira%2Fweb%2Fnews%2Fnews01_02.jsp&pager.offset=0&board_no=3"
   },
   {
    "id": "a306116",
