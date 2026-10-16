@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T17:24:14+09:00",
+ "updated": "2026-10-16T18:25:25+09:00",
  "posts": [
   {
    "id": "a305980",
@@ -5299,6 +5299,52 @@
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
   },
   {
+   "id": "a306123",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[광주보훈병원] 계약직 업무지원직(진료지원) 직원 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306123",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "비정규직 학력무관 전남광주 보건.의료",
+   "n": "3",
+   "src": "https://www.bohun.or.kr/gwangju/na/ntt/selectNttInfo.do?mi=32890&bbsId=1158&bbsSysId=gwangju&nttSn=190473"
+  },
+  {
+   "id": "a306122",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[광주보훈병원] 계약직 보건직(작업치료사) - 휴직대체 직원 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306122",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "비정규직 학력무관 전남광주 보건.의료",
+   "n": "1",
+   "src": "https://www.bohun.or.kr/gwangju/na/ntt/selectNttInfo.do?mi=32890&bbsId=1158&bbsSysId=gwangju&nttSn=190472"
+  },
+  {
    "id": "a306114",
    "type": "j",
    "alio": true,
@@ -7749,6 +7795,31 @@
    "text": "비정규직 학력무관 중졸이하 고졸 대졸(2~3년) 대졸(4년) 석사 전남광주 경영.회계.사무 보건.의료 음식서비스",
    "n": "2",
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
+  },
+  {
+   "id": "a306121",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 한국여성인권진흥원 제6차 채용 공고",
+   "org": "한국여성인권진흥원",
+   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306121",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "계약직"
+   ],
+   "edu": [
+    "학력무관",
+    "고졸 가능"
+   ],
+   "region": "서울",
+   "text": "무기계약직 비정규직 학력무관 고졸 대졸(2~3년) 대졸(4년) 서울 사업관리 경영.회계.사무 교육.자연.사회과학 사회복지.종교",
+   "n": "8",
+   "src": "https://www.stop.or.kr/home/kor/M810741449/board.do?deleteAt=N&act=detail&idx=cb00d1a0008a85e71a41b8741facbffedbc6102471471ae2d4a252417ad38c33&searchValue1=0&searchKeyword=&searchDate5=&searchDate6=&pageIndex=1"
   },
   {
    "id": "a306108",
