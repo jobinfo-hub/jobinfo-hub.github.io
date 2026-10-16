@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T15:26:53+09:00",
+ "updated": "2026-10-16T16:31:32+09:00",
  "posts": [
   {
    "id": "a305980",
@@ -3720,6 +3720,29 @@
    "text": "비정규직 학력무관 서울 경영.회계.사무 사회복지.종교",
    "n": "10",
    "src": "https://lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734317&tag=&nPage=1"
+  },
+  {
+   "id": "a306113",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "우체국물류지원단 서울지사 동서울물류사업소 기간제(발착직) 채용 공고",
+   "org": "(재)우체국물류지원단",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306113",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-22T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 운전.운송",
+   "n": "8",
+   "src": "https://www.pola.or.kr"
   },
   {
    "id": "a306073",
@@ -7705,6 +7728,29 @@
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
   },
   {
+   "id": "a306108",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 2차 한국자산관리공사 장애인 단기계약직 채용 공고",
+   "org": "한국자산관리공사",
+   "desc": "이용.숙박.여행.오락.스포츠",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306108",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "부산",
+   "text": "비정규직 학력무관 부산 이용.숙박.여행.오락.스포츠",
+   "n": "3",
+   "src": "https://kamcointern.saramin.co.kr/service/kamcointern/4015/applicant/apply/recruit_default.asp"
+  },
+  {
    "id": "a306099",
    "type": "j",
    "alio": true,
@@ -8158,7 +8204,7 @@
    "region": "경기",
    "text": "정규직 학력무관 경기 전기.전자",
    "n": "1",
-   "src": "https://newhome.bohun.or.kr/bohunedu/na/ntt/selectNttList.do?mi=34395&bbsId=1403"
+   "src": "https://www.bohun.or.kr/bohunedu/na/ntt/selectNttInfo.do?mi=34395&bbsId=1403&bbsSysId=bohunedu&nttSn=190418"
   },
   {
    "id": "a306042",
@@ -8522,6 +8568,75 @@
    "text": "비정규직 학력무관 전북 보건.의료",
    "n": "1",
    "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306112",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국원산지정보원 FTA총괄본부장(개방형 직위) 공개모집",
+   "org": "한국원산지정보원",
+   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306112",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 경기 사업관리 경영.회계.사무 교육.자연.사회과학 연구",
+   "n": "1",
+   "src": "https://www.origin.or.kr/lay1/bbs/S1T12C49/A/12/view.do?article_seq=1754&cpage=&rows=&condition=&keyword="
+  },
+  {
+   "id": "a306110",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국보건사회연구원 청년인턴 채용 공고(학술정보 및 홍보 분야)",
+   "org": "한국보건사회연구원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306110",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "고졸 가능"
+   ],
+   "region": "세종",
+   "text": "청년인턴(체험형) 고졸 세종 경영.회계.사무",
+   "n": "3",
+   "src": "https://kihasa.recruiter.co.kr"
+  },
+  {
+   "id": "a306109",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[강원혈액원] 2026년 장애인 한시적근로자(운전원) 채용 공고",
+   "org": "대한적십자사",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306109",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 운전.운송",
+   "n": "1",
+   "src": "https://www.bloodinfo.net/knrcbs/na/ntt/selectNttInfo.do?mi=1088&bbsId=1044&nttSn=559174"
   },
   {
    "id": "a306107",
