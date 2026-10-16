@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T16:31:32+09:00",
+ "updated": "2026-10-16T17:24:14+09:00",
  "posts": [
   {
    "id": "a305980",
@@ -5299,6 +5299,29 @@
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
   },
   {
+   "id": "a306114",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[고객센터] 공무직(일반상담사) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306114",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "인천",
+   "text": "무기계약직 학력무관 인천 울산 전남광주 경영.회계.사무",
+   "n": "12",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
    "id": "a306096",
    "type": "j",
    "alio": true,
@@ -8568,6 +8591,27 @@
    "text": "비정규직 학력무관 전북 보건.의료",
    "n": "1",
    "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306116",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "건축공간연구원 위촉직 모집",
+   "org": "건축공간연구원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306116",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "세종",
+   "text": "비정규직 석사 세종 연구",
+   "n": "1",
+   "src": "https://recruit.auri.re.kr"
   },
   {
    "id": "a306112",
