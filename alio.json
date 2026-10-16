@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T10:26:06+09:00",
+ "updated": "2026-10-16T11:24:05+09:00",
  "posts": [
   {
    "id": "a305980",
@@ -5209,6 +5209,29 @@
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
   },
   {
+   "id": "a306096",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[내장산] 2026년 내장산국립공원 가을성수기 국립공원지킴이(한시인력) 추가 채용 공고",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 건설 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306096",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 경비.청소 건설 환경.에너지.안전",
+   "n": "4",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019909"
+  },
+  {
    "id": "a306011",
    "type": "j",
    "alio": true,
@@ -7613,6 +7636,52 @@
    "text": "비정규직 학력무관 중졸이하 고졸 대졸(2~3년) 대졸(4년) 석사 전남광주 경영.회계.사무 보건.의료 음식서비스",
    "n": "2",
    "src": "https://www.hnibr.re.kr/ko/M000000515/bbs/view?pstNo=33822&pageUnit=10&pageIndex=1&searchCnd=01&searchWrd=&searchPstClCdId="
+  },
+  {
+   "id": "a306097",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국농어촌공사 남원지사 계약직근로자(휴직 대체인력) 채용 공고",
+   "org": "한국농어촌공사",
+   "desc": "사업관리 · 농림어업",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306097",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 사업관리 농림어업",
+   "n": "1",
+   "src": "https://www.ekr.or.kr/planweb/product/menuUser/userView.krc?menuUserUid=8a8bb3529665d714019950238eb963dd&menuPosition=4&menuPosition1=49&menuNumber=7&menuType=menuUser"
+  },
+  {
+   "id": "a306094",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[변산반도] 2026년 변산반도사무소 국립공원지킴이 5차 모집 공고",
+   "org": "국립공원공단",
+   "desc": "환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306094",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-10-30T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 환경.에너지.안전",
+   "n": "3",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019910"
   },
   {
    "id": "a306090",
