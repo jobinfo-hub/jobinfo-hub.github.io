@@ -1,52 +1,6 @@
 {
- "updated": "2026-10-17T00:22:55+09:00",
+ "updated": "2026-10-18T00:17:54+09:00",
  "posts": [
-  {
-   "id": "a305724",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "대한적십자사 서울남부혈액원 비정규직 한시적 고령직 근로자 채용 공고(만 60세 이상)",
-   "org": "대한적십자사",
-   "desc": "보건.의료",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305724",
-   "pub": "2026-10-02T00:00:00+09:00",
-   "due": "2026-10-17T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "서울",
-   "text": "비정규직 학력무관 서울 보건.의료",
-   "n": "1",
-   "src": "https://www.redcross.or.kr/redrecruit/"
-  },
-  {
-   "id": "a305704",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년 4차 기간제(보일러운전원(야간))근로자 채용",
-   "org": "재단법인 건설기술교육원",
-   "desc": "기계",
-   "url": "https://job.alio.go.kr/recruitview.do?idx=305704",
-   "pub": "2026-10-03T00:00:00+09:00",
-   "due": "2026-10-17T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "계약직"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "인천",
-   "text": "비정규직 학력무관 인천 기계",
-   "n": "2",
-   "src": "https://www.kicte.or.kr/portal/community/noticeViewAction.do?buSeqNo=11877"
-  },
   {
    "id": "a305838",
    "type": "j",
