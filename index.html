@@ -495,6 +495,12 @@ footer .src b{color:var(--ink)}
 @media(max-width:700px){
   .cp-internal-back:not([hidden]){display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin:8px 0 10px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--brand);font-size:13px;font-weight:700;cursor:pointer}
 }
+/* 6단계: 마감일 빠른 보기 */
+.cp-deadline-tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:9px 0 8px}
+.cp-deadline-tools strong{font-size:12px;color:var(--muted);margin-right:3px}
+.cp-deadline-tools button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer}
+.cp-deadline-tools button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:white}
+@media(max-width:420px){.cp-deadline-tools{gap:5px}.cp-deadline-tools strong{width:100%}.cp-deadline-tools button{padding:7px 9px}}
 </style>
 </head>
 <body>
@@ -554,6 +560,7 @@ footer .src b{color:var(--ink)}
     <button class="reset" id="reset">필터 초기화</button>
   </div>
 
+  <div id="cpDeadlineTools" class="cp-deadline-tools" aria-label="채용공고 마감일 빠른 보기"></div>
   <div class="tabs-wrap" id="tabs-wrap"><nav class="tabs" role="tablist" id="tabs"></nav></div>
 
   <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="orgs.html">🏢 기관별 정보</a><a href="certs.html">📝 자격증 일정</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a><a href="prep.html" style="color:var(--brand);font-weight:700">🎓 취업 준비실</a><a href="enterprise.html" style="color:var(--brand);font-weight:700">🏢 대기업 채용</a></nav>
@@ -1074,7 +1081,7 @@ function preferenceBadge(p){
 const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
 const SORTS = [["due","마감 가까운 순"],["new","최신순"]];
-const state = {specV:"all", tab: hasPrefs() ? "mine" : "all", q:"", cat:null, region:"", status:"all", sort:"due", onlyNew:false};
+const state = {specV:"all", tab: hasPrefs() ? "mine" : "all", q:"", cat:null, region:"", status:"all", sort:"due", onlyNew:false, deadline:"all"};
 
 function kstDay(d){ const k = kst(d); return Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()); }
 function dday(p, now){
@@ -1114,6 +1121,13 @@ function fadeHint(){
 function chipRow(el, items, current, attr){
   el.innerHTML = items.map(([v,l]) => `<button class="chip" data-${attr}="${esc(v)}" aria-pressed="${current===v}">${esc(l)}</button>`).join("");
 }
+function cpRenderDeadlineTools(){
+  const el = $("cpDeadlineTools");
+  if(!el) return;
+  const options = [["all","전체"],["today","오늘 마감"],["3","3일 이내"],["7","7일 이내"]];
+  el.innerHTML = `<strong>⏰ 마감일 빠른 보기</strong>` + options.map(([key,label]) =>
+    `<button type="button" data-cpdeadline="${key}" aria-pressed="${state.deadline===key}">${label}</button>`).join("");
+}
 function renderFilters(){
   const cats = [...new Set(POSTS.filter(inTab).map(p => p.cat))];
   if(state.cat && !cats.includes(state.cat)) state.cat = null;
@@ -1122,7 +1136,7 @@ function renderFilters(){
   chipRow($("regions"), [["","전국"], ...SIDO.map(r => [r,r])], state.region, "region");
   chipRow($("status"), STATUS, state.status, "status");
   chipRow($("sort"), SORTS, state.sort, "sort");
-  $("toggle").dataset.on = String(!!state.cat || !!state.region || !!state.q || state.status !== "all" || state.sort !== "due" || state.onlyNew);
+  $("toggle").dataset.on = String(!!state.cat || !!state.region || !!state.q || state.status !== "all" || state.sort !== "due" || state.onlyNew || state.deadline !== "all");
 }
 
 function calLink(p){
@@ -1930,6 +1944,7 @@ async function cpRestoreBackup(file){
 }
 
 function render(){
+  cpRenderDeadlineTools();
   renderCareerDashboard(new Date());
   const now = new Date();
   $("viewbtn").hidden = state.tab === "track";
@@ -1942,6 +1957,12 @@ function render(){
   let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && cpRegionMatches(p, state.region) && (!q || haystack(p).includes(q)));
   if(state.status !== "all") rows = rows.filter(p => statusOf(p, now) === state.status);
   if(state.onlyNew) rows = rows.filter(p => isNew(p, now));
+  if(state.deadline !== "all") rows = rows.filter(p => {
+    const d = dday(p, now);
+    if(!d || d.cls === "closed" || !Number.isFinite(d.n)) return false;
+    const max = state.deadline === "today" ? 0 : Number(state.deadline);
+    return d.n >= 0 && d.n <= max;
+  });
   if(state.tab === "mine") rows = rows.filter(p => statusOf(p, now) !== "closed");
   rows.sort(state.sort === "due" && !state.onlyNew ? (a,b) => cmp(sortKey(a,now), sortKey(b,now)) : (a,b) => b.pub - a.pub);
 
@@ -2107,8 +2128,9 @@ document.addEventListener("click", e => {
     PREFS = DRAFT; savePrefs(); closeSheet();
     state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
   }
+  else if(t.dataset.cpdeadline){ state.deadline=t.dataset.cpdeadline; refresh(); }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
-  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,region:"",status:"all",sort:"due",onlyNew:false}); $("q").value=""; refresh(); }
+  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,region:"",status:"all",sort:"due",onlyNew:false,deadline:"all"}); $("q").value=""; refresh(); }
 });
 $("q").addEventListener("input", e => { state.q = e.target.value; renderFilters(); render(); });
 $("tabs").addEventListener("scroll", fadeHint, {passive:true});
