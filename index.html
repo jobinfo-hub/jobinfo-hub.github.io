@@ -465,7 +465,7 @@ footer .src b{color:var(--ink)}
 .cp-dash-links{margin-top:0}
 @media(max-width:640px){.cp-dashboard{padding:12px}.cp-hero-head h2{font-size:17px}.cp-head-setting{font-size:11px;padding:7px}.cp-dash-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-reco-list{grid-template-columns:1fr}.cp-reco strong{min-height:0}.cp-reco-bottom{flex-direction:row;justify-content:space-between;align-items:center;width:100%}.cp-reco-heading{align-items:flex-start}.cp-reco-heading button{white-space:nowrap}.cp-dash-links{gap:5px}.cp-dash-links button{font-size:11px}}
 @media(prefers-color-scheme:dark){.cp-today-alert{background:#442b24;border-color:#75493c;color:#ffd6c6}.cp-reco-top em.cp-urgent{background:#512d2c;color:#ffb6b0}}
-</style>
+.cp-eligibility-note{font-size:11px;line-height:1.45;color:#805000;background:#fff5e5;border-radius:5px;padding:5px 7px;margin:5px 0} </style>
 </head>
 <body>
 <div class="wrap">
@@ -956,6 +956,7 @@ function cpWorkRegionMatch(p, region){
 }
 function cpConditionMatches(p, prefs = PREFS){
   if(p.type !== 'j') return false;
+  if(p.due && new Date(p.due).getTime() < Date.now()) return false;
   const emp = Array.isArray(p.emp) ? p.emp : [];
   const edu = Array.isArray(p.edu) ? p.edu : [];
   if(prefs.emp.length && !prefs.emp.some(e => emp.includes(e) || (e==='무기계약직' && emp.includes('무기계약')))) return false;
@@ -989,10 +990,26 @@ function cpRecommendationScore(p, now){
   const due=p.due ? Math.max(0,(p.due-now)/864e5) : 999;
   return reasons.length*20 + (isNew(p,now)?12:0) + (due<=7?8:0) + (due<=3?3:0);
 }
+// 추천 적합성은 확정하지 않습니다. 공고 단위 데이터는 모집 분야별 조건을 보증하지 않습니다.
+function cpEligibilityNotes(p){
+  if(!p || p.type !== 'j') return [];
+  const notes=[];
+  const emp=Array.isArray(p.emp)?p.emp:[];
+  const empKinds=emp.filter(e=>/정규직|계약직|인턴|공무직|무기계약|파견|기간제/.test(e));
+  if(new Set(empKinds).size>1) notes.push('모집 분야별 고용형태 확인 필요');
+  const t=[p.title||'',p.desc||''].join(' ');
+  if(/의사|간호사|약사|치과위생사|물리치료사|작업치료사|방사선사|임상병리사|전문의|변호사|공인회계사|건축사|면허|자격증 필수|자격증 소지|경력자만|경력\s*[1-9]\d*년\s*이상/.test(t))
+    notes.push('면허·자격·경력 등 지원 요건 확인 필요');
+  return notes;
+}
+function cpEligibilityNoteHtml(p){
+  const notes=cpEligibilityNotes(p);
+  return notes.length ? `<div class="cp-eligibility-note">🔍 ${esc(notes.join(' · '))}</div>` : '';
+}
 function preferenceBadge(p){
   if(state.tab!=="mine" || !hasPrefs() || p.type!=="j")return "";
   const reasons=preferenceReasons(p);
-  return reasons.length ? `<div class="pref-why">🎯 ${esc(reasons.slice(0,3).join(" · "))}${reasons.length>3 ? ` 외 ${reasons.length-3}개` : ""}</div>` : "";
+  return (reasons.length ? `<div class="pref-why">🎯 조건 일치(지원 자격 별도 확인): ${esc(reasons.slice(0,3).join(" · "))}${reasons.length>3 ? ` 외 ${reasons.length-3}개` : ""}</div>` : "") + cpEligibilityNoteHtml(p);
 }
 const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
@@ -1716,7 +1733,7 @@ function renderCareerDashboard(now){
   const activeApps = Object.values(APPS).filter(a => a && !["pass","fail"].includes(a.st));
   const events = appEvents(now);
   const soon = events.filter(e => e.kind === "due" && e.date <= ymd(new Date(now.getTime()+3*864e5)));
-  const candidates = (hasPrefs() ? matched : jobs).slice().sort((a,b) => {
+  const candidates = (hasPrefs() ? matched : jobs).filter(p => statusOf(p,now) !== "closed").slice().sort((a,b) => {
     const scoreDiff = cpRecommendationScore(b,now)-cpRecommendationScore(a,now);
     if(scoreDiff) return scoreDiff;
     const na = isNew(a,now) ? 1 : 0, nb = isNew(b,now) ? 1 : 0;
@@ -1740,7 +1757,7 @@ function renderCareerDashboard(now){
     const link = isInternalJob(p)
       ? `<a href="#job=${encodeURIComponent(p.id)}" data-open="${esc(p.id)}" class="cp-reco-link">상세 확인 →</a>`
       : `<a href="${esc(p.url)}" target="_blank" rel="noopener" class="cp-reco-link">공고 확인 ↗</a>`;
-    return `<article class="cp-reco"><div class="cp-reco-top"><span>${esc(p.org || "채용공고")}</span>${isNew(p,now) ? '<em>새 공고</em>' : ''}${due ? `<em class="${due.cls === 'hot' ? 'cp-urgent' : ''}">${esc(due.big)}</em>` : ''}</div><strong>${esc(title)}</strong><div class="cp-reco-bottom"><small>${esc(p.region || '지역 확인 필요')} · ${p.due ? '마감 '+dueLong(p.due,false) : '마감일 원문 확인'}</small>${link}</div></article>`;
+    return `<article class="cp-reco"><div class="cp-reco-top"><span>${esc(p.org || "채용공고")}</span>${isNew(p,now) ? '<em>새 공고</em>' : ''}${due ? `<em class="${due.cls === 'hot' ? 'cp-urgent' : ''}">${esc(due.big)}</em>` : ''}</div><strong>${esc(title)}</strong>${cpEligibilityNoteHtml(p)}<div class="cp-reco-bottom"><small>${esc(p.region || '지역 확인 필요')} · ${p.due ? '마감 '+dueLong(p.due,false) : '마감일 원문 확인'}</small>${link}</div></article>`;
   }).join("");
   const next = events[0];
   el.innerHTML = `<div class="cp-hero-head"><div><span class="cp-eyebrow">나의 취업 대시보드</span><h2>${hasPrefs() ? "오늘 내 조건에 맞는 공고를 확인하세요" : "내 조건을 설정하고 맞춤 공고를 받아보세요"}</h2><p>새 공고 확인부터 지원 마감 관리까지, 오늘 필요한 것만 모았습니다.</p></div><button class="cp-head-setting" data-dash="prefs">⚙ 맞춤 설정</button></div>
