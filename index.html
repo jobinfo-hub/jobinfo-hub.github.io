@@ -382,6 +382,23 @@ footer .src b{color:var(--ink)}
   .jobview .jv-grid{grid-template-columns:minmax(0,1fr);gap:3px}
   .jobview .jv-grid dd{margin-bottom:8px}
 }
+
+/* CareerPick 2.0 step 1: mobile detail readability */
+.jobview{overscroll-behavior:contain}
+.jobview .jv-head,.jobview .jv-sec,.jobview .spbox,.jobview .ckbox{overflow-wrap:anywhere}
+.jobview .jv-grid{grid-template-columns:minmax(94px,34%) minmax(0,1fr)}
+.jobview .jv-grid dt{white-space:normal;font-weight:600}
+.jobview .jv-grid dd{line-height:1.6}
+.jobview .jv-sec p{overflow-wrap:anywhere;line-height:1.8}
+.jobview .jv-top{background:var(--bg);color:var(--ink)}
+.jobview .jv-bar{color:var(--ink)}
+.jobview .jv-bar .main-btns{min-width:0;flex-wrap:wrap}
+.jobview .jv-bar .main-btns a{min-width:0;overflow-wrap:anywhere}
+@media(max-width:420px){
+ .jobview .jv-grid{grid-template-columns:minmax(0,1fr)}
+ .jobview .jv-bar .main-btns a{font-size:13.5px;padding:11px 8px}
+ .jobview .jv-bar .sub-btns>*{font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -907,6 +924,11 @@ function cleanTitle(t){
     .replace(/\s*—\s*,\s*/g, " — ");
   return s.length >= 6 ? s : t;
 }
+// CareerPick 2.0: official job cards use one internal detail route.
+function isBlogArticle(p){return /(?:^|\/\/)(?:m\.)?blog\.naver\.com\/|tistory\.com\/|brunch\.co\.kr\//i.test(String(p.url||""));}
+function isInternalJob(p){return p.type === "j" && !!p.id && !isBlogArticle(p);}
+function jobHref(p){return isInternalJob(p) ? "#job=" + encodeURIComponent(p.id) : (p.url || p.src || "#");}
+function jobAnchorAttrs(p){return isInternalJob(p) ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"';}
 function jobCard(p, now){
   const d = dday(p, now);
   const tile = d
@@ -924,10 +946,10 @@ function jobCard(p, now){
   if(spr) tags.unshift(specPill(p));
   const spw = spr ? (spr.v === "ok" ? [...spr.why].reverse().find(w => w[0] === "ok") : spr.why.find(w => w[0] === spr.v)) : null;
   return `<li class="card job ${d && d.cls==="closed" ? "is-closed" : ""}">
-    <a class="main" href="${p.alio ? "#job=" + esc(p.id) : esc(p.url)}"${p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"'}>
+    <a class="main" href="${esc(jobHref(p))}"${jobAnchorAttrs(p)}>
       ${tile}
       <div class="body">
-        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${regionLabel(p) ? `<span class="rg">· ${esc(regionLabel(p))}</span>` : ""}</div>
+        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${isInternalJob(p) ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${regionLabel(p) ? `<span class="rg">· ${esc(regionLabel(p))}</span>` : ""}</div>
         <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
         ${spw && state.tab === "spec" ? `<div class="spwhy">${SPEC_V[spw[0]].icon} ${esc(spw[1])}${spr.why.filter(w => w[0] !== "ok").length > 1 ? ` 외 ${spr.why.filter(w => w[0] !== "ok").length - 1}건` : ""}</div>` : ""}
@@ -949,12 +971,12 @@ function rowCard(p, now){
   if(p.n) meta.push(p.n + "명");
   if((p.emp||[])[0]) meta.push(p.emp[0]);
   if(p.due) meta.push("마감 " + dueLong(p.due, p.dueHasTime));
-  const href = p.alio ? "#job=" + esc(p.id) : esc(p.url);
-  const attr = p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"';
+  const href = esc(jobHref(p));
+  const attr = jobAnchorAttrs(p);
   return `<li class="card row ${d && d.cls === "closed" ? "is-closed" : ""}">
     <a class="main" href="${href}"${attr}>
       <span class="rd ${d ? d.cls : ""}">${d ? d.big : "상시"}</span>
-      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${p.alio ? "공식" : "해설"} · ${esc(p.org || p.cat)}${regionLabel(p) ? " · " + esc(regionLabel(p)) : ""}</span>
+      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${isInternalJob(p) ? "공식" : "해설"} · ${esc(p.org || p.cat)}${regionLabel(p) ? " · " + esc(regionLabel(p)) : ""}</span>
       <span class="rt">${esc(cleanTitle(p.title))}</span>
       <span class="rm">${esc(meta.join(" · "))}</span></span>
     </a>
@@ -997,8 +1019,7 @@ function newStrip(rows, now){
       ? (d ? `<span class="bd ${d.cls === "hot" ? "hot" : ""}">${d.big}</span>` : `<span class="bd">공고</span>`)
       : `<span class="bd ${p.type}">${p.type === "m" ? "정책" : "준비"}</span>`;
     const t = p.type === "j" ? cleanTitle(p.title) : p.title;
-    const isBlog = /(?:blog\.naver\.com|m\.blog\.naver\.com|tistory\.com|brunch\.co\.kr)/i.test(p.url || "");
-    const internal = p.type === "j" && p.id && !isBlog;
+    const internal = isInternalJob(p);
     return internal
       ? `<a href="#job=${encodeURIComponent(p.id)}" data-open="${esc(p.id)}">${bd}<span class="tt">${esc(t)}</span></a>`
       : `<a href="${esc(p.url)}" target="_blank" rel="noopener">${bd}<span class="tt">${esc(t)}</span></a>`;
@@ -1424,10 +1445,10 @@ async function openJob(id, push = true){
   $("jobview").hidden = false; document.body.style.overflow = "hidden";
   $("jvBody").innerHTML = jobViewHTML(p, null);
   $("jobview").scrollTop = 0;
-  const det = (await alioDetail())[id] || {};
+  const det = p.alio ? ((await alioDetail())[id] || {}) : {};
   if(JV === id) $("jvBody").innerHTML = jobViewHTML(p, det);
 }
-function refreshJobView(){ const p = POSTS.find(x => x.id === JV); if(p) $("jvBody").innerHTML = jobViewHTML(p, (ALIO_DETAIL || {})[JV] || {}); }
+function refreshJobView(){ const p = POSTS.find(x => x.id === JV); if(p) $("jvBody").innerHTML = jobViewHTML(p, p.alio ? ((ALIO_DETAIL || {})[JV] || {}) : {}); }
 async function shareJob(){
   const p = POSTS.find(x => x.id === JV); if(!p) return;
   const url = "https://jobinfo-hub.github.io/?src=share#job=" + p.id;
@@ -1482,7 +1503,7 @@ function jobViewHTML(p, det){
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
     <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
-    <p class="jv-note">이 정보는 공공기관 경영정보 공개시스템(알리오)에 게시된 공고를 자동으로 정리한 것이에요. 마감 시각·제출 서류 등 세부 사항은 반드시 원문 공고에서 확인하세요.</p>
+    <p class="jv-note">${p.alio ? "이 정보는 공공기관 경영정보 공개시스템(알리오)의 공고를 자동으로 정리한 것이에요." : "이 정보는 기관의 공개 채용공고를 바탕으로 정리한 것이에요."} 마감 시각·제출 서류·지원 자격은 반드시 원문 공고에서 확인하세요.</p>
     <div class="jv-bar"><div class="in">
       <div class="main-btns"><a class="primary" href="${esc(p.url)}" target="_blank" rel="noopener">원문 공고 보기 ↗</a>${off}</div>
       <div class="sub-btns">
