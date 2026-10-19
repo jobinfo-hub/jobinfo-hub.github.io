@@ -251,6 +251,12 @@ def main():
                          clean(item.findtext("description")),
                          parsedate_to_datetime(item.findtext("pubDate")).astimezone(KST))
 
+    if not feed:
+        raise RuntimeError("네이버 RSS에서 유효한 글을 한 건도 읽지 못했습니다. posts.json을 변경하지 않습니다.")
+
+    new_count = sum(1 for pid in feed if pid not in posts)
+    print(f"RSS 유효 글 {len(feed)}건 / 신규 글 {new_count}건 / 기존 보관 글 {len(posts)}건")
+
     for pid, (title, cat, text, pub) in feed.items():
         cur = posts.get(pid)
         if cur and cur.get("lock"):
@@ -268,12 +274,12 @@ def main():
 
     ordered = sorted(posts.values(), key=lambda p: p["pub"], reverse=True)[:MAX_POSTS]
     after = json.dumps(sorted(ordered, key=lambda p: p["id"]), ensure_ascii=False)
-    if after == before:
-        print("글 목록 변경 없음")
-    else:
-        data = {"updated": datetime.now(KST).isoformat(timespec="seconds"), "posts": ordered}
-        OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
-        print(f"posts.json 갱신: 글 {len(ordered)}개")
+    # updated는 마지막 성공적인 RSS 확인 시각입니다. 신규 글 등록 시각과는 다릅니다.
+    data = {"updated": datetime.now(KST).isoformat(timespec="seconds"), "posts": ordered}
+    tmp = OUT.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
+    tmp.replace(OUT)
+    print(f"posts.json 확인 완료: 보관 글 {len(ordered)}개 / 목록 변경 {'있음' if after != before else '없음'}")
     try:  # 검색엔진용 정적 페이지 (실패해도 글 목록 갱신에는 영향 없음)
         import sitegen
         sitegen.generate(ordered)
