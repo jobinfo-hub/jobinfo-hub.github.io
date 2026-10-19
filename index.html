@@ -449,7 +449,7 @@ footer .src b{color:var(--ink)}
     </div>
   </header>
 
-  <div class="data-health" id="dataHealth" role="status" hidden></div>
+  <div class="data-health" id="dataHealth" role="status" hidden style="display:none!important" aria-hidden="true"></div>
   <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
   <div class="notice kakao" id="kakaoBar" hidden>
     <span class="grow">💬 <b>오늘·내일 마감 공고</b>를 카톡방에서 매일 받아보세요</span>
@@ -564,6 +564,20 @@ footer .src b{color:var(--ink)}
 const COUPANG = false;    // 쿠팡 추천 상품 표시 (ads.py 설정 후 true로)
 let POSTS = [], UPDATED = null, ADS = [];
 const DATA_HEALTH = {posts:"pending", alio:"pending", monitor:"pending"};
+// Keep the pre-rendered blog cards as a fallback if posts.json is unavailable.
+const STATIC_BLOG_HTML = document.getElementById("list").innerHTML;
+function showStaticBlogFallback(){
+  const list = document.getElementById("list");
+  if(!list) return;
+  list.innerHTML = STATIC_BLOG_HTML;
+  const summary = document.getElementById("summary");
+  if(summary) summary.textContent = "블로그 글 목록 · 저장된 목록 표시 중";
+  const dashboard = document.getElementById("careerDashboard");
+  if(dashboard) dashboard.hidden = true;
+  const updated = document.getElementById("updated");
+  if(updated) updated.textContent = "저장된 글 목록 표시 중 · 최신 글 갱신 확인 필요";
+}
+
 let COMPACT = false;
 try { COMPACT = localStorage.getItem("compact") === "1"; } catch(e) {}
 const pad = n => String(n).padStart(2,"0");
@@ -650,10 +664,12 @@ async function load(){
     const j = await r.json();
     UPDATED = j.updated;
     DATA_HEALTH.posts = "ok";
+    if(!Array.isArray(j.posts) || j.posts.length === 0) throw new Error("posts.json 글 목록이 비어 있습니다");
     POSTS = j.posts.map(p => ({...p, pub:new Date(p.pub), due: p.due ? new Date(p.due) : null}));
   }catch(e){
     DATA_HEALTH.posts = "error";
-    $("list").innerHTML = '<li class="empty">글 목록을 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</li>';
+    console.warn("posts.json 로딩 실패: HTML에 보관된 블로그 글을 표시합니다.", e);
+    showStaticBlogFallback();
     return;
   }
   initSeen();
