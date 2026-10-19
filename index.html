@@ -373,6 +373,39 @@ footer .src b{color:var(--ink)}
 .jv-filelist{margin:0;padding-left:19px;font-size:14px;line-height:1.9;overflow-wrap:anywhere}
 .jv-caution{background:#f7f9ff;border-left:3px solid #3458c5;padding:11px 13px;border-radius:7px;font-size:13px;line-height:1.65}
 @media(max-width:420px){.jv-quick{gap:7px}.jv-quick>div{padding:10px}.jv-quick strong{font-size:13px}}
+/* 커리어픽 채용 상세페이지 모바일/다크모드 가독성 수정
+   index.html의 기존 <style> 태그 맨 마지막, </style> 바로 앞에 추가 */
+.jobview { color: var(--ink); color-scheme: light dark; }
+.jobview .jv-head, .jobview .jv-sec { color: var(--ink); }
+.jobview .jv-head *, .jobview .jv-sec * { overflow-wrap: anywhere; }
+/* 흰색 또는 밝은색으로 고정된 정보 카드에는 어두운 글자 강제 */
+.jobview .jv-grid > *,
+.jobview .jv-sec [style*="background: #fff"],
+.jobview .jv-sec [style*="background:#fff"],
+.jobview .jv-sec [style*="background: white"],
+.jobview .jv-sec [style*="background:white"] { color: #17233b !important; }
+/* 정보 카드: 다크모드에도 배경/텍스트 명도 일치 */
+.jobview .jv-grid { color: var(--ink); }
+.jobview .jv-grid dt { color: var(--muted); }
+.jobview .jv-grid dd { color: var(--ink); }
+/* 브라우저 다크모드에서 밝은 카드 배경을 쓰는 하위 요소 */
+.jobview [style*="background:#F"],
+.jobview [style*="background: #F"],
+.jobview [style*="background:#f"],
+.jobview [style*="background: #f"] { color: #17233b !important; }
+/* 링크 버튼은 테마에 무관하게 충분한 대비 */
+.jobview .jv-bar .main-btns a.primary { background: #3158db; border-color: #3158db; color: #fff; }
+/* 모바일 웹뷰에서 고정 하단 바가 내용을 가리지 않도록 여백 확보 */
+.jobview .jv-body { padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)); }
+.jobview .jv-bar { box-shadow: 0 -4px 18px rgba(0,0,0,.12); }
+@media (max-width: 600px) {
+  .jobview .jv-head, .jobview .jv-sec { border-radius: 14px; }
+  .jobview .jv-body { padding: 12px 12px calc(200px + env(safe-area-inset-bottom, 0px)); }
+  .jobview .jv-title { font-size: 18px; line-height: 1.45; }
+  .jobview .jv-sec p { font-size: 14px; line-height: 1.7; }
+  .jobview .jv-bar .main-btns a { min-height: 48px; }
+}
+
 </style>
 </head>
 <body>
