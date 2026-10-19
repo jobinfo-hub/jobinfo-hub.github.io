@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T11:23:20+09:00",
+ "updated": "2026-10-19T12:24:56+09:00",
  "posts": [
   {
    "id": "a306054",
@@ -5815,6 +5815,29 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306133",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "계약직 단시간근로자(장애인 미술작가) 채용 재공고",
+   "org": "국립중앙의료원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306133",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://nmc.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=269630"
   },
   {
    "id": "a306091",
