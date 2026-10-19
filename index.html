@@ -545,6 +545,8 @@ footer .src b{color:var(--ink)}
     <div class="chips" id="quick"></div>
     <span class="h">분야</span>
     <div class="chips" id="cats"></div>
+    <span class="h">지역</span>
+    <div class="chips" id="regions" aria-label="지역 선택"></div>
     <span class="h">모집 상태</span>
     <div class="chips" id="status"></div>
     <span class="h">정렬</span>
@@ -1072,7 +1074,7 @@ function preferenceBadge(p){
 const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
 const SORTS = [["due","마감 가까운 순"],["new","최신순"]];
-const state = {specV:"all", tab: hasPrefs() ? "mine" : "all", q:"", cat:null, status:"all", sort:"due", onlyNew:false};
+const state = {specV:"all", tab: hasPrefs() ? "mine" : "all", q:"", cat:null, region:"", status:"all", sort:"due", onlyNew:false};
 
 function kstDay(d){ const k = kst(d); return Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()); }
 function dday(p, now){
@@ -1085,6 +1087,12 @@ const statusOf = (p, now) => { const d = dday(p, now); return !d ? "none" : d.cl
 const inTab = p => state.tab === "all" || (state.tab === "saved" ? SAVED.has(p.id) : state.tab === "mine" ? matchPrefs(p) : p.type === state.tab);
 const isNew = (p, now) => p.alio ? now - p.pub < 36*3600e3 : SEEN_BASE ? !SEEN_BASE.has(p.id) : now - p.pub < 24*3600e3;
 const haystack = p => [p.title, p.desc, p.cat, p.org, p.region, ...(p.emp||[]), ...(p.edu||[]), ...(p.exam||[])].join(" ").toLowerCase();
+// 지역은 공고의 근무지역 필드만 기준으로 판정합니다. 미기재 공고는 지역 선택 시 제외됩니다.
+function cpRegionMatches(p, region){
+  if(!region) return true;
+  const raw = String(p.region || "");
+  return !!(SIDO_RE[region] && SIDO_RE[region].test(raw));
+}
 
 function renderTabs(){
   const now = new Date();
@@ -1111,9 +1119,10 @@ function renderFilters(){
   if(state.cat && !cats.includes(state.cat)) state.cat = null;
   chipRow($("cats"), [["","전체"], ...cats.map(c => [c,c])], state.cat || "", "cat");
   chipRow($("quick"), QUICK.map(k => [k,k]), state.q, "quick");
+  chipRow($("regions"), [["","전국"], ...SIDO.map(r => [r,r])], state.region, "region");
   chipRow($("status"), STATUS, state.status, "status");
   chipRow($("sort"), SORTS, state.sort, "sort");
-  $("toggle").dataset.on = String(!!state.cat || state.status !== "all" || state.sort !== "due");
+  $("toggle").dataset.on = String(!!state.cat || !!state.region || !!state.q || state.status !== "all" || state.sort !== "due" || state.onlyNew);
 }
 
 function calLink(p){
@@ -1930,7 +1939,7 @@ function render(){
   if(state.tab === "spec"){ renderSpec(now); return; }
   if(state.tab === "cert"){ renderCert(now); return; }
   const q = state.q.trim().toLowerCase();
-  let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && (!q || haystack(p).includes(q)));
+  let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && cpRegionMatches(p, state.region) && (!q || haystack(p).includes(q)));
   if(state.status !== "all") rows = rows.filter(p => statusOf(p, now) === state.status);
   if(state.onlyNew) rows = rows.filter(p => isNew(p, now));
   if(state.tab === "mine") rows = rows.filter(p => statusOf(p, now) !== "closed");
@@ -2049,6 +2058,7 @@ document.addEventListener("click", e => {
   else if(t.id === "tDel"){ if(confirm("이 지원 기록을 삭제할까요?")){ delete APPS[TID]; saveApps(); closeSheet(); renderTabs(); render(); savedAlert(); } }
   else if(t.dataset.tab){ state.tab = t.dataset.tab; state.certQ = null; refresh(); }
   else if(t.dataset.cat !== undefined){ state.cat = t.dataset.cat || null; refresh(); }
+  else if(t.dataset.region !== undefined){ state.region = t.dataset.region; refresh(); }
   else if(t.dataset.quick){ state.q = state.q === t.dataset.quick ? "" : t.dataset.quick; $("q").value = state.q; refresh(); }
   else if(t.dataset.status){ state.status = t.dataset.status; refresh(); }
   else if(t.dataset.sort){ state.sort = t.dataset.sort; refresh(); }
@@ -2098,7 +2108,7 @@ document.addEventListener("click", e => {
     state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
   }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
-  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,status:"all",sort:"due"}); $("q").value=""; refresh(); }
+  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,region:"",status:"all",sort:"due",onlyNew:false}); $("q").value=""; refresh(); }
 });
 $("q").addEventListener("input", e => { state.q = e.target.value; renderFilters(); render(); });
 $("tabs").addEventListener("scroll", fadeHint, {passive:true});
