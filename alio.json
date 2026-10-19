@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T15:32:00+09:00",
+ "updated": "2026-10-19T16:17:33+09:00",
  "posts": [
   {
    "id": "a306054",
@@ -3950,6 +3950,29 @@
    "src": "https://www.lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734329&tag=&nPage=1"
   },
   {
+   "id": "a306151",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "우체국물류지원단 대구지사 안동,포항사업소 기간제(운전직) 채용 공고",
+   "org": "(재)우체국물류지원단",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306151",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-10-25T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "비정규직 학력무관 경북 운전.운송",
+   "n": "2",
+   "src": "https://www.pola.or.kr"
+  },
+  {
    "id": "a306141",
    "type": "j",
    "alio": true,
@@ -5999,6 +6022,29 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306153",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[금정산] 2026년 국립공원지킴이(녹색순찰대) 모집 공고",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 건설",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306153",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "부산",
+   "text": "비정규직 학력무관 부산 경남 경비.청소 건설",
+   "n": "8",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019916"
   },
   {
    "id": "a306133",
@@ -8275,6 +8321,27 @@
    "text": "비정규직 학력무관 대전 보건.의료",
    "n": "1",
    "src": "https://cnuhinsa.recruiter.co.kr"
+  },
+  {
+   "id": "a306152",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국스포츠과학원 분석연구원(나급) 채용 공고(차세대국가대표스포츠과학지원)",
+   "org": "서울올림픽기념국민체육진흥공단",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306152",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "서울",
+   "text": "비정규직 대졸(4년) 석사 서울 연구",
+   "n": "1",
+   "src": "https://www.sports.re.kr/front/board/job/boardView.do?board_seq=115&pageNo=1&menu_seq=+997&con_seq=6758&keyKind3=&keyKind4=&keyKind5=&keyKind6=&keyKind7=&keyKind=TITLE&keyWord="
   },
   {
    "id": "a305811",
