@@ -1,12 +1,12 @@
 {
-  "last_run_at": null,
+  "last_run_at": "2026-10-19T14:13:53+00:00",
   "last_success_at": null,
-  "result": "not_configured",
+  "result": "awaiting_approval",
   "sources": {
     "saramin": {
-      "state": "awaiting_approval",
+      "state": "disabled",
       "count": 0
     }
   },
-  "message": "사람인 API 승인 및 이용 조건 확인 후 연결됩니다."
+  "message": "API 승인 및 이용 조건 확인 후 활성화하세요."
 }
