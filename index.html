@@ -413,6 +413,21 @@ footer .src b{color:var(--ink)}
 .trk-export,.trk-quick{appearance:none;border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand);font:inherit;font-size:12px;font-weight:700;padding:6px 9px;border-radius:8px;cursor:pointer}
 .trk-export:disabled{opacity:.5;cursor:not-allowed}
 .trk-quick{flex:none}
+
+/* CareerPick 2.0 step 4: compact personalized home briefing */
+.cp-dashboard{margin:12px 0 10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.cp-dashboard[hidden]{display:none}
+.cp-dash-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.cp-dash-head strong{font-size:16px}
+.cp-dash-head small{font-size:12px;color:var(--muted)}
+.cp-dash-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.cp-dash-stat{appearance:none;border:1px solid var(--line);border-radius:11px;background:var(--bg);padding:9px 4px;color:var(--ink);text-align:center;cursor:pointer;min-width:0}
+.cp-dash-stat b{display:block;font-size:21px;color:var(--brand);line-height:1.25}
+.cp-dash-stat span{display:block;font-size:11px;color:var(--muted);line-height:1.4}
+.cp-dash-note{font-size:12px;color:var(--muted);margin:9px 0 0;line-height:1.5}
+.cp-dash-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.cp-dash-links button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--brand);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer}
+@media(max-width:430px){.cp-dashboard{padding:11px}.cp-dash-stats{gap:4px}.cp-dash-stat{padding:8px 2px}.cp-dash-stat b{font-size:18px}.cp-dash-stat span{font-size:10px}}
 </style>
 </head>
 <body>
@@ -465,6 +480,7 @@ footer .src b{color:var(--ink)}
   <div class="tabs-wrap" id="tabs-wrap"><nav class="tabs" role="tablist" id="tabs"></nav></div>
 
   <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="orgs.html">🏢 기관별 정보</a><a href="certs.html">📝 자격증 일정</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a></nav>
+  <section id="careerDashboard" class="cp-dashboard" aria-label="오늘의 커리어 브리핑" hidden></section>
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435580524"><div class="kind"><span class="pill p">마감 10.19(월)</span></div><div class="t">근로복지공단 울산병원 의료직 99명</div></a></li>
@@ -1589,7 +1605,32 @@ window.addEventListener("popstate", () => {
   const m = location.hash.match(/^#job=(.+)$/);
   if(m) openJob(decodeURIComponent(m[1]), false); else closeJob(true);
 });
+// CareerPick 2.0 step 4: show only real counts from the loaded feed and local records.
+function renderCareerDashboard(now){
+  const el = $("careerDashboard");
+  if(!el) return;
+  const visible = state.tab === "all" && !state.q && !state.cat && state.status === "all" && !state.onlyNew;
+  if(!visible || !POSTS.length){ el.hidden = true; return; }
+  const jobs = POSTS.filter(p => p.type === "j");
+  const fresh = jobs.filter(p => isNew(p, now) && statusOf(p,now) !== "closed").length;
+  const matched = hasPrefs() ? jobs.filter(p => matchPrefs(p) && statusOf(p,now) !== "closed").length : null;
+  const dueSoon = jobs.filter(p => {const d=dday(p,now);return d && d.cls === "hot";}).length;
+  const active = Object.values(APPS).filter(a => !["pass","fail"].includes(a.st)).length;
+  const soonMine = Object.values(APPS).filter(a => a.st === "plan" && a.due && new Date(a.due) >= now && new Date(a.due)-now <= 3*864e5).length;
+  const metrics = [
+    [fresh,"새 채용공고","fresh"],
+    [matched === null ? "설정" : matched,"내 맞춤 공고",matched === null ? "prefs" : "mine"],
+    [dueSoon,"3일 내 마감","hot"],
+    [active,"진행 중 지원","track"]
+  ];
+  el.innerHTML = `<div class="cp-dash-head"><strong>📊 오늘의 커리어 브리핑</strong><small>현재 공고 기준</small></div>
+    <div class="cp-dash-stats">${metrics.map(([n,l,action])=>`<button class="cp-dash-stat" data-dash="${action}" aria-label="${esc(l)} ${esc(String(n))}"><b>${esc(String(n))}</b><span>${esc(l)}</span></button>`).join("")}</div>
+    <p class="cp-dash-note">${SEEN_BASE ? "새 공고는 지난 방문 이후 기준" : "새 공고는 최근 등록 기준"} · 맞춤 조건과 지원 기록은 이 기기에 저장돼요.${soonMine ? ` 내 지원 예정 공고 중 3일 이내 마감 ${soonMine}건.` : ""}</p>
+    <div class="cp-dash-links"><button data-dash="mine">🎯 맞춤 공고</button><button data-dash="track">📋 지원 일정</button><button data-dash="prefs">⚙️ 맞춤 조건 설정</button></div>`;
+  el.hidden = false;
+}
 function render(){
+  renderCareerDashboard(new Date());
   const now = new Date();
   $("viewbtn").hidden = state.tab === "track";
   $("viewbtn").setAttribute("aria-pressed", COMPACT);
@@ -1638,6 +1679,13 @@ function refresh(){ renderTabs(); renderFilters(); render(); savedAlert(); }
 document.addEventListener("click", e => {
   const t = e.target.closest("button");
   if(!t) return;
+  if(t.dataset.dash){
+    const a=t.dataset.dash;
+    if(a === "prefs"){ openPrefs(); return; }
+    state.q=""; $("q").value=""; state.cat=null; state.status=a==="hot" ? "hot" : "all"; state.onlyNew=a==="fresh"; state.tab=a==="track" ? "track" : a==="mine" ? "mine" : "all";
+    if(a==="mine" && !hasPrefs()){state.tab="all";openPrefs();return;}
+    refresh(); return;
+  }
   if(t.dataset.save){ toggleSave(t.dataset.save); renderTabs(); render(); savedAlert(); if(JV) refreshJobView(); }
   else if(t.id === "jvBack"){ closeJob(false); }
   else if(t.id === "viewbtn"){ COMPACT = !COMPACT; try { localStorage.setItem("compact", COMPACT ? "1" : "0"); } catch(e) {} render(); }
@@ -1835,7 +1883,7 @@ function savedAlert(){
     .map(([id, a]) => ({id, a, due:new Date(a.due)})).filter(x => now < x.due && x.due - now < 3*864e5).sort((x, y) => x.due - y.due);
   if(todo.length){
     const f = todo[0], left = f.a.ck.filter(x => x.ph === "pre" && !x.d).length, d = dday({due:f.due}, now);
-    el.innerHTML = `✅ ${d ? d.big : "곧"} ${esc(f.a.org || cleanTitle(f.a.title).slice(0, 14))} 마감 · 제출 전 할 일 ${left}개 남았어요` + (todo.length > 1 ? ` (외 ${todo.length - 1}곳)` : "");
+    el.innerHTML = `✅ ${d ? d.big : "곧"} ${esc(f.a.org || cleanTitle(f.a.title).slice(0, 14))} 마감 · 미완료 체크리스트 ${left}개` + (todo.length > 1 ? ` (외 ${todo.length - 1}곳)` : "");
     el.hidden = false;
     el.onclick = () => { state.tab = "track"; refresh(); el.scrollIntoView({block:"start"}); };
     return;
