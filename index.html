@@ -403,6 +403,16 @@ footer .src b{color:var(--ink)}
 /* CareerPick 2.0 step 2: visible and accessible recommendation reasons. */
 .pref-why{display:block;margin:5px 0 7px;padding:5px 8px;border-radius:7px;background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
 .card.row .pref-why{font-size:11px;margin:4px 0 0;padding:3px 6px}
+
+/* CareerPick 2.0 step 3: deadline focus and calendar export */
+.trk-urgent{border-color:var(--hot);background:var(--hot-soft)}
+.trk-urgent h3{color:var(--hot)}
+.trk-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.trk-heading h3{margin:0}
+.trk-help{font-size:12px;line-height:1.6;color:var(--muted);margin:5px 0 8px}
+.trk-export,.trk-quick{appearance:none;border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand);font:inherit;font-size:12px;font-weight:700;padding:6px 9px;border-radius:8px;cursor:pointer}
+.trk-export:disabled{opacity:.5;cursor:not-allowed}
+.trk-quick{flex:none}
 </style>
 </head>
 <body>
@@ -1315,6 +1325,38 @@ function appEvents(now){
   }
   return ev.sort((x,y) => x.date < y.date ? -1 : x.date > y.date ? 1 : 0);
 }
+// CareerPick 2.0 step 3: export application deadlines and exam/interview dates.
+function calendarEscape(v){
+  return String(v || "").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+}
+function calendarDay(s){ return /^\d{4}-\d{2}-\d{2}$/.test(s || "") ? s.replace(/-/g,"") : ""; }
+function nextCalendarDay(s){
+  const d = new Date(s + "T12:00:00Z");
+  if(Number.isNaN(d.getTime())) return "";
+  d.setUTCDate(d.getUTCDate()+1);
+  return d.toISOString().slice(0,10).replace(/-/g,"");
+}
+function exportAppCalendar(){
+  const now = new Date(), rows = appEvents(now);
+  if(!rows.length){ toast("내보낼 일정이 없어요. 지원기록에 마감·필기·면접 일정을 추가하세요."); return; }
+  const stamp = now.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  const events = rows.map((e,i) => {
+    const d = calendarDay(e.date), end = nextCalendarDay(e.date);
+    if(!d || !end) return "";
+    const a = APPS[e.id] || {};
+    return ["BEGIN:VEVENT","UID:careerpick-"+encodeURIComponent(e.id)+"-"+e.kind+"-"+d+"@jobinfo-hub.github.io",
+      "DTSTAMP:"+stamp,"DTSTART;VALUE=DATE:"+d,"DTEND;VALUE=DATE:"+end,
+      "SUMMARY:"+calendarEscape("[커리어픽] "+e.label+" · "+e.name),
+      "DESCRIPTION:"+calendarEscape("지원 상태: "+(ST[a.st]?.label || "확인 필요")+(a.memo ? "\n메모: "+a.memo : "")+"\n정확한 일정은 공식 공고에서 재확인하세요."),
+      ...(a.url && /^https?:\/\//i.test(a.url) ? ["URL:"+a.url] : []),"END:VEVENT"].join("\r\n");
+  }).filter(Boolean);
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//CareerPick//Application Calendar//KO","CALSCALE:GREGORIAN",...events,"END:VCALENDAR"].join("\r\n")+"\r\n";
+  const url = URL.createObjectURL(new Blob([ics],{type:"text/calendar;charset=utf-8"}));
+  const a = document.createElement("a"); a.href=url; a.download="careerpick-application-calendar.ics";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+  toast("캘린더 파일을 만들었어요. 다운로드한 파일을 열어 일정을 추가하세요.");
+}
 function clashes(ev){
   const by = {};
   ev.filter(e => e.kind !== "due").forEach(e => (by[e.date] = by[e.date] || []).push(e));
@@ -1339,7 +1381,9 @@ function renderTrack(now){
     <div><b>${cnt("applied")}</b><span>지원 완료</span></div>
     <div><b>${cnt("doc") + cnt("exam") + cnt("itv")}</b><span>전형 진행</span></div>
     <div><b>${cnt("pass")}</b><span>최종 합격</span></div></li>`);
-  parts.push(`<li class="trk-box"><h3>🗓 다가오는 일정</h3>${ev.length ? ev.slice(0, 12).map(e =>
+  const dueSoon = ev.filter(e => e.kind === "due" && e.date <= soonLimit);
+  if(dueSoon.length) parts.push(`<li class="trk-box trk-urgent"><h3>⏰ 3일 이내 지원 마감 ${dueSoon.length}건</h3><p class="trk-help">지원 예정으로 기록한 공고의 마감일입니다. 공식 공고의 마감 시각을 다시 확인하세요.</p>${dueSoon.map(e => `<div class="sch"><span class="dt hot">${e.date === today ? "오늘" : ymdLabel(e.date)}</span><span class="nm">${esc(e.name)}</span><button class="trk-quick" data-track="${esc(e.id)}">확인</button></div>`).join("")}</li>`);
+  parts.push(`<li class="trk-box"><div class="trk-heading"><h3>🗓 다가오는 일정</h3><button class="trk-export" id="exportAppCalendar" ${ev.length ? "" : "disabled"}>📅 캘린더에 추가 (.ics)</button></div><p class="trk-help">다운로드한 파일을 열면 휴대폰·PC 캘린더에 등록할 수 있어요. 일정 변경은 자동 동기화되지 않습니다.</p>${ev.length ? ev.slice(0, 12).map(e =>
     `<div class="sch"><span class="dt${e.date <= soonLimit ? " hot" : ""}">${e.date === today ? "오늘" : ymdLabel(e.date)}</span><span class="kd ${e.kind}">${e.label}</span><span class="nm">${esc(e.name)}</span></div>`).join("")
     : `<div class="sch" style="color:var(--muted)">등록된 일정이 없어요. 📋 지원기록에서 필기·면접 날짜를 넣어 보세요.</div>`}
     ${cl.map(([dte, v]) => `<p class="clash">⚠️ ${ymdLabel(dte)}에 일정 ${v.length}개가 겹쳐요: ${v.map(x => esc(x.name) + " " + x.label).join(", ")}</p>`).join("")}</li>`);
@@ -1352,7 +1396,7 @@ function renderTrack(now){
     if(a.memo) meta.push(a.memo);
     parts.push(`<li class="trk-item"><div class="grow">
       <div class="o">${esc(a.org || "")} <span class="stpill st-${a.st}">${ST[a.st].label}</span></div>
-      <a class="t" href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(cleanTitle(a.title))}</a>
+      <a class="t" href="${esc(jobHref(POSTS.find(p => p.id === id) || {type:"j",id,url:a.url}))}" ${POSTS.some(p => p.id === id && isInternalJob(p)) ? `data-open="${esc(id)}"` : 'target="_blank" rel="noopener"'} style="color:inherit;text-decoration:none">${esc(cleanTitle(a.title))}</a>
       ${meta.length ? `<div class="m">${esc(meta.join(" · "))}</div>` : ""}
       ${a.ck && a.ck.length ? (() => { const n = ckDone(a.ck), nx = a.ck.indexOf(ckNext(a.ck));
         return `<div class="ckbar"><i style="width:${Math.round(n * 100 / a.ck.length)}%"></i></div>
@@ -1600,6 +1644,7 @@ document.addEventListener("click", e => {
   else if(t.id === "jvShare"){ shareJob(); }
   else if(t.dataset.track){ openTrack(t.dataset.track); }
   else if(t.dataset.stpick){ TDRAFT.st = t.dataset.stpick; document.querySelectorAll("[data-stpick]").forEach(b => b.setAttribute("aria-pressed", b.dataset.stpick === TDRAFT.st)); }
+  else if(t.id === "exportAppCalendar"){ exportAppCalendar(); }
   else if(t.id === "tSave"){ saveTrack(); }
   else if(t.dataset.tck !== undefined){
     const i = +t.dataset.tck;
