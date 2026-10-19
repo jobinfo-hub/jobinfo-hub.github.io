@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T23:59:34+09:00",
+ "updated": "2026-10-20T00:04:51+09:00",
  "posts": [
   {
    "id": "a306100",
@@ -3887,6 +3887,29 @@
    "src": "https://www.kocca.kr/shortUrl/60Cq"
   },
   {
+   "id": "a306120",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국폴리텍대학 남대구캠퍼스 업무직(대학운영직_조리사) 채용 공고",
+   "org": "학교법인한국폴리텍",
+   "desc": "음식서비스",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306120",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "무기계약직 학력무관 대구 음식서비스",
+   "n": "1",
+   "src": "https://www.kopo.ac.kr/namdaegu/board.do?menu=10548&mode=view&post=787293"
+  },
+  {
    "id": "a305996",
    "type": "j",
    "alio": true,
@@ -6635,6 +6658,31 @@
    "n": "8"
   },
   {
+   "id": "a306155",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 제3차 동남권원자력의학원 직원채용 공고",
+   "org": "동남권원자력의학원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306155",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "정규직",
+    "계약직"
+   ],
+   "edu": [
+    "고졸 가능"
+   ],
+   "region": "부산",
+   "text": "정규직 무기계약직 비정규직 고졸 대졸(2~3년) 대졸(4년) 부산 보건.의료",
+   "n": "6",
+   "src": "https://diramsjob.recruiter.co.kr/career/home"
+  },
+  {
    "id": "a306146",
    "type": "j",
    "alio": true,
@@ -7183,6 +7231,29 @@
    "src": "https://www.kofpi.or.kr/notice/notice_04view.do"
   },
   {
+   "id": "a306158",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 하반기 중소벤처기업진흥공단 체험형 청년인턴(일반) 채용 공고",
+   "org": "중소벤처기업진흥공단",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306158",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전국",
+   "text": "청년인턴(체험형) 학력무관 서울 부산 대구 인천 대전 울산 세종 경기 강원 충북 충남 전남광주 경북 경남 경영.회계.사무",
+   "n": "55",
+   "src": "https://kosmes.applyin.co.kr"
+  },
+  {
    "id": "a306142",
    "type": "j",
    "alio": true,
@@ -7273,6 +7344,50 @@
    "text": "비정규직 학력무관 대구 경기 법률.경찰.소방.교도.국방",
    "n": "3",
    "src": "https://klac.or.kr/notification/hireNotice/selectHireNoticeView.do?boardCode=241&contentId=AD_0000168169"
+  },
+  {
+   "id": "a306128",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "'2026년 ICT활용 종목활성화 지원 사업' 초빙연구원(가) 채용 공고",
+   "org": "서울올림픽기념국민체육진흥공단",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306128",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "서울",
+   "text": "비정규직 석사 박사 서울 연구",
+   "n": "1",
+   "src": "https://www.sports.re.kr/front/board/job/boardView.do?board_seq=115&pageNo=1&menu_seq=+997&con_seq=6753&keyKind3=&keyKind4=&keyKind5=&keyKind6=&keyKind7=&keyKind=TITLE&keyWord="
+  },
+  {
+   "id": "a306130",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 한국잡월드 정규직 신입(5급) 직원 채용 공고",
+   "org": "한국잡월드",
+   "desc": "사업관리 · 경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306130",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-04T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "정규직 학력무관 경기 사업관리 경영.회계.사무",
+   "n": "4",
+   "src": "https://koreajobworld.recruiter.co.kr"
   },
   {
    "id": "a292609",
