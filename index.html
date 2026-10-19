@@ -945,29 +945,49 @@ function specPill(p){
   const m = SPEC_V[r.v];
   return `<span class="sppill ${m.cls}">${m.icon} ${m.label}</span>`;
 }
-function matchPrefs(p, prefs = PREFS){
-  if(p.type !== "j") return false;
-  const all = [p.title, p.org, p.cat, p.region, p.text, p.desc, ...(p.emp||[]), ...(p.edu||[])].join(" ");
-  if(prefs.emp.length && !prefs.emp.some(e => (p.emp||[]).includes(e) || PREF_RE[e].test(all))) return false;
-  if(prefs.edu.length && !prefs.edu.some(e => (p.edu||[]).includes(e) || PREF_RE[e].test(all))) return false;
-  if(prefs.region.length && !prefs.region.some(r => p.region === r || all.includes(r))) return false;
+// 추천은 구조화된 채용 조건을 우선 사용합니다. 본문에 등장한 지명/학력은 지원조건의 증거가 아닙니다.
+const CP_REGION_ALIASES = {강원:["강원","춘천","원주","강릉","속초","동해","삼척","태백","홍천","횡성","평창","영월","정선","인제","양구","화천","철원","고성","양양"],전남:["전남","전라남","나주","목포","여수","순천","광양"],전북:["전북","전라북","전주","군산","익산"],충북:["충북","충청북","청주","충주","제천"],충남:["충남","충청남","천안","아산","공주","서산"],경북:["경북","경상북","포항","경주","구미","안동"],경남:["경남","경상남","창원","진주","김해","거제"],경기:["경기","경기도","수원","성남","용인","안양","고양","화성","평택","파주","부천","안산","의정부","남양주","여주"]};
+function cpWorkRegionMatch(p, region){
+  const fields = [p.region, p.alio && ALIO_DETAIL && ALIO_DETAIL[p.id] && ALIO_DETAIL[p.id].workRgnNmLst].filter(Boolean).join(' ');
+  if(!fields) return false; // 근무지 미확인: 본문 속 지명으로 추측하지 않음
+  if(/전국|전 지역|전지역/.test(fields)) return true;
+  const names = CP_REGION_ALIASES[region] || [region];
+  return names.some(n => fields.includes(n));
+}
+function cpConditionMatches(p, prefs = PREFS){
+  if(p.type !== 'j') return false;
+  const emp = Array.isArray(p.emp) ? p.emp : [];
+  const edu = Array.isArray(p.edu) ? p.edu : [];
+  if(prefs.emp.length && !prefs.emp.some(e => emp.includes(e) || (e==='무기계약직' && emp.includes('무기계약')))) return false;
+  if(prefs.edu.length && !prefs.edu.some(e => edu.includes(e) || (e==='고졸 가능' && edu.includes('학력무관')))) return false;
+  if(prefs.region.length && !prefs.region.some(r => cpWorkRegionMatch(p,r))) return false;
   if(prefs.cat.length && !prefs.cat.includes(p.cat)) return false;
-  const kws = prefs.kw.split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
-  if(kws.length && !kws.some(k => all.toLowerCase().includes(k.toLowerCase()))) return false;
+  const kws = String(prefs.kw||'').split(/[,\s]+/).map(s=>s.trim().toLowerCase()).filter(Boolean);
+  const searchable = [p.title,p.org,p.cat,p.desc].join(' ').toLowerCase();
+  if(kws.length && !kws.some(k=>searchable.includes(k))) return false;
   return true;
 }
-// CareerPick 2.0 step 2: show grounded matching reasons without claiming eligibility.
+function matchPrefs(p, prefs = PREFS){ return cpConditionMatches(p,prefs); }
 function preferenceReasons(p, prefs = PREFS){
-  if(p.type !== "j") return [];
-  const all = [p.title,p.org,p.cat,p.region,p.text,p.desc,...(p.emp||[]),...(p.edu||[])].join(" ").toLowerCase();
-  const reasons = [];
-  if(prefs.region.length){const v=prefs.region.find(r=>p.region===r || all.includes(r.toLowerCase()));if(v)reasons.push("희망지역 " + v);}
-  if(prefs.emp.length){const v=prefs.emp.find(e=>(p.emp||[]).includes(e) || (PREF_RE[e] && PREF_RE[e].test(all)));if(v)reasons.push("고용형태 " + v);}
-  if(prefs.edu.length){const v=prefs.edu.find(e=>(p.edu||[]).includes(e) || (PREF_RE[e] && PREF_RE[e].test(all)));if(v)reasons.push("학력조건 " + v);}
-  if(prefs.cat.length && prefs.cat.includes(p.cat))reasons.push("관심분야 " + p.cat);
-  const words=String(prefs.kw||"").split(/[,\s]+/).filter(Boolean);
-  const word=words.find(w=>all.includes(w.toLowerCase()));if(word)reasons.push("관심키워드 " + word);
+  if(!cpConditionMatches(p,prefs)) return [];
+  const reasons=[];
+  const region=prefs.region.find(r=>cpWorkRegionMatch(p,r));
+  if(region) reasons.push('근무지역 확인 '+region);
+  const emp=prefs.emp.find(e=>(p.emp||[]).includes(e));
+  if(emp) reasons.push('고용형태 '+emp);
+  const edu=prefs.edu.find(e=>(p.edu||[]).includes(e) || (e==='고졸 가능' && (p.edu||[]).includes('학력무관')));
+  if(edu) reasons.push('표기 학력 '+edu);
+  if(prefs.cat.includes(p.cat)) reasons.push('관심분야 '+p.cat);
+  const words=String(prefs.kw||'').split(/[,\s]+/).filter(Boolean);
+  const search=[p.title,p.org,p.cat,p.desc].join(' ').toLowerCase();
+  const word=words.find(w=>search.includes(w.toLowerCase()));
+  if(word) reasons.push('관심키워드 '+word);
   return reasons;
+}
+function cpRecommendationScore(p, now){
+  const reasons=preferenceReasons(p);
+  const due=p.due ? Math.max(0,(p.due-now)/864e5) : 999;
+  return reasons.length*20 + (isNew(p,now)?12:0) + (due<=7?8:0) + (due<=3?3:0);
 }
 function preferenceBadge(p){
   if(state.tab!=="mine" || !hasPrefs() || p.type!=="j")return "";
@@ -1165,7 +1185,7 @@ function prefCard(){
     return `<li class="prefcard"><span class="grow">✅ <b>내 스펙</b>(학력·자격증·토익 등)을 입력하면 <b>지원 가능한 공식 공고</b>만 골라드려요.</span><button class="go" id="openSpec">입력</button><button class="x" id="specCardX" aria-label="닫기">×</button></li>`;
   if(hasPrefs()){
     const n = POSTS.filter(p => matchPrefs(p) && statusOf(p, new Date()) !== "closed").length;
-    return `<li class="prefcard"><span class="grow">🎯 내 조건(${esc(prefSummary())})에 맞는 모집 중 공고 <b>${n}건</b></span><button class="go" data-tab="mine">보기</button></li>`;
+    return `<li class="prefcard"><span class="grow">🎯 내 조건(${esc(prefSummary())})이 확인된 모집 중 공고 <b>${n}건</b></span><button class="go" data-tab="mine">보기</button></li>`;
   }
   let off = false; try { off = localStorage.getItem("prefCardOff") === "1"; } catch(e) {}
   if(off) return "";
@@ -1191,7 +1211,7 @@ function openPrefs(){
 function prefLive(){
   const now = new Date();
   const n = POSTS.filter(p => matchPrefs(p, DRAFT) && statusOf(p, now) !== "closed").length;
-  $("prefLive").innerHTML = `지금 조건에 맞는 모집 중 공고: <b>${n}건</b>`;
+  $("prefLive").innerHTML = `확인된 조건에 맞는 모집 중 공고: <b>${n}건</b>`;
 }
 function specRows(now){
   const out = [];
@@ -1697,6 +1717,8 @@ function renderCareerDashboard(now){
   const events = appEvents(now);
   const soon = events.filter(e => e.kind === "due" && e.date <= ymd(new Date(now.getTime()+3*864e5)));
   const candidates = (hasPrefs() ? matched : jobs).slice().sort((a,b) => {
+    const scoreDiff = cpRecommendationScore(b,now)-cpRecommendationScore(a,now);
+    if(scoreDiff) return scoreDiff;
     const na = isNew(a,now) ? 1 : 0, nb = isNew(b,now) ? 1 : 0;
     if(na !== nb) return nb-na;
     const da = a.due ? a.due.getTime() : Infinity, db = b.due ? b.due.getTime() : Infinity;
@@ -1724,7 +1746,7 @@ function renderCareerDashboard(now){
   el.innerHTML = `<div class="cp-hero-head"><div><span class="cp-eyebrow">나의 취업 대시보드</span><h2>${hasPrefs() ? "오늘 내 조건에 맞는 공고를 확인하세요" : "내 조건을 설정하고 맞춤 공고를 받아보세요"}</h2><p>새 공고 확인부터 지원 마감 관리까지, 오늘 필요한 것만 모았습니다.</p></div><button class="cp-head-setting" data-dash="prefs">⚙ 맞춤 설정</button></div>
     <div class="cp-dash-stats">${metrics.map(([n,l,action])=>`<button class="cp-dash-stat" data-dash="${action}" aria-label="${esc(l)} ${esc(String(n))}"><b>${esc(String(n))}</b><span>${esc(l)}</span></button>`).join("")}</div>
     ${soon.length ? `<div class="cp-today-alert"><strong>⏰ 지원 예정 ${soon.length}건이 3일 안에 마감됩니다</strong><span>${esc(soon.slice(0,2).map(e=>e.name).join(' · '))}${soon.length>2?' 외 '+(soon.length-2)+'건':''}</span><button data-dash="track">지원 일정 확인 →</button></div>` : next ? `<div class="cp-today-info">🗓 다음 일정: ${esc(next.date)} · ${esc(next.label)} · ${esc(next.name)} <button data-dash="track">일정 보기 →</button></div>` : `<div class="cp-today-info">📋 아직 예정된 지원 일정이 없어요. 관심 공고에서 ‘지원기록’을 남기면 여기에 알려드려요. <button data-dash="track">지원 관리 →</button></div>`}
-    <div class="cp-reco-heading"><div><strong>${hasPrefs() ? '🎯 나에게 맞는 추천 공고' : '🔎 먼저 확인할 채용공고'}</strong><small>${hasPrefs() ? '저장한 맞춤 조건 기준 · 지원 가능 여부는 공식 공고에서 확인' : '마감일과 새 공고 기준 · 맞춤 조건을 설정하면 더 정확해져요'}</small></div><button data-dash="${hasPrefs() ? 'mine' : 'prefs'}">${hasPrefs() ? '맞춤 공고 전체 →' : '맞춤 설정 →'}</button></div>
+    <div class="cp-reco-heading"><div><strong>${hasPrefs() ? '🎯 나에게 맞는 추천 공고' : '🔎 먼저 확인할 채용공고'}</strong><small>${hasPrefs() ? '구조화된 근무지·고용형태·학력 표기 기준 · 미확인 조건은 추천에서 제외' : '마감일과 새 공고 기준 · 맞춤 조건을 설정하면 더 정확해져요'}</small></div><button data-dash="${hasPrefs() ? 'mine' : 'prefs'}">${hasPrefs() ? '맞춤 공고 전체 →' : '맞춤 설정 →'}</button></div>
     <div class="cp-reco-list">${recs || `<div class="cp-reco-empty">현재 표시할 모집 중 공고가 없습니다. 수집 상태와 공식 공고를 확인해 주세요.</div>`}</div>
     <div class="cp-dash-footer">${feedNote}<div class="cp-dash-links"><button data-dash="track">📋 내 지원</button><button data-dash="saved">☆ 저장 공고</button><button id="cpBackup">↓ 내 기록 백업</button><button id="cpRestore">↑ 기록 복원</button></div></div>`;
   el.hidden = false;
