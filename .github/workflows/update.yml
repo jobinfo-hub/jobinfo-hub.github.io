@@ -38,6 +38,9 @@ jobs:
         env:
           ALIO_KEY: ${{ secrets.ALIO_KEY }}
         run: python alio.py
+        
+      - name: 기관 공식 채용공고 자동 모니터링
+        run: python monitor.py
 
       - name: 바뀐 파일 저장
         run: |
