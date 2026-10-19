@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T00:17:56+09:00",
+ "updated": "2026-10-19T11:23:20+09:00",
  "posts": [
   {
    "id": "a306054",
@@ -7384,6 +7384,29 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306132",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 낙동강북부사업단 특수직(사무관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306132",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "비정규직 학력무관 경북 경영.회계.사무",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
    "id": "a306125",
    "type": "j",
    "alio": true,
@@ -7793,6 +7816,52 @@
    "text": "무기계약직 학력무관 대전 사업관리 경영.회계.사무 농림어업",
    "n": "6",
    "src": "https://www.kofpi.or.kr/notice/notice_04view.do"
+  },
+  {
+   "id": "a306131",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "대한법률구조공단 상용직(기술관리직 갑종) 직원 채용 공고",
+   "org": "대한법률구조공단",
+   "desc": "기계 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306131",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "무기계약직 학력무관 경북 기계 환경.에너지.안전",
+   "n": "1",
+   "src": "https://klac.or.kr/notification/hireNotice/selectHireNoticeView.do?boardCode=241&contentId=AD_0000168618&pageIndex=1&searchCnd=0&searchWrd="
+  },
+  {
+   "id": "a306129",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "대한법률구조공단 주택 및 상가건물임대차분쟁조정위원회 2026년 심사관(수원,대구) 신규 채용",
+   "org": "대한법률구조공단",
+   "desc": "법률.경찰.소방.교도.국방",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306129",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 경기 법률.경찰.소방.교도.국방",
+   "n": "3",
+   "src": "https://klac.or.kr/notification/hireNotice/selectHireNoticeView.do?boardCode=241&contentId=AD_0000168169"
   },
   {
    "id": "a292609",
