@@ -359,6 +359,7 @@ footer .src b{color:var(--ink)}
 .ckbox h3{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:8px}
 .ckbox .go{appearance:none;border:0;background:var(--brand);color:#fff;border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:700;cursor:pointer}
 .biz{margin:8px 0 0;font-size:12.5px;color:var(--muted)} .biz a{color:var(--brand);font-weight:600;margin:0}
+.jv-sec p{overflow-wrap:anywhere;line-height:1.85;white-space:pre-line}.jv-grid dd{overflow-wrap:anywhere}@media(max-width:480px){.jv-sec{padding:16px 14px}.jv-sec p{font-size:15px;line-height:1.9}.jv-grid{grid-template-columns:94px minmax(0,1fr);font-size:13.5px}}
 </style>
 </head>
 <body>
@@ -901,10 +902,10 @@ function jobCard(p, now){
   if(spr) tags.unshift(specPill(p));
   const spw = spr ? (spr.v === "ok" ? [...spr.why].reverse().find(w => w[0] === "ok") : spr.why.find(w => w[0] === spr.v)) : null;
   return `<li class="card job ${d && d.cls==="closed" ? "is-closed" : ""}">
-    <a class="main" href="${p.alio ? "#job=" + esc(p.id) : esc(p.url)}"${p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"'}>
+    <a class="main" href="${(p.alio || p.monitor) ? "#job=" + esc(p.id) : esc(p.url)}"${(p.alio || p.monitor) ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"'}>
       ${tile}
       <div class="body">
-        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${p.alio ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${regionLabel(p) ? `<span class="rg">· ${esc(regionLabel(p))}</span>` : ""}</div>
+        <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${(p.alio || p.monitor) ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${regionLabel(p) ? `<span class="rg">· ${esc(regionLabel(p))}</span>` : ""}</div>
         <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
         ${spw && state.tab === "spec" ? `<div class="spwhy">${SPEC_V[spw[0]].icon} ${esc(spw[1])}${spr.why.filter(w => w[0] !== "ok").length > 1 ? ` 외 ${spr.why.filter(w => w[0] !== "ok").length - 1}건` : ""}</div>` : ""}
@@ -926,12 +927,12 @@ function rowCard(p, now){
   if(p.n) meta.push(p.n + "명");
   if((p.emp||[])[0]) meta.push(p.emp[0]);
   if(p.due) meta.push("마감 " + dueLong(p.due, p.dueHasTime));
-  const href = p.alio ? "#job=" + esc(p.id) : esc(p.url);
-  const attr = p.alio ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"';
+  const href = (p.alio || p.monitor) ? "#job=" + esc(p.id) : esc(p.url);
+  const attr = (p.alio || p.monitor) ? ` data-open="${esc(p.id)}"` : ' target="_blank" rel="noopener"';
   return `<li class="card row ${d && d.cls === "closed" ? "is-closed" : ""}">
     <a class="main" href="${href}"${attr}>
       <span class="rd ${d ? d.cls : ""}">${d ? d.big : "상시"}</span>
-      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${p.alio ? "공식" : "해설"} · ${esc(p.org || p.cat)}${regionLabel(p) ? " · " + esc(regionLabel(p)) : ""}</span>
+      <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${(p.alio || p.monitor) ? "공식" : "해설"} · ${esc(p.org || p.cat)}${regionLabel(p) ? " · " + esc(regionLabel(p)) : ""}</span>
       <span class="rt">${esc(cleanTitle(p.title))}</span>
       <span class="rm">${esc(meta.join(" · "))}</span></span>
     </a>
@@ -974,7 +975,7 @@ function newStrip(rows, now){
       ? (d ? `<span class="bd ${d.cls === "hot" ? "hot" : ""}">${d.big}</span>` : `<span class="bd">공고</span>`)
       : `<span class="bd ${p.type}">${p.type === "m" ? "정책" : "준비"}</span>`;
     const t = p.type === "j" ? cleanTitle(p.title) : p.title;
-    return `<a href="${esc(p.url)}" target="_blank" rel="noopener">${bd}<span class="tt">${esc(t)}</span></a>`;
+    return `<a href="${p.monitor ? "#job=" + esc(p.id) : esc(p.url)}"${p.monitor ? ` data-open="${esc(p.id)}"` : ` target="_blank" rel="noopener"`}>${bd}<span class="tt">${esc(t)}</span></a>`;
   }).join("");
   return `<li class="newstrip"><div class="hd"><b>🆕 ${SEEN_BASE ? "지난 방문 이후 새 글" : "최근 24시간 새 글"} ${fresh.length}개</b>${fresh.length > 3 ? '<button class="more" id="seeNew">새 글만 모두 보기</button>' : ""}</div>${items}</li>`;
 }
@@ -1421,9 +1422,10 @@ function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
   const saved = SAVED.has(p.id), ap = APPS[p.id];
   const rows = [];
-  const endTxt = p.due ? dueLong(p.due, false) : "상시 모집";
+  const endTxt = p.due ? dueLong(p.due, false) : "공식 공고 확인 필요";
   const period = det && det.pbancBgngYmd ? `${ymdText(det.pbancBgngYmd)} ~ ${endTxt}` : `~ ${endTxt}`;
-  rows.push(["접수 기간", period]);
+  rows.push(["접수 기간", p.monitor && !p.due ? "공식 공고 확인 필요" : period]);
+  if(p.monitor && p.pubOriginal) rows.push(["공고 게시일", p.pubOriginal]);
   for(const [k, label] of JV_SUMMARY){
     let v = det ? det[k] : "";
     if(!v){ if(k === "recrutNope" && p.n) v = p.n; else if(k === "workRgnNmLst" && p.region) v = p.region; else continue; }
@@ -1442,20 +1444,20 @@ function jobViewHTML(p, det){
       secs.push([/Rsn$/.test(k) ? "추가 안내" : "상세 내용", t]);
     }
   }
-  const off = p.src ? `<a href="${esc(p.src)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
+  const off = p.src && p.src !== p.url ? `<a href="${esc(p.src)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
   return `<div class="jv-head">
       <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
       <h1 class="jv-title">${esc(p.title)}</h1>
-      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">${p.due ? "접수 마감 " + dueLong(p.due, false) : "상시 모집 (마감 시 종료)"}</span></div>
+      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">${p.due ? "접수 마감 " + dueLong(p.due, false) : "마감일은 공식 공고 확인 필요"}</span></div>
       <dl class="jv-grid">${rows.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
     </div>
-    ${specBoxHTML(p, det)}
-    ${det === null ? "" : ckBoxHTML(p)}
-    ${det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
+    ${p.monitor ? `<section class="jv-sec"><h3>📋 공식 채용공고 핵심 정보</h3><p>${esc(p.detailText || "공고 상세 정보를 자동 추출하지 못했습니다. 아래 원문 공고에서 모집요강과 첨부파일을 확인해 주세요.")}</p></section>` : specBoxHTML(p, det)}
+    ${p.monitor ? "" : (det === null ? "" : ckBoxHTML(p))}
+    ${p.monitor ? "" : det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
     <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
-    <p class="jv-note">이 정보는 공공기관 경영정보 공개시스템(알리오)에 게시된 공고를 자동으로 정리한 것이에요. 마감 시각·제출 서류 등 세부 사항은 반드시 원문 공고에서 확인하세요.</p>
+    <p class="jv-note">${p.monitor ? "기관 공식 홈페이지에서 자동 수집한 정보입니다. 일부 내용과 첨부파일이 누락될 수 있으므로 지원 전 원문 공고를 반드시 확인하세요." : "이 정보는 공공기관 경영정보 공개시스템(알리오)에 게시된 공고를 자동으로 정리한 것이에요. 마감 시각·제출 서류 등 세부 사항은 반드시 원문 공고에서 확인하세요."}</p>
     <div class="jv-bar"><div class="in">
       <div class="main-btns"><a class="primary" href="${esc(p.url)}" target="_blank" rel="noopener">원문 공고 보기 ↗</a>${off}</div>
       <div class="sub-btns">

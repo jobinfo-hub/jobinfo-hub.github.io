@@ -143,6 +143,32 @@ def deadline(text):
     return None
 
 
+
+def detail_text(source, title):
+    """Best-effort readable official article text, without inventing fields."""
+    source = re.sub(r'(?is)<(?:script|style|noscript)[^>]*>.*?</(?:script|style|noscript)>', ' ', source)
+    source = re.sub(r'(?i)<br\s*/?>|</(?:p|div|tr|li|h[1-6]|section)>', '\n', source)
+    source = re.sub(r'(?s)<[^>]*>', ' ', source)
+    source = html.unescape(source).replace('\xa0', ' ')
+    lines = [clean(x) for x in source.splitlines()]
+    lines = [x for x in lines if x and len(x) < 1500]
+    # Prefer content starting at the article title (usually repeated in page header).
+    needle = clean(title)
+    positions = [i for i, x in enumerate(lines) if needle and needle in x]
+    if positions:
+        lines = lines[positions[-1]:]
+    stop = ('이전글', '다음글', '목록으로', '개인정보처리방침', '사이트맵')
+    kept = []
+    for line in lines:
+        if kept and any(line == marker for marker in stop):
+            break
+        if kept and line == kept[-1]:
+            continue
+        kept.append(line)
+        if sum(map(len, kept)) > 9000:
+            break
+    return '\n'.join(kept)[:9000]
+
 def main():
     if not CONFIG.exists():
         print('[ERROR] org_sources.json 없음', file=sys.stderr)
@@ -194,19 +220,28 @@ def main():
             if matches > int(cfg.get('max_items', 30)):
                 break
             detail = title
+            extracted = ""
             try:
                 if seq:
                     detail_html = fetch(KOFPI_VIEW, {'fileSeq': '', 'bb_seq': seq, 'cPage': '1', 'searchKey': 'total', 'searchValue': ''})
-                    detail += ' ' + clean(re.sub(r'<[^>]+>', ' ', re.sub(r'(?is)<(?:script|style).*?</(?:script|style)>', ' ', detail_html)))
+                    extracted = detail_text(detail_html, title)
+                    detail += ' ' + extracted
                 else:
-                    detail += ' ' + clean(re.sub(r'<[^>]+>', ' ', fetch(url)))
+                    fetched = fetch(url)
+                    extracted = detail_text(fetched, title)
+                    detail += ' ' + extracted
             except Exception as e:
                 print(f'[WARN] 상세 페이지 접근 실패: {type(e).__name__}: {e}', flush=True)
             pid = 'm' + hashlib.sha1(f'{name}|{url}|{title}'.encode()).hexdigest()[:16]
-            if pid not in existing:
+            if pid in existing:
+                if extracted:
+                    existing[pid]['detailText'] = extracted
+                if not existing[pid].get('due'):
+                    existing[pid]['due'] = deadline(detail)
+            else:
                 existing[pid] = {'id': pid, 'type': 'j', 'monitor': True, 'cat': '기관 공식 채용공고', 'title': title,
                                  'org': name, 'desc': '기관 공식 홈페이지 자동 수집', 'url': url, 'src': url,
-                                 'pub': now.isoformat(), 'due': deadline(detail), 'dueHasTime': False,
+                                 'pub': now.isoformat(), 'due': deadline(detail), 'dueHasTime': False, 'detailText': extracted,
                                  'emp': [], 'edu': [], 'region': '', 'text': f'{name} {title}'}
                 print(f'[NEW] {name}: {title} -> {url}', flush=True)
         print(f'[RESULT] {name}: 공고 링크 {matches}개 / JS 또는 링크 없음 {len(js_candidates)}개', flush=True)
