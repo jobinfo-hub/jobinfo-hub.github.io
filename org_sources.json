@@ -1,0 +1,33 @@
+[
+  {
+    "name": "한국임업진흥원",
+    "type": "공공기관",
+    "url": "https://www.kofpi.or.kr/notice/notice_04.do",
+    "enabled": true,
+    "link_keywords": [
+      "채용",
+      "인재채용",
+      "채용공고",
+      "모집"
+    ],
+    "exclude_keywords": [
+      "친인척 채용현황",
+      "채용계획 사전",
+      "계획 사전"
+    ],
+    "same_domain_only": true,
+    "max_items": 30
+  },
+  {
+    "name": "국민연금공단",
+    "type": "공공기관",
+    "url": "https://www.nps.or.kr/main.do",
+    "enabled": false,
+    "link_keywords": [
+      "채용공고"
+    ],
+    "exclude_keywords": [],
+    "same_domain_only": true,
+    "max_items": 20
+  }
+]
