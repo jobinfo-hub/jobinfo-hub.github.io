@@ -997,7 +997,11 @@ function newStrip(rows, now){
       ? (d ? `<span class="bd ${d.cls === "hot" ? "hot" : ""}">${d.big}</span>` : `<span class="bd">공고</span>`)
       : `<span class="bd ${p.type}">${p.type === "m" ? "정책" : "준비"}</span>`;
     const t = p.type === "j" ? cleanTitle(p.title) : p.title;
-    return `<a href="${esc(p.url)}" target="_blank" rel="noopener">${bd}<span class="tt">${esc(t)}</span></a>`;
+    const isBlog = /(?:blog\.naver\.com|m\.blog\.naver\.com|tistory\.com|brunch\.co\.kr)/i.test(p.url || "");
+    const internal = p.type === "j" && p.id && !isBlog;
+    return internal
+      ? `<a href="#job=${encodeURIComponent(p.id)}" data-open="${esc(p.id)}">${bd}<span class="tt">${esc(t)}</span></a>`
+      : `<a href="${esc(p.url)}" target="_blank" rel="noopener">${bd}<span class="tt">${esc(t)}</span></a>`;
   }).join("");
   return `<li class="newstrip"><div class="hd"><b>🆕 ${SEEN_BASE ? "지난 방문 이후 새 글" : "최근 24시간 새 글"} ${fresh.length}개</b>${fresh.length > 3 ? '<button class="more" id="seeNew">새 글만 모두 보기</button>' : ""}</div>${items}</li>`;
 }
