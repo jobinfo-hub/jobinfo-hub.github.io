@@ -383,6 +383,14 @@ footer .src b{color:var(--ink)}
   .jobview .jv-grid dd{margin-bottom:8px}
 }
 
+/* CareerPick 2.0 step 6: deadline exploration */
+.cp-deadline-tools{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:12px 0 4px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.cp-deadline-label{font-size:12px;font-weight:800;color:var(--muted)}
+.cp-deadline-options{display:flex;gap:5px;flex-wrap:wrap}
+.cp-deadline-options button{appearance:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 10px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.cp-deadline-options button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:white}
+.cp-deadline-tools[hidden]{display:none}
+@media(max-width:420px){.cp-deadline-tools{padding:9px}.cp-deadline-options button{padding:6px 8px;font-size:11px}}
 /* CareerPick 2.0 step 1: mobile detail readability */
 .jobview{overscroll-behavior:contain}
 .jobview .jv-head,.jobview .jv-sec,.jobview .spbox,.jobview .ckbox{overflow-wrap:anywhere}
@@ -559,6 +567,15 @@ footer .src b{color:var(--ink)}
   <nav class="guides" aria-label="정리 페이지"><a href="deadline-week.html">📌 이번 주 마감 총정리</a><a href="calendar.html">🗓 공고 예정 달력</a><a href="orgs.html">🏢 기관별 정보</a><a href="certs.html">📝 자격증 일정</a><a href="intern.html">인턴 모음</a><a href="highschool.html">고졸 가능</a><a href="prep.html" style="color:var(--brand);font-weight:700">🎓 취업 준비실</a><a href="enterprise.html" style="color:var(--brand);font-weight:700">🏢 대기업 채용</a></nav>
   <section id="careerDashboard" class="cp-dashboard" aria-label="나의 취업 대시보드" hidden></section>
   <input id="cpBackupInput" type="file" accept=".json,application/json" hidden aria-label="커리어픽 백업 파일 선택">
+  <section class="cp-deadline-tools" id="cpDeadlineTools" aria-label="마감일 빠른 필터">
+    <span class="cp-deadline-label">⏰ 마감일 빠른 보기</span>
+    <div class="cp-deadline-options" id="cpDeadlineOptions">
+      <button type="button" data-deadline="all" aria-pressed="true">전체</button>
+      <button type="button" data-deadline="today" aria-pressed="false">오늘 마감</button>
+      <button type="button" data-deadline="3" aria-pressed="false">3일 이내</button>
+      <button type="button" data-deadline="7" aria-pressed="false">7일 이내</button>
+    </div>
+  </section>
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433155457"><div class="kind"><span class="pill p">마감 10.20(화) 15:00</span></div><div class="t">자동차손해배상진흥원 전문직 채용 5명, 내 경력 2분 확인</div></a></li>
@@ -686,39 +703,6 @@ function toggleSave(id){
   try { localStorage.setItem("saved", JSON.stringify([...SAVED])); } catch(e) {}
 }
 
-// ── 공고 중복 방지: 동일 원문 URL 또는 기관·공고명·마감일이 모두 같은 경우만 ──
-// 저장/지원 기록에 사용되는 기존 ID를 보존하기 위해 최초 공고를 우선합니다.
-function cpCanonicalJobUrl(value){
-  if(!value) return "";
-  try{
-    const u = new URL(String(value), location.href);
-    if(!/^https?:$/.test(u.protocol)) return "";
-    u.hash = "";
-    for(const key of [...u.searchParams.keys()]){
-      if(/^(utm_|fbclid$|gclid$|ref$|source$)/i.test(key)) u.searchParams.delete(key);
-    }
-    u.searchParams.sort();
-    return u.href.replace(/\/$/, "");
-  }catch(e){ return ""; }
-}
-function cpJobExactKey(p){
-  if(p.type !== "j" || !p.org || !p.title || !p.due || !Number.isFinite(new Date(p.due).getTime())) return "";
-  const clean = v => String(v).normalize("NFKC").toLowerCase().replace(/[\s·.,()[\]{}]/g, "");
-  return [clean(p.org),clean(p.title),new Date(p.due).toISOString().slice(0,10)].join("|");
-}
-function cpDedupeJobs(items){
-  const seenUrls = new Set(), seenExact = new Set();
-  return items.filter(p => {
-    if(p.type !== "j") return true;
-    const urls = [p.url,p.src,p.alioUrl].map(cpCanonicalJobUrl).filter(Boolean);
-    const key = cpJobExactKey(p);
-    if(urls.some(u => seenUrls.has(u)) || (key && seenExact.has(key))) return false;
-    urls.forEach(u => seenUrls.add(u));
-    if(key) seenExact.add(key);
-    return true;
-  });
-}
-
 // ── 잡알리오 공식 공고 합치기 (블로그 해설이 있는 공고는 블로그 카드를 우선) ──
 const normOrg = s => String(s || "").replace(/\(주\)|주식회사|\s|[()·.,]/g, "");
 async function loadAlio(){
@@ -782,8 +766,6 @@ async function load(){
   initSeen();
   await loadAlio();
   await loadMonitoredJobs();
-  // 모든 공급원 결합 후 한 번만 중복 제거합니다. 첫 번째 공고의 ID는 그대로 유지합니다.
-  POSTS = cpDedupeJobs(POSTS);
   const qp = new URLSearchParams(location.search).get("q");
   { const tp = new URLSearchParams(location.search).get("tab"); if(tp === "spec" || tp === "cert") state.tab = tp; }
   if(qp){ state.q = qp; state.tab = "all"; $("q").value = qp; }
@@ -1109,7 +1091,7 @@ function preferenceBadge(p){
 const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
 const SORTS = [["due","마감 가까운 순"],["new","최신순"]];
-const state = {specV:"all", tab: hasPrefs() ? "mine" : "all", q:"", cat:null, region:"", status:"all", sort:"due", onlyNew:false};
+const state = {specV:"all", tab: hasPrefs() ? "mine" : "all", q:"", cat:null, region:"", status:"all", sort:"due", onlyNew:false, deadline:"all"};
 
 function kstDay(d){ const k = kst(d); return Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()); }
 function dday(p, now){
@@ -1125,11 +1107,8 @@ const haystack = p => [p.title, p.desc, p.cat, p.org, p.region, ...(p.emp||[]), 
 // 지역은 공고의 근무지역 필드만 기준으로 판정합니다. 미기재 공고는 지역 선택 시 제외됩니다.
 function cpRegionMatches(p, region){
   if(!region) return true;
-  const detail = p.alio && ALIO_DETAIL && ALIO_DETAIL[p.id];
-  const raw = String((detail && detail.workRgnNmLst) || p.region || "");
-  if(!raw || !SIDO_RE[region]) return false;
-  // '전국'은 특정 시·도 배치를 보장하지 않으므로 지역 검색에서 제외합니다.
-  return SIDO_RE[region].test(raw);
+  const raw = String(p.region || "");
+  return !!(SIDO_RE[region] && SIDO_RE[region].test(raw));
 }
 
 function renderTabs(){
@@ -1160,7 +1139,7 @@ function renderFilters(){
   chipRow($("regions"), [["","전국"], ...SIDO.map(r => [r,r])], state.region, "region");
   chipRow($("status"), STATUS, state.status, "status");
   chipRow($("sort"), SORTS, state.sort, "sort");
-  $("toggle").dataset.on = String(!!state.cat || !!state.region || !!state.q || state.status !== "all" || state.sort !== "due" || state.onlyNew);
+  $("toggle").dataset.on = String(!!state.cat || !!state.region || !!state.q || state.status !== "all" || state.sort !== "due" || state.onlyNew || (state.deadline && state.deadline!=="all"));
 }
 
 function calLink(p){
@@ -1967,7 +1946,14 @@ async function cpRestoreBackup(file){
   alert("복원했습니다. 변경된 기록을 불러오기 위해 페이지를 새로고침합니다.");location.reload();
 }
 
+function cpRenderDeadlineTools(){
+  const tool=$("cpDeadlineTools");
+  if(!tool) return;
+  tool.hidden = ["track","spec","cert","p","m"].includes(state.tab);
+  tool.querySelectorAll("[data-deadline]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.deadline===(state.deadline||"all"))));
+}
 function render(){
+  cpRenderDeadlineTools();
   renderCareerDashboard(new Date());
   const now = new Date();
   $("viewbtn").hidden = state.tab === "track";
@@ -1979,6 +1965,14 @@ function render(){
   const q = state.q.trim().toLowerCase();
   let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && cpRegionMatches(p, state.region) && (!q || haystack(p).includes(q)));
   if(state.status !== "all") rows = rows.filter(p => statusOf(p, now) === state.status);
+  if(state.deadline && state.deadline !== "all"){
+    const limit = state.deadline === "today" ? 0 : Number(state.deadline);
+    rows = rows.filter(p => {
+      if(p.type !== "j") return false;
+      const d=dday(p,now);
+      return d && d.cls!=="closed" && d.n>=0 && d.n<=limit;
+    });
+  }
   if(state.onlyNew) rows = rows.filter(p => isNew(p, now));
   if(state.tab === "mine") rows = rows.filter(p => statusOf(p, now) !== "closed");
   rows.sort(state.sort === "due" && !state.onlyNew ? (a,b) => cmp(sortKey(a,now), sortKey(b,now)) : (a,b) => b.pub - a.pub);
@@ -1989,6 +1983,7 @@ function render(){
     ? `글 <b>${rows.length}</b>개`
     : `모집 중인 공고 <b>${open}</b>건` + (hot ? ` · 3일 내 마감 <span class="hot">${hot}</span>건` : "") + (state.tab === "mine" ? "" : ` · 전체 글 ${rows.length}개`);
   if(state.tab === "mine") sum = `🎯 ${prefSummary()} ` + sum + `<button class="linkbtn" id="editPrefs">조건 수정</button>`;
+  if(state.deadline && state.deadline !== "all") sum = `⏰ ${state.deadline === "today" ? "오늘 마감" : state.deadline+"일 이내 마감"} · ` + sum;
   if(state.onlyNew) sum = `🆕 새 글 <b>${rows.length}</b>개만 보는 중 <button class="linkbtn" id="offNew">전체 보기</button>`;
   $("summary").innerHTML = sum;
 
@@ -2096,6 +2091,7 @@ document.addEventListener("click", e => {
   else if(t.id === "tDel"){ if(confirm("이 지원 기록을 삭제할까요?")){ delete APPS[TID]; saveApps(); closeSheet(); renderTabs(); render(); savedAlert(); } }
   else if(t.dataset.tab){ state.tab = t.dataset.tab; state.certQ = null; refresh(); }
   else if(t.dataset.cat !== undefined){ state.cat = t.dataset.cat || null; refresh(); }
+  else if(t.dataset.deadline !== undefined){ state.deadline=t.dataset.deadline; refresh(); }
   else if(t.dataset.region !== undefined){ state.region = t.dataset.region; refresh(); }
   else if(t.dataset.quick){ state.q = state.q === t.dataset.quick ? "" : t.dataset.quick; $("q").value = state.q; refresh(); }
   else if(t.dataset.status){ state.status = t.dataset.status; refresh(); }
@@ -2146,7 +2142,7 @@ document.addEventListener("click", e => {
     state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
   }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
-  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,region:"",status:"all",sort:"due",onlyNew:false}); $("q").value=""; refresh(); }
+  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,region:"",status:"all",sort:"due",onlyNew:false,deadline:"all"}); $("q").value=""; refresh(); }
 });
 $("q").addEventListener("input", e => { state.q = e.target.value; renderFilters(); render(); });
 $("tabs").addEventListener("scroll", fadeHint, {passive:true});
