@@ -399,6 +399,10 @@ footer .src b{color:var(--ink)}
  .jobview .jv-bar .main-btns a{font-size:13.5px;padding:11px 8px}
  .jobview .jv-bar .sub-btns>*{font-size:12px}
 }
+
+/* CareerPick 2.0 step 2: visible and accessible recommendation reasons. */
+.pref-why{display:block;margin:5px 0 7px;padding:5px 8px;border-radius:7px;background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
+.card.row .pref-why{font-size:11px;margin:4px 0 0;padding:3px 6px}
 </style>
 </head>
 <body>
@@ -848,6 +852,24 @@ function matchPrefs(p, prefs = PREFS){
   if(kws.length && !kws.some(k => all.toLowerCase().includes(k.toLowerCase()))) return false;
   return true;
 }
+// CareerPick 2.0 step 2: show grounded matching reasons without claiming eligibility.
+function preferenceReasons(p, prefs = PREFS){
+  if(p.type !== "j") return [];
+  const all = [p.title,p.org,p.cat,p.region,p.text,p.desc,...(p.emp||[]),...(p.edu||[])].join(" ").toLowerCase();
+  const reasons = [];
+  if(prefs.region.length){const v=prefs.region.find(r=>p.region===r || all.includes(r.toLowerCase()));if(v)reasons.push("희망지역 " + v);}
+  if(prefs.emp.length){const v=prefs.emp.find(e=>(p.emp||[]).includes(e) || (PREF_RE[e] && PREF_RE[e].test(all)));if(v)reasons.push("고용형태 " + v);}
+  if(prefs.edu.length){const v=prefs.edu.find(e=>(p.edu||[]).includes(e) || (PREF_RE[e] && PREF_RE[e].test(all)));if(v)reasons.push("학력조건 " + v);}
+  if(prefs.cat.length && prefs.cat.includes(p.cat))reasons.push("관심분야 " + p.cat);
+  const words=String(prefs.kw||"").split(/[,\s]+/).filter(Boolean);
+  const word=words.find(w=>all.includes(w.toLowerCase()));if(word)reasons.push("관심키워드 " + word);
+  return reasons;
+}
+function preferenceBadge(p){
+  if(state.tab!=="mine" || !hasPrefs() || p.type!=="j")return "";
+  const reasons=preferenceReasons(p);
+  return reasons.length ? `<div class="pref-why">🎯 ${esc(reasons.slice(0,3).join(" · "))}${reasons.length>3 ? ` 외 ${reasons.length-3}개` : ""}</div>` : "";
+}
 const QUICK = ["인턴","공무직","정규직","학력무관","고졸","간호","병원","연구직","경력"];
 const STATUS = [["all","전체"],["open","모집 중"],["hot","마감 임박"],["closed","마감"]];
 const SORTS = [["due","마감 가까운 순"],["new","최신순"]];
@@ -952,6 +974,7 @@ function jobCard(p, now){
         <div class="org">${isNew(p,now) ? '<span class="new">NEW</span>' : ""}${isInternalJob(p) ? '<span class="ofc">공식</span>' : '<span class="hae">해설</span>'}${p.org ? `<span>${esc(p.org)}</span>` : `<span>${esc(p.cat)}</span>`}${regionLabel(p) ? `<span class="rg">· ${esc(regionLabel(p))}</span>` : ""}</div>
         <h2 class="title">${esc(cleanTitle(p.title))}</h2>
         ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
+        ${preferenceBadge(p)}
         ${spw && state.tab === "spec" ? `<div class="spwhy">${SPEC_V[spw[0]].icon} ${esc(spw[1])}${spr.why.filter(w => w[0] !== "ok").length > 1 ? ` 외 ${spr.why.filter(w => w[0] !== "ok").length - 1}건` : ""}</div>` : ""}
         ${p.due ? `<div class="due ${d.cls==="hot" ? "hot" : d.cls==="closed" ? "closed" : ""}">접수 마감 ${dueLong(p.due, p.dueHasTime)}</div>` : `<div class="due closed">${p.always ? "상시 모집 (채용 시 마감)" : "마감일은 원문에서 확인"}</div>`}
       </div>
@@ -978,7 +1001,7 @@ function rowCard(p, now){
       <span class="rd ${d ? d.cls : ""}">${d ? d.big : "상시"}</span>
       <span class="rb"><span class="ro">${isNew(p,now) ? "NEW · " : ""}${isInternalJob(p) ? "공식" : "해설"} · ${esc(p.org || p.cat)}${regionLabel(p) ? " · " + esc(regionLabel(p)) : ""}</span>
       <span class="rt">${esc(cleanTitle(p.title))}</span>
-      <span class="rm">${esc(meta.join(" · "))}</span></span>
+      <span class="rm">${esc(meta.join(" · "))}</span>${preferenceBadge(p)}</span>
     </a>
     <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}" aria-label="${saved ? "저장 취소" : "관심 공고 저장"}">${saved ? "★" : "☆"}</button></li>`;
 }
