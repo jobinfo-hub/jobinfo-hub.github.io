@@ -169,6 +169,33 @@ def detail_text(source, title):
             break
     return '\n'.join(kept)[:9000]
 
+def article_date(text):
+    """Only a labeled official publication date; never use dates from body as guesses."""
+    for pattern in (r'(?:작성일|등록일|게시일)\s*[:：]?\s*(20\d{2})[.\-/]\s*(\d{1,2})[.\-/]\s*(\d{1,2})',):
+        match = re.search(pattern, text)
+        if match:
+            try:
+                return datetime(*(int(x) for x in match.groups()), 9, 0, tzinfo=KST).isoformat()
+            except ValueError:
+                pass
+    return None
+
+
+def page_article_date(source):
+    """Read date near the article header rather than an arbitrary date in body."""
+    stripped = re.sub(r'(?is)<(?:script|style)[^>]*>.*?</(?:script|style)>', ' ', source)
+    stripped = re.sub(r'(?s)<[^>]+>', ' ', stripped)
+    return article_date(clean(stripped))
+
+
+def is_valid_pub(value):
+    try:
+        d = datetime.fromisoformat(value)
+        return d.year >= 2000 and d <= datetime.now(KST) + timedelta(days=1)
+    except (TypeError, ValueError):
+        return False
+
+
 def main():
     if not CONFIG.exists():
         print('[ERROR] org_sources.json 없음', file=sys.stderr)
@@ -221,14 +248,17 @@ def main():
                 break
             detail = title
             extracted = ""
+            official_pub = None
             try:
                 if seq:
                     detail_html = fetch(KOFPI_VIEW, {'fileSeq': '', 'bb_seq': seq, 'cPage': '1', 'searchKey': 'total', 'searchValue': ''})
                     extracted = detail_text(detail_html, title)
+                    official_pub = page_article_date(detail_html)
                     detail += ' ' + extracted
                 else:
                     fetched = fetch(url)
                     extracted = detail_text(fetched, title)
+                    official_pub = page_article_date(fetched)
                     detail += ' ' + extracted
             except Exception as e:
                 print(f'[WARN] 상세 페이지 접근 실패: {type(e).__name__}: {e}', flush=True)
@@ -236,12 +266,15 @@ def main():
             if pid in existing:
                 if extracted:
                     existing[pid]['detailText'] = extracted
+                if official_pub and is_valid_pub(official_pub):
+                    existing[pid]['pubOriginal'] = official_pub[:10]
+                    existing[pid]['pub'] = official_pub
                 if not existing[pid].get('due'):
                     existing[pid]['due'] = deadline(detail)
             else:
                 existing[pid] = {'id': pid, 'type': 'j', 'monitor': True, 'cat': '기관 공식 채용공고', 'title': title,
                                  'org': name, 'desc': '기관 공식 홈페이지 자동 수집', 'url': url, 'src': url,
-                                 'pub': now.isoformat(), 'due': deadline(detail), 'dueHasTime': False, 'detailText': extracted,
+                                 'pub': official_pub if is_valid_pub(official_pub) else now.isoformat(), 'pubOriginal': official_pub[:10] if is_valid_pub(official_pub) else None, 'due': deadline(detail), 'dueHasTime': False, 'detailText': extracted,
                                  'emp': [], 'edu': [], 'region': '', 'text': f'{name} {title}'}
                 print(f'[NEW] {name}: {title} -> {url}', flush=True)
         print(f'[RESULT] {name}: 공고 링크 {matches}개 / JS 또는 링크 없음 {len(js_candidates)}개', flush=True)

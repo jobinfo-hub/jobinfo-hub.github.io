@@ -360,6 +360,19 @@ footer .src b{color:var(--ink)}
 .ckbox .go{appearance:none;border:0;background:var(--brand);color:#fff;border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:700;cursor:pointer}
 .biz{margin:8px 0 0;font-size:12.5px;color:var(--muted)} .biz a{color:var(--brand);font-weight:600;margin:0}
 .jv-sec p{overflow-wrap:anywhere;line-height:1.85;white-space:pre-line}.jv-grid dd{overflow-wrap:anywhere}@media(max-width:480px){.jv-sec{padding:16px 14px}.jv-sec p{font-size:15px;line-height:1.9}.jv-grid{grid-template-columns:94px minmax(0,1fr);font-size:13.5px}}
+
+/* CareerPick v4: accessible, consistent official job details */
+.jv-quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.jv-quick>div{background:#f4f7ff;border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
+.jv-quick small{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+.jv-quick strong{display:block;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.jv-nav{display:flex;gap:7px;overflow-x:auto;padding:12px 1px 2px;scrollbar-width:thin}
+.jv-nav a{flex-shrink:0;background:#edf2ff;color:#1938a6;padding:8px 11px;border-radius:999px;font-size:13px;font-weight:700;text-decoration:none}
+.jv-sec{scroll-margin-top:72px}
+.jv-sec .jv-lines{white-space:pre-line;line-height:1.9;font-size:15px;overflow-wrap:anywhere;word-break:keep-all}
+.jv-filelist{margin:0;padding-left:19px;font-size:14px;line-height:1.9;overflow-wrap:anywhere}
+.jv-caution{background:#f7f9ff;border-left:3px solid #3458c5;padding:11px 13px;border-radius:7px;font-size:13px;line-height:1.65}
+@media(max-width:420px){.jv-quick{gap:7px}.jv-quick>div{padding:10px}.jv-quick strong{font-size:13px}}
 </style>
 </head>
 <body>
@@ -1418,6 +1431,38 @@ function closeJob(fromPop){
   JV_PUSHED = false;
 }
 const orgFile = org => "org-" + encodeURIComponent(String(org || "").replace(/\((주|재|사)\)/g, "").replace(/[\s\\/:*?"<>|().,·'\[\]]/g, "")) + ".html";
+
+// Shared readable detail layout for all monitored institutions; never infer missing facts.
+function monitoredDetailHTML(p){
+  const raw = String(p.detailText || '').replace(/\r/g,'');
+  const lines = raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const files=[], body=[];
+  const filePattern=/\.(?:hwp|hwpx|pdf|docx?|xlsx?|zip|pptx?|jpg|png)(?:\s|$)/i;
+  for(const line of lines){
+    if(filePattern.test(line) && line.length<230){if(!files.includes(line))files.push(line);}
+    else body.push(line);
+  }
+  const posted = p.pubOriginal || '공식 공고 확인 필요';
+  const due = p.due ? dueLong(p.due,p.dueHasTime) : '공식 공고 확인 필요';
+  const pairs = [
+    ['게시일',posted],['접수 마감',due],
+    ['채용인원',p.n ? String(p.n)+'명':'공고문 확인'],
+    ['근무지역',p.region || '공고문 확인']
+  ];
+  const quick = `<div class="jv-quick">${pairs.map(([k,v])=>`<div><small>${esc(k)}</small><strong>${esc(v)}</strong></div>`).join('')}</div>`;
+  const sectionHeads = /^(지원\s*자격|응시\s*자격|우대\s*(?:사항|조건)|접수\s*(?:기간|방법)|전형\s*(?:절차|일정|방법)|모집\s*(?:분야|인원)|근무\s*(?:조건|지역)|제출\s*서류|기타\s*(?:사항|안내))\s*[:：]?$/;
+  const sections=[];let current={title:'공고 내용',lines:[]};
+  for(const line of body){
+    if(sectionHeads.test(line) && current.lines.length){sections.push(current);current={title:line.replace(/[:：]$/,''),lines:[]};}
+    else current.lines.push(line);
+  }
+  if(current.lines.length)sections.push(current);
+  const nav = sections.length>1 ? `<nav class="jv-nav" aria-label="공고 내용 바로가기">${sections.map((s,i)=>`<a href="#jv-part-${i}" data-jv-jump="jv-part-${i}">${esc(s.title)}</a>`).join('')}${files.length?'<a href="#jv-files" data-jv-jump="jv-files">첨부파일</a>':''}</nav>`:'';
+  const content=sections.length ? sections.map((s,i)=>`<section class="jv-sec" id="jv-part-${i}"><h3>${esc(s.title)}</h3><div class="jv-lines">${esc(s.lines.join('\n'))}</div></section>`).join('') : '<section class="jv-sec"><h3>공고 내용</h3><p>상세 내용을 자동으로 추출하지 못했습니다. 원문 공고와 첨부파일을 확인해 주세요.</p></section>';
+  const attachments=files.length ? `<section class="jv-sec" id="jv-files"><h3>📎 공고에 기재된 첨부파일</h3><ul class="jv-filelist">${files.map(f=>`<li>${esc(f)}</li>`).join('')}</ul><p class="jv-caution">파일명은 참고용입니다. 실제 다운로드는 아래 원문 공고에서 진행해 주세요.</p></section>`:'';
+  return `${quick}${nav}${content}${attachments}<section class="jv-sec"><h3>지원 전 확인</h3><p class="jv-caution">모집인원, 자격조건, 접수 마감 시각과 제출서류는 반드시 공식 공고문 및 첨부파일로 최종 확인해 주세요. 미확인 항목을 추정해 표시하지 않습니다.</p></section>`;
+}
+
 function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
   const saved = SAVED.has(p.id), ap = APPS[p.id];
@@ -1425,7 +1470,7 @@ function jobViewHTML(p, det){
   const endTxt = p.due ? dueLong(p.due, false) : "공식 공고 확인 필요";
   const period = det && det.pbancBgngYmd ? `${ymdText(det.pbancBgngYmd)} ~ ${endTxt}` : `~ ${endTxt}`;
   rows.push(["접수 기간", p.monitor && !p.due ? "공식 공고 확인 필요" : period]);
-  if(p.monitor && p.pubOriginal) rows.push(["공고 게시일", p.pubOriginal]);
+  
   for(const [k, label] of JV_SUMMARY){
     let v = det ? det[k] : "";
     if(!v){ if(k === "recrutNope" && p.n) v = p.n; else if(k === "workRgnNmLst" && p.region) v = p.region; else continue; }
@@ -1451,12 +1496,12 @@ function jobViewHTML(p, det){
       <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">${p.due ? "접수 마감 " + dueLong(p.due, false) : "마감일은 공식 공고 확인 필요"}</span></div>
       <dl class="jv-grid">${rows.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
     </div>
-    ${p.monitor ? `<section class="jv-sec"><h3>📋 공식 채용공고 핵심 정보</h3><p>${esc(p.detailText || "공고 상세 정보를 자동 추출하지 못했습니다. 아래 원문 공고에서 모집요강과 첨부파일을 확인해 주세요.")}</p></section>` : specBoxHTML(p, det)}
+    ${p.monitor ? monitoredDetailHTML(p) : specBoxHTML(p, det)}
     ${p.monitor ? "" : (det === null ? "" : ckBoxHTML(p))}
     ${p.monitor ? "" : det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
-    <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
+    ${p.monitor ? "" : `<a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>`}
     <p class="jv-note">${p.monitor ? "기관 공식 홈페이지에서 자동 수집한 정보입니다. 일부 내용과 첨부파일이 누락될 수 있으므로 지원 전 원문 공고를 반드시 확인하세요." : "이 정보는 공공기관 경영정보 공개시스템(알리오)에 게시된 공고를 자동으로 정리한 것이에요. 마감 시각·제출 서류 등 세부 사항은 반드시 원문 공고에서 확인하세요."}</p>
     <div class="jv-bar"><div class="in">
       <div class="main-btns"><a class="primary" href="${esc(p.url)}" target="_blank" rel="noopener">원문 공고 보기 ↗</a>${off}</div>
@@ -1467,6 +1512,8 @@ function jobViewHTML(p, det){
       </div></div></div>`;
 }
 document.addEventListener("click", e => {
+  const jump = e.target.closest("[data-jv-jump]");
+  if(jump){e.preventDefault();document.getElementById(jump.dataset.jvJump)?.scrollIntoView({behavior:"smooth",block:"start"});return;}
   const a = e.target.closest("a[data-open]");
   if(!a) return;
   e.preventDefault(); openJob(a.dataset.open);
