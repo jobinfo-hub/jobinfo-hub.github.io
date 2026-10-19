@@ -532,6 +532,26 @@ async function loadAlio(){
   }catch(e){}
 }
 
+async function loadMonitoredJobs(){
+  try{
+    const r = await fetch("monitor.json?t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok) return;
+    const list = ((await r.json()).posts || []).map(p => ({
+      ...p,
+      pub: p.pub ? new Date(p.pub) : new Date(),
+      due: p.due ? new Date(p.due) : null
+    }));
+    const existing = new Set(POSTS.map(p => p.url || p.src).filter(Boolean));
+    const add = list.filter(p => {
+      const key = p.url || p.src;
+      return key && !existing.has(key);
+    });
+    POSTS = POSTS.concat(add);
+  }catch(e){
+    console.error("기관 채용공고 불러오기 실패", e);
+  }
+}
+
 async function load(){
   try{
     const r = await fetch("posts.json?t=" + Date.now(), {cache:"no-store"});
@@ -545,6 +565,7 @@ async function load(){
   }
   initSeen();
   await loadAlio();
+  await loadMonitoredJobs();
   const qp = new URLSearchParams(location.search).get("q");
   { const tp = new URLSearchParams(location.search).get("tab"); if(tp === "spec" || tp === "cert") state.tab = tp; }
   if(qp){ state.q = qp; state.tab = "all"; $("q").value = qp; }
