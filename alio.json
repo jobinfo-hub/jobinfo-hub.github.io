@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T12:24:56+09:00",
+ "updated": "2026-10-19T13:27:11+09:00",
  "posts": [
   {
    "id": "a306054",
@@ -7407,6 +7407,75 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306136",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 금강유역협력단 괴산운영관리사업팀 특수직(수탁운영_지방상수도 시설운영) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "사업관리 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306136",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충북",
+   "text": "비정규직 학력무관 충북 사업관리 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a306135",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 금강유역협력단 보령서천청양현대화사업팀 특수직(기술관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "사업관리 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306135",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 사업관리 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a306134",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 금강유역협력단 예산현대화사업팀 특수직(기술관리_건설사업) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "사업관리 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/recruitview.do?idx=306134",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충남",
+   "text": "비정규직 학력무관 충남 사업관리 건설 기계 전기.전자 정보통신 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
    "id": "a306132",
    "type": "j",
    "alio": true,
@@ -7679,7 +7748,7 @@
    "region": "서울",
    "text": "비정규직 학력무관 서울 경영.회계.사무 법률.경찰.소방.교도.국방 영업판매 건설 기계 전기.전자",
    "n": "24",
-   "src": "http://lh.or.kr"
+   "src": "https://lh.or.kr/board.es?mid=a10602050000&bid=0036&act=view&list_no=734578&tag=&nPage=1"
   },
   {
    "id": "a306080",
