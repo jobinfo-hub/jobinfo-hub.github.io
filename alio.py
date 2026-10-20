@@ -125,7 +125,7 @@ def convert(it, now):
         "title": title,
         "org": org,
         "desc": " · ".join(ncs[:3]),
-        "url": f"https://job.alio.go.kr/recruitview.do?idx={sn}",
+        "url": f"https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx={urllib.parse.quote(sn)}",
         "pub": (start or now).isoformat(),
         "due": None if always else due.isoformat(),
         "dueHasTime": False,
