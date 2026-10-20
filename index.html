@@ -528,6 +528,11 @@ footer .src b{color:var(--ink)}
 }
 .cp-link-warning{margin:12px 3px 145px;font-size:12px;line-height:1.6;color:#9a5b12;background:#fff8e7;border:1px solid #f1dba9;padding:10px 12px;border-radius:10px}
 @media (prefers-color-scheme:dark){.cp-link-warning{background:#302718;color:#ffdf9e;border-color:#71562b}}
+/* 12단계: 모바일 지원·첨부 안내 */
+.cp-apply-guide p{font-size:13.5px;line-height:1.65}
+.cp-attach-note{margin-top:8px!important;color:var(--muted);font-size:12px!important}
+.cp-attach-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.cp-attach-links a{display:inline-flex;padding:8px 10px;border:1px solid var(--line);border-radius:8px;color:var(--brand);font-size:12.5px;font-weight:700;text-decoration:none;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -1868,6 +1873,40 @@ function cpJobLinks(p){
   return {primary:search, label:p.alio ? "잡알리오 공고 검색 ↗" : "공고 검색 ↗", exact:false, apply:null};
 }
 
+// 12단계: 기관 접수처는 지원 완료가 보장되는 링크가 아닙니다.
+// 별도의 첨부파일 링크는 API가 실제 URL을 제공한 경우에만 표시합니다.
+function cpLinkIsSpecific(value){
+  const u=cpValidExternalUrl(value); if(!u || cpIsLandingPage(u.href)) return false;
+  const path=u.pathname.toLowerCase();
+  if(/\.(pdf|hwp|hwpx|docx?|xlsx?|zip)$/i.test(path)) return true;
+  if(/(?:view|detail|read|article|boardview|recruitview|recruitdetail)/i.test(path)) return true;
+  return [...u.searchParams.keys()].some(k=>/^(?:idx|id|seq|no|sn|articleid|boardseq|nttid|postid)$/i.test(k));
+}
+function cpAttachmentLinks(detail){
+  const out=[],seen=new Set();
+  for(const [k,v] of Object.entries(detail || {})){
+    if(!/(?:file|atch|attach|첨부)/i.test(k) || !/(?:url|link|href|path)/i.test(k)) continue;
+    const raw=String(v || '').trim();
+    if(!raw || /[,\s]/.test(raw)) continue;
+    const u=cpValidExternalUrl(raw);
+    if(!u || seen.has(u.href)) continue;
+    seen.add(u.href);
+    out.push({url:u.href,label:`첨부파일 확인 (${out.length+1})`});
+    if(out.length>=5) break;
+  }
+  return out;
+}
+function cpApplicationGuide(p,det,links){
+  const apply=links.apply ? cpValidExternalUrl(links.apply) : null;
+  const specific=apply && cpLinkIsSpecific(apply.href);
+  const files=cpAttachmentLinks(det);
+  return `<section class="jv-sec cp-apply-guide"><h3>📝 지원·첨부파일 안내</h3>
+    <p>${apply ? (specific ? '기관의 별도 채용 페이지가 제공됩니다. 실제 지원 가능 여부와 접수 방법을 확인하세요.' : '기관 홈페이지 주소가 제공됩니다. 채용 메뉴에서 해당 공고를 찾아 접수 방법을 확인하세요.') : '별도 기관 접수처 주소가 제공되지 않았습니다. 잡알리오 원문에서 지원 방법과 접수처를 확인하세요.'}</p>
+    ${files.length ? `<div class="cp-attach-links">${files.map(f=>`<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">📎 ${esc(f.label)} ↗</a>`).join('')}</div>` : '<p class="cp-attach-note">첨부파일 직접 링크는 수집 데이터에 없습니다. 원문 공고의 첨부파일 항목을 확인해 주세요.</p>'}
+    <p class="cp-attach-note">※ 커리어픽은 채용공고 안내 서비스이며 지원서를 직접 접수하지 않습니다.</p>
+  </section>`;
+}
+
 const orgFile = org => "org-" + encodeURIComponent(String(org || "").replace(/\((주|재|사)\)/g, "").replace(/[\s\\/:*?"<>|().,·'\[\]]/g, "")) + ".html";
 function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
@@ -1895,7 +1934,7 @@ function jobViewHTML(p, det){
     }
   }
   const links = cpJobLinks(p);
-  const off = links.apply ? `<a href="${esc(links.apply)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
+  const off = links.apply ? `<a href="${esc(links.apply)}" target="_blank" rel="noopener noreferrer">${cpLinkIsSpecific(links.apply) ? "기관 채용공고 ↗" : "기관 채용 사이트 ↗"}</a>` : "";
   const linkNotice = links.exact ? "" : `<p class="cp-link-warning">⚠️ 개별 공고 원문 주소가 확인되지 않았습니다. 연결된 기관 페이지 또는 검색 결과에서 기관명·공고 제목·접수기간을 확인해 주세요.</p>`;
   return `<div class="jv-head">
       <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
@@ -1908,6 +1947,7 @@ function jobViewHTML(p, det){
     ${det === null ? `<div class="jv-sec"><p style="color:var(--muted)">상세 내용을 불러오는 중이에요…</p></div>`
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
+    ${cpApplicationGuide(p, det, links)}
     <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
     <p class="jv-note">${p.alio ? "이 정보는 공공기관 경영정보 공개시스템(알리오)의 공고를 자동으로 정리한 것이에요." : "이 정보는 기관의 공개 채용공고를 바탕으로 정리한 것이에요."} 마감 시각·제출 서류·지원 자격은 반드시 원문 공고에서 확인하세요.</p>
     ${linkNotice}
