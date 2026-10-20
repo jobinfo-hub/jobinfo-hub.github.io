@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-20T11:30:55+09:00",
+ "updated": "2026-10-20T12:19:10+09:00",
  "posts": [
   {
    "id": "a306100",
@@ -3908,6 +3908,75 @@
    "text": "무기계약직 학력무관 서울 경비.청소",
    "n": "1",
    "src": "https://www.kocca.kr/shortUrl/60Cq"
+  },
+  {
+   "id": "a306164",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[동해병원] 기간제 의사(내) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306164",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 보건.의료",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306163",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[동해병원] 기간제 의사(응급실전담의) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306163",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 보건.의료",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306162",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[동해병원] 기간제 의사(산부인과) 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306162",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 보건.의료",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
   },
   {
    "id": "a306120",
