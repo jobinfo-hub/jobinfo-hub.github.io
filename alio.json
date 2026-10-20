@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-20T17:21:01+09:00",
+ "updated": "2026-10-20T18:21:24+09:00",
  "posts": [
   {
    "id": "a306100",
@@ -3979,6 +3979,29 @@
    "src": "https://www.kocca.kr/shortUrl/60Cq"
   },
   {
+   "id": "a306178",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[서울서부지사] 공무직(시설방호원) 채용 재공고",
+   "org": "근로복지공단",
+   "desc": "경비.청소",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306178",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "무기계약직 학력무관 서울 경비.청소",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
    "id": "a306176",
    "type": "j",
    "alio": true,
@@ -7458,6 +7481,30 @@
    "src": "https://www.kofpi.or.kr/notice/notice_04view.do"
   },
   {
+   "id": "a306181",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "국립농업박물관 2026년 제6차 직원 채용",
+   "org": "국립농업박물관",
+   "desc": "사업관리 · 문화.예술.디자인.방송 · 경비.청소",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306181",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "정규직 무기계약직 학력무관 경기 사업관리 문화.예술.디자인.방송 경비.청소",
+   "n": "5",
+   "src": "https://zrr.kr/LxlTMY"
+  },
+  {
    "id": "a306169",
    "type": "j",
    "alio": true,
@@ -7659,6 +7706,77 @@
    "text": "비정규직 석사 박사 서울 연구",
    "n": "1",
    "src": "https://www.sports.re.kr/front/board/job/boardView.do?board_seq=115&pageNo=1&menu_seq=+997&con_seq=6753&keyKind3=&keyKind4=&keyKind5=&keyKind6=&keyKind7=&keyKind=TITLE&keyWord="
+  },
+  {
+   "id": "a306127",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 의사직(전문계약직-소아청소년과(응급전담)) 채용 공고",
+   "org": "국민건강보험공단 일산병원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306127",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 경기 보건.의료",
+   "n": "2",
+   "src": "https://nhimc.recruiter.co.kr/"
+  },
+  {
+   "id": "a306180",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 여수광양항만공사 청년인턴(체험형) 채용 공고",
+   "org": "여수광양항만공사",
+   "desc": "사업관리 · 경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306180",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-04T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관",
+    "고졸 가능"
+   ],
+   "region": "전남광주",
+   "text": "청년인턴(체험형) 학력무관 고졸 전남광주 사업관리 경영.회계.사무",
+   "n": "7",
+   "src": "https://ygpa.incruit.com/main/main.asp"
+  },
+  {
+   "id": "a306179",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 여수광양항만공사 직원 채용 공고",
+   "org": "여수광양항만공사",
+   "desc": "사업관리 · 경영.회계.사무 · 보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306179",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-04T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "정규직 무기계약직 학력무관 전남광주 사업관리 경영.회계.사무 보건.의료 건설 기계",
+   "n": "10",
+   "src": "https://ygpa.incruit.com/main/main.asp"
   },
   {
    "id": "a306177",
