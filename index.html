@@ -1845,7 +1845,8 @@ function cpJobLinks(p){
   };
   const applyKeys = [p.src, detail.srcUrl, detail.recrutUrl, detail.applyUrl, detail.apply_url, detail.rcptUrl];
   const apply = applyKeys.map(valid).find(Boolean);
-  if(p.alio){
+  // 블로그 공고와 잡알리오 공고가 합쳐진 경우에도 alioUrl로 공식 번호를 식별합니다.
+  if(p.alio || p.alioUrl){
     const idFromPost = /^a([0-9]+)$/.exec(String(p.id || ""));
     const source = cpValidExternalUrl(p.alioUrl || p.url);
     const idFromUrl = source && /(^|\.)job\.alio\.go\.kr$/i.test(source.hostname)
