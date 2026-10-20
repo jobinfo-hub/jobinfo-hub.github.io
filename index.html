@@ -507,6 +507,38 @@ footer .src b{color:var(--ink)}
 .cp-feed-status{margin:8px 0 5px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:12px;line-height:1.5}
 .cp-feed-status[data-state="warn"]{border-color:#e8c88b;background:#fff9e9;color:#76520d}
 .cp-feed-status[data-state="ok"]{border-color:#cbdccf;background:#f3faf5;color:#28563a}
+
+/* 커리어픽 2.0 · 9단계: 모바일 가독성·터치 편의성 */
+@media (max-width:640px){
+  .wrap{padding-left:12px;padding-right:12px}
+  .searchbar{gap:7px}
+  .search input{font-size:16px;min-height:46px} /* iOS 입력 확대 방지 */
+  .fbtn{min-height:46px;padding:0 14px}
+  .cp-deadline-tools{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;gap:7px;padding:3px 0 7px;margin:5px 0 6px}
+  .cp-deadline-tools::-webkit-scrollbar{display:none}
+  .cp-deadline-tools strong{flex:0 0 auto;white-space:nowrap;width:auto;font-size:12px}
+  .cp-deadline-tools button{flex:0 0 auto;min-height:42px;padding:8px 13px;font-size:13px}
+  .tabs{scroll-padding-inline:10px}
+  .tab{min-height:44px}
+  .job .main{gap:10px;padding:13px 11px 11px}
+  .dd{width:57px;min-height:62px}
+  .job .title{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+  .job .org{font-size:12.5px}
+  .job .due{font-size:12.5px;overflow-wrap:anywhere}
+  .actions > *{min-height:46px;padding:10px 2px;font-size:12px;white-space:normal;text-align:center;line-height:1.25}
+  .cp-mobile-nav button{min-height:54px}
+  .chip{min-height:40px;display:inline-flex;align-items:center}
+  .cp-dash-links button,.cp-head-setting{min-height:40px}
+  .cp-reco a,.cp-reco button{touch-action:manipulation}
+}
+@media (max-width:370px){
+  .wrap{padding-left:10px;padding-right:10px}
+  .job .main{gap:8px;padding:11px 9px}
+  .dd{width:51px}
+  .job .title{font-size:14px}
+  .actions > *{font-size:11.5px}
+}
 </style>
 </head>
 <body>
