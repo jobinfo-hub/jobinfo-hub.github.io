@@ -1834,21 +1834,29 @@ function cpIsLandingPage(value){
   return (!path || path === "/") && !u.search;
 }
 function cpJobLinks(p){
-  // 검증되지 않은 ALIO 메인 주소를 '개별 공고 원문'이라고 표시하지 않습니다.
+  // ALIO의 recruitview.do?idx=... 주소는 데이터에서 조립된 주소이므로
+  // 실제 개별 공고로 검증되기 전에는 직접 원문 링크로 취급하지 않습니다.
   const detail = (ALIO_DETAIL && ALIO_DETAIL[p.id]) || {};
-  const candidateKeys = ["recrutPbancUrl", "recrutPbancDtlUrl", "pbancUrl", "detailUrl", "detail_url", "url"];
-  const candidates = [p.alioUrl, p.url, ...candidateKeys.map(k => detail[k])];
-  const valid = candidates.map(cpValidExternalUrl).filter(Boolean);
-  const direct = valid.find(u => !cpIsLandingPage(u.href));
-  const applyCandidates = [p.src, detail.recrutUrl, detail.applyUrl, detail.apply_url, detail.rcptUrl];
-  const apply = applyCandidates.map(cpValidExternalUrl).filter(Boolean).find(u => !cpIsLandingPage(u.href));
+  const detailKeys = ["recrutPbancUrl", "recrutPbancDtlUrl", "pbancUrl", "detailUrl", "detail_url", "url"];
+  const valid = v => {
+    const u = cpValidExternalUrl(v);
+    if(!u || cpIsLandingPage(u.href)) return null;
+    if(/(^|\.)job\.alio\.go\.kr$/i.test(u.hostname) && /\/recruitview\.do$/i.test(u.pathname) && u.searchParams.has("idx")) return null;
+    return u;
+  };
+  const detailUrl = detailKeys.map(k => valid(detail[k])).find(Boolean);
+  const applyKeys = [p.src, detail.recrutUrl, detail.applyUrl, detail.apply_url, detail.rcptUrl];
+  const apply = applyKeys.map(valid).find(Boolean);
+  const supplied = valid(p.alioUrl) || valid(p.url);
   const query = [p.org, p.title].filter(Boolean).join(" ");
-  const search = "https://www.google.com/search?q=" + encodeURIComponent(query + (p.alio ? " site:job.alio.go.kr" : " 채용 공고"));
-  if(direct) return {primary:direct.href, label:"원문 공고 보기 ↗", exact:true, apply:apply && apply.href !== direct.href ? apply.href : null};
-  if(p.alio) return {primary:search, label:"잡알리오 공고 검색 ↗", exact:false, apply:apply ? apply.href : null};
-  if(apply) return {primary:apply.href, label:"기관 공고 확인 ↗", exact:false, apply:null};
-  return {primary:search, label:"원문 공고 검색 ↗", exact:false, apply:null};
+  const search = "https://www.google.com/search?q=" + encodeURIComponent(query + (p.alio ? " 채용공고 잡알리오" : " 채용 공고"));
+  // 개별 상세 주소가 명시된 경우에만 '원문 공고'라고 표기합니다.
+  if(detailUrl) return {primary:detailUrl.href, label:"원문 공고 보기 ↗", exact:true, apply:apply && apply.href !== detailUrl.href ? apply.href : null};
+  if(supplied) return {primary:supplied.href, label:"공고 출처 확인 ↗", exact:false, apply:apply && apply.href !== supplied.href ? apply.href : null};
+  if(apply) return {primary:apply.href, label:"기관 채용 페이지 ↗", exact:false, apply:null};
+  return {primary:search, label:p.alio ? "잡알리오 공고 검색 ↗" : "공고 검색 ↗", exact:false, apply:null};
 }
+
 const orgFile = org => "org-" + encodeURIComponent(String(org || "").replace(/\((주|재|사)\)/g, "").replace(/[\s\\/:*?"<>|().,·'\[\]]/g, "")) + ".html";
 function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
@@ -1877,7 +1885,7 @@ function jobViewHTML(p, det){
   }
   const links = cpJobLinks(p);
   const off = links.apply ? `<a href="${esc(links.apply)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
-  const linkNotice = links.exact ? "" : `<p class="cp-link-warning">⚠️ 이 공고의 개별 원문 주소가 확인되지 않아 검색 결과로 안내합니다. 검색 후 기관명·제목·접수기간을 대조해 주세요.</p>`;
+  const linkNotice = links.exact ? "" : `<p class="cp-link-warning">⚠️ 개별 공고 원문 주소가 확인되지 않았습니다. 연결된 기관 페이지 또는 검색 결과에서 기관명·공고 제목·접수기간을 확인해 주세요.</p>`;
   return `<div class="jv-head">
       <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
       <h1 class="jv-title">${esc(p.title)}</h1>
