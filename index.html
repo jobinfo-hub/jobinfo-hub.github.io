@@ -1834,23 +1834,33 @@ function cpIsLandingPage(value){
   return (!path || path === "/") && !u.search;
 }
 function cpJobLinks(p){
-  // ALIO의 recruitview.do?idx=... 주소는 데이터에서 조립된 주소이므로
-  // 실제 개별 공고로 검증되기 전에는 직접 원문 링크로 취급하지 않습니다.
+  // 10단계: JOB-ALIO에서 확인된 모바일 개별 상세 주소를 사용합니다.
+  // 과거 alio.json의 PC recruitview.do 주소도 공고번호로 변환하므로
+  // 데이터 수집을 다시 실행하기 전에도 기존 공고에 바로 적용됩니다.
   const detail = (ALIO_DETAIL && ALIO_DETAIL[p.id]) || {};
-  const detailKeys = ["recrutPbancUrl", "recrutPbancDtlUrl", "pbancUrl", "detailUrl", "detail_url", "url"];
+  const detailKeys = ["recrutPbancUrl", "recrutPbancDtlUrl", "pbancUrl", "detailUrl", "detail_url"];
   const valid = v => {
     const u = cpValidExternalUrl(v);
-    if(!u || cpIsLandingPage(u.href)) return null;
-    if(/(^|\.)job\.alio\.go\.kr$/i.test(u.hostname) && /\/recruitview\.do$/i.test(u.pathname) && u.searchParams.has("idx")) return null;
-    return u;
+    return u && !cpIsLandingPage(u.href) ? u : null;
   };
-  const detailUrl = detailKeys.map(k => valid(detail[k])).find(Boolean);
-  const applyKeys = [p.src, detail.recrutUrl, detail.applyUrl, detail.apply_url, detail.rcptUrl];
+  const applyKeys = [p.src, detail.srcUrl, detail.recrutUrl, detail.applyUrl, detail.apply_url, detail.rcptUrl];
   const apply = applyKeys.map(valid).find(Boolean);
+  if(p.alio){
+    const idFromPost = /^a([0-9]+)$/.exec(String(p.id || ""));
+    const source = cpValidExternalUrl(p.alioUrl || p.url);
+    const idFromUrl = source && /(^|\.)job\.alio\.go\.kr$/i.test(source.hostname)
+      ? source.searchParams.get("idx") : null;
+    const sn = idFromPost ? idFromPost[1] : idFromUrl;
+    if(sn && /^\d{1,12}$/.test(sn)){
+      const direct = "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=" + encodeURIComponent(sn);
+      return {primary:direct, label:"잡알리오 원문 공고 ↗", exact:true,
+        apply:apply && apply.href !== direct ? apply.href : null};
+    }
+  }
+  const detailUrl = detailKeys.map(k => valid(detail[k])).find(Boolean);
   const supplied = valid(p.alioUrl) || valid(p.url);
   const query = [p.org, p.title].filter(Boolean).join(" ");
   const search = "https://www.google.com/search?q=" + encodeURIComponent(query + (p.alio ? " 채용공고 잡알리오" : " 채용 공고"));
-  // 개별 상세 주소가 명시된 경우에만 '원문 공고'라고 표기합니다.
   if(detailUrl) return {primary:detailUrl.href, label:"원문 공고 보기 ↗", exact:true, apply:apply && apply.href !== detailUrl.href ? apply.href : null};
   if(supplied) return {primary:supplied.href, label:"공고 출처 확인 ↗", exact:false, apply:apply && apply.href !== supplied.href ? apply.href : null};
   if(apply) return {primary:apply.href, label:"기관 채용 페이지 ↗", exact:false, apply:null};
