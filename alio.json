@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-20T16:30:39+09:00",
+ "updated": "2026-10-20T17:21:01+09:00",
  "posts": [
   {
    "id": "a306100",
@@ -7659,6 +7659,29 @@
    "text": "비정규직 석사 박사 서울 연구",
    "n": "1",
    "src": "https://www.sports.re.kr/front/board/job/boardView.do?board_seq=115&pageNo=1&menu_seq=+997&con_seq=6753&keyKind3=&keyKind4=&keyKind5=&keyKind6=&keyKind7=&keyKind=TITLE&keyWord="
+  },
+  {
+   "id": "a306177",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 제4차 정규직(공무직(경비/사감)) 채용공고",
+   "org": "한국고용노동교육원",
+   "desc": "경비.청소",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306177",
+   "pub": "2026-10-20T00:00:00+09:00",
+   "due": "2026-11-04T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "무기계약직 학력무관 경기 경비.청소",
+   "n": "1",
+   "src": "https://keli-recruit.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=269695"
   },
   {
    "id": "a306130",
