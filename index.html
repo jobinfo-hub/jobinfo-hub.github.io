@@ -526,6 +526,8 @@ footer .src b{color:var(--ink)}
   .cp-deadline-tools strong{grid-column:1/-1;width:auto;margin:0 0 2px;font-size:12px}
   .cp-deadline-tools button{min-width:0;white-space:nowrap;padding:9px 2px;font-size:clamp(10px,2.8vw,12px);text-align:center}
 }
+.cp-link-warning{margin:12px 3px 145px;font-size:12px;line-height:1.6;color:#9a5b12;background:#fff8e7;border:1px solid #f1dba9;padding:10px 12px;border-radius:10px}
+@media (prefers-color-scheme:dark){.cp-link-warning{background:#302718;color:#ffdf9e;border-color:#71562b}}
 </style>
 </head>
 <body>
@@ -1212,7 +1214,7 @@ function calLink(p){
     + "&details=" + encodeURIComponent("접수 마감 " + dueLong(p.due, p.dueHasTime) + "\n" + p.url);
 }
 function officialLink(p){
-  if(p.alio) return p.src ? {href:p.src, label:"접수처"} : {href:p.url, label:"잡알리오"};
+  if(p.alio){ const l = cpJobLinks(p); return l.apply ? {href:l.apply, label:"접수처"} : {href:l.primary, label:l.exact ? "잡알리오" : "공고 검색"}; }
   if(p.alioUrl) return {href:p.alioUrl, label:"잡알리오"};
   if(p.src) return {href:p.src, label:"공식 접수처"};
   const q = (p.org || p.title) + " 채용공고";
@@ -1817,6 +1819,32 @@ function closeJob(fromPop){
   }
   JV_PUSHED = false;
 }
+// 9단계: 링크가 실제 공고 상세 주소인지 보수적으로 판별합니다.
+// 주소의 접근 가능 여부를 브라우저에서 자동 검증하는 기능은 아닙니다.
+function cpValidExternalUrl(value){
+  try { const u = new URL(String(value || "").trim()); return ["https:","http:"].includes(u.protocol) ? u : null; }
+  catch(e){ return null; }
+}
+function cpIsLandingPage(value){
+  const u = cpValidExternalUrl(value); if(!u) return true;
+  const host = u.hostname.toLowerCase(), path = u.pathname.replace(/\/+$/, "");
+  if(/(^|\.)job\.alio\.go\.kr$/.test(host)){
+    if(!path || path === "/" || /^\/(?:recruit|recruitment|index|main)(?:\.do|\.html)?$/i.test(path)) return true;
+  }
+  return (!path || path === "/") && !u.search;
+}
+function cpJobLinks(p){
+  const original = cpValidExternalUrl(p.url);
+  const apply = cpValidExternalUrl(p.src);
+  const direct = original && !cpIsLandingPage(original.href);
+  const applyDirect = apply && !cpIsLandingPage(apply.href);
+  const query = [p.org, p.title].filter(Boolean).join(" ");
+  const search = "https://www.google.com/search?q=" + encodeURIComponent(query + " site:job.alio.go.kr");
+  if(direct) return {primary:original.href, label:"원문 공고 보기 ↗", exact:true, apply:applyDirect && apply.href !== original.href ? apply.href : null};
+  if(p.alio) return {primary:search, label:"잡알리오에서 공고 찾기 ↗", exact:false, apply:applyDirect ? apply.href : null};
+  if(applyDirect) return {primary:apply.href, label:"기관 공고 확인 ↗", exact:false, apply:null};
+  return {primary:"https://www.google.com/search?q=" + encodeURIComponent(query + " 채용 공고"), label:"원문 공고 검색 ↗", exact:false, apply:null};
+}
 const orgFile = org => "org-" + encodeURIComponent(String(org || "").replace(/\((주|재|사)\)/g, "").replace(/[\s\\/:*?"<>|().,·'\[\]]/g, "")) + ".html";
 function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
@@ -1843,7 +1871,9 @@ function jobViewHTML(p, det){
       secs.push([/Rsn$/.test(k) ? "추가 안내" : "상세 내용", t]);
     }
   }
-  const off = p.src ? `<a href="${esc(p.src)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
+  const links = cpJobLinks(p);
+  const off = links.apply ? `<a href="${esc(links.apply)}" target="_blank" rel="noopener">기관 접수처 ↗</a>` : "";
+  const linkNotice = links.exact ? "" : `<p class="cp-link-warning">⚠️ 이 공고의 개별 원문 주소가 확인되지 않아 검색 결과로 안내합니다. 검색 후 기관명·제목·접수기간을 대조해 주세요.</p>`;
   return `<div class="jv-head">
       <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
       <h1 class="jv-title">${esc(p.title)}</h1>
@@ -1857,8 +1887,9 @@ function jobViewHTML(p, det){
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
     <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
     <p class="jv-note">${p.alio ? "이 정보는 공공기관 경영정보 공개시스템(알리오)의 공고를 자동으로 정리한 것이에요." : "이 정보는 기관의 공개 채용공고를 바탕으로 정리한 것이에요."} 마감 시각·제출 서류·지원 자격은 반드시 원문 공고에서 확인하세요.</p>
+    ${linkNotice}
     <div class="jv-bar"><div class="in">
-      <div class="main-btns"><a class="primary" href="${esc(p.url)}" target="_blank" rel="noopener">원문 공고 보기 ↗</a>${off}</div>
+      <div class="main-btns"><a class="primary" href="${esc(links.primary)}" target="_blank" rel="noopener">${links.label}</a>${off}</div>
       <div class="sub-btns">
         <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}">${saved ? "★ 저장됨" : "☆ 저장"}</button>
         <button data-track="${esc(p.id)}">${ap ? "📋 " + ST[ap.st].short : "📋 지원기록"}</button>
