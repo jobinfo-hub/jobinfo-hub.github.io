@@ -1834,16 +1834,20 @@ function cpIsLandingPage(value){
   return (!path || path === "/") && !u.search;
 }
 function cpJobLinks(p){
-  const original = cpValidExternalUrl(p.url);
-  const apply = cpValidExternalUrl(p.src);
-  const direct = original && !cpIsLandingPage(original.href);
-  const applyDirect = apply && !cpIsLandingPage(apply.href);
+  // 검증되지 않은 ALIO 메인 주소를 '개별 공고 원문'이라고 표시하지 않습니다.
+  const detail = (ALIO_DETAIL && ALIO_DETAIL[p.id]) || {};
+  const candidateKeys = ["recrutPbancUrl", "recrutPbancDtlUrl", "pbancUrl", "detailUrl", "detail_url", "url"];
+  const candidates = [p.alioUrl, p.url, ...candidateKeys.map(k => detail[k])];
+  const valid = candidates.map(cpValidExternalUrl).filter(Boolean);
+  const direct = valid.find(u => !cpIsLandingPage(u.href));
+  const applyCandidates = [p.src, detail.recrutUrl, detail.applyUrl, detail.apply_url, detail.rcptUrl];
+  const apply = applyCandidates.map(cpValidExternalUrl).filter(Boolean).find(u => !cpIsLandingPage(u.href));
   const query = [p.org, p.title].filter(Boolean).join(" ");
-  const search = "https://www.google.com/search?q=" + encodeURIComponent(query + " site:job.alio.go.kr");
-  if(direct) return {primary:original.href, label:"원문 공고 보기 ↗", exact:true, apply:applyDirect && apply.href !== original.href ? apply.href : null};
-  if(p.alio) return {primary:search, label:"잡알리오에서 공고 찾기 ↗", exact:false, apply:applyDirect ? apply.href : null};
-  if(applyDirect) return {primary:apply.href, label:"기관 공고 확인 ↗", exact:false, apply:null};
-  return {primary:"https://www.google.com/search?q=" + encodeURIComponent(query + " 채용 공고"), label:"원문 공고 검색 ↗", exact:false, apply:null};
+  const search = "https://www.google.com/search?q=" + encodeURIComponent(query + (p.alio ? " site:job.alio.go.kr" : " 채용 공고"));
+  if(direct) return {primary:direct.href, label:"원문 공고 보기 ↗", exact:true, apply:apply && apply.href !== direct.href ? apply.href : null};
+  if(p.alio) return {primary:search, label:"잡알리오 공고 검색 ↗", exact:false, apply:apply ? apply.href : null};
+  if(apply) return {primary:apply.href, label:"기관 공고 확인 ↗", exact:false, apply:null};
+  return {primary:search, label:"원문 공고 검색 ↗", exact:false, apply:null};
 }
 const orgFile = org => "org-" + encodeURIComponent(String(org || "").replace(/\((주|재|사)\)/g, "").replace(/[\s\\/:*?"<>|().,·'\[\]]/g, "")) + ".html";
 function jobViewHTML(p, det){
