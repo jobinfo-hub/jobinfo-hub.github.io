@@ -541,6 +541,12 @@ footer .src b{color:var(--ink)}
 .sheet #sheetBody>.row:last-child{position:sticky;bottom:0;z-index:1;background:var(--surface);padding:12px 0 calc(8px + env(safe-area-inset-bottom,0px));margin-bottom:0;border-top:1px solid var(--line)}
 .sheet #sheetBody>.row:last-child>*{min-height:46px}
 @media(max-width:640px){body:has(.sheet.open) .cp-mobile-nav{display:none}}
+/* CareerPick 14: bidirectional scrolling in long spec editor. */
+.sheet.open{align-items:stretch;justify-content:center;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.sheet.open .sheet-box{height:100%;max-height:100%;display:flex;flex-direction:column;overflow:hidden;padding:14px 18px 0;border-radius:16px 16px 0 0;min-height:0}
+.sheet.open .sheet-box>h3{flex:none;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.sheet.open #sheetBody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:0 2px 16px}
+.sheet.open #sheetBody>.row:last-child{position:sticky;bottom:0;z-index:2;margin:12px -2px 0;padding:12px 2px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -609,6 +615,9 @@ footer .src b{color:var(--ink)}
   <input id="cpBackupInput" type="file" accept=".json,application/json" hidden aria-label="커리어픽 백업 파일 선택">
   <div class="sumrow"><p class="summary" id="summary"></p><button class="viewbtn" id="viewbtn" aria-pressed="false">☰ 간단히</button></div>
   <ul class="list" id="list"><!--STATIC-LIST-->
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433155457"><div class="kind"><span class="pill p">마감 10.20(화) 15:00</span></div><div class="t">자동차손해배상진흥원 전문직 채용 5명, 내 경력 2분 확인</div></a></li>
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224432658020"><div class="kind"><span class="pill p">마감 10.20(화) 17:00</span></div><div class="t">부산대치과병원 의료사회복지사 채용, 지원 자격 1분 확인법</div></a></li>
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433187856"><div class="kind"><span class="pill p">마감 10.20(화) 18:00</span></div><div class="t">한국언론진흥재단 채용, 놓치면 탈락하는 3가지</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435596158"><div class="kind"><span class="pill p">마감 10.20(화)</span></div><div class="t">중앙보훈병원 든든동행파트너, 면접 100% 승부</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224433798757"><div class="kind"><span class="pill p">마감 10.21(수) 11:00</span></div><div class="t">코레일테크 채용, 오전 11시 마감 놓치면 끝</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224432821160"><div class="kind"><span class="pill p">마감 10.21(수) 15:00</span></div><div class="t">한수원 체험형 인턴 600명, 이번엔 면접 있다</div></a></li>
@@ -646,10 +655,6 @@ footer .src b{color:var(--ink)}
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224440459098"><div class="kind"><span class="pill p">마감 10.28(수)</span></div><div class="t">한국의약품안전관리원 채용, 55명 중 정규직은 4명</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224443429538"><div class="kind"><span class="pill p">마감 10.29(목) 10:00</span></div><div class="t">코레일테크 공무직 596명, 체력인증 놓치면 탈락</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435025107"><div class="kind"><span class="pill p">마감 10.30(금) 13:00</span></div><div class="t">한국농촌경제연구원 경비 채용, 보훈청 추천 없으면 탈락</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224443466853"><div class="kind"><span class="pill p">마감 10.30(금) 17:00</span></div><div class="t">국립암센터 간호사 320명, 토익 600 필수</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224440504482"><div class="kind"><span class="pill p">마감 11.2(월) 18:00</span></div><div class="t">여주도시공사 채용 23명, 내 나이·거주지로 지원 될까?</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224432797659"><div class="kind"><span class="pill p">마감 11.30(월)</span></div><div class="t">조세재정연구원 연구위원 채용 — 추천서 3부가 관건</div></a></li>
-<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224447554982"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">중소벤처기업진흥공단 체험형 청년인턴 D-14, 자소서 4문항이 관건</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224440240151"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">2026 40대 이후 취업 총정리｜방법·연봉·자격증</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224439563392"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">자소서 작성법 총정리｜2026 하반기 문항별 공식 12가지와 글자수 배분표｜무료 자소서 작성 AI프롬프트 배부</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435993032"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">산업안전기사 독학 합격 일정표, 2027 1회 16주 역산</div></a></li>
@@ -659,6 +664,7 @@ footer .src b{color:var(--ink)}
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224437161906"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">공제회 필기 경제상식 10문제, 금시세·엔화 환율편</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224436986069"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">철도공기업 필기 D-7 체크리스트, 하루씩 이렇게</div></a></li>
 <li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224435989178"><div class="kind"><span class="pill p">취업준비</span></div><div class="t">2026 지역농협 하반기 채용, 필기 D-43 준비 총정리</div></a></li>
+<li class="card mini"><a class="main" href="https://m.blog.naver.com/hid4989-3/224436880214"><div class="kind"><span class="pill m">정책</span></div><div class="t">청년미래적금 vs 도약계좌 vs ISA, 사회초년생 비교표</div></a></li>
 <!--/STATIC-LIST--></ul>
 
   <footer>
@@ -2319,7 +2325,7 @@ if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catc
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; });
 window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("addHint").hidden = true; });
 
-function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); }
+function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); $("sheetBody").scrollTop = 0; }
 function closeSheet(){ $("sheet").classList.remove("open"); }
 
 // ── 공유하기 ──
