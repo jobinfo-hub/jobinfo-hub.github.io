@@ -1803,7 +1803,7 @@ function jobViewHTML(p, det){
   const now = new Date(), d = dday(p, now);
   const saved = SAVED.has(p.id), ap = APPS[p.id];
   const rows = [];
-  const endTxt = p.due ? dueLong(p.due, false) : "상시 모집";
+  const endTxt = p.due ? dueLong(p.due, false) : (p.always ? "상시 모집 (채용 시 마감)" : "마감일 미확인 (원문 확인 필요)");
   const period = det && det.pbancBgngYmd ? `${ymdText(det.pbancBgngYmd)} ~ ${endTxt}` : `~ ${endTxt}`;
   rows.push(["접수 기간", period]);
   for(const [k, label] of JV_SUMMARY){
@@ -1828,7 +1828,7 @@ function jobViewHTML(p, det){
   return `<div class="jv-head">
       <div class="jv-org"><span class="ofc">공식 공고</span><span>${esc(p.org)}</span>${p.region ? `<span class="rg" style="color:var(--muted);font-weight:500">· ${esc(p.region)}</span>` : ""}</div>
       <h1 class="jv-title">${esc(p.title)}</h1>
-      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">${p.due ? "접수 마감 " + dueLong(p.due, false) : "상시 모집 (마감 시 종료)"}</span></div>
+      <div class="jv-due">${d ? `<span class="dd ${d.cls}"><span class="big">${d.big}</span></span>` : ""}<span class="${d && d.cls === "hot" ? "due hot" : "due"}">${p.due ? "접수 마감 " + dueLong(p.due, false) : (p.always ? "상시 모집 (채용 시 마감)" : "마감일 미확인 · 원문 확인 필요")}</span></div>
       <dl class="jv-grid">${rows.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
     </div>
     ${specBoxHTML(p, det)}

@@ -201,8 +201,12 @@ def calendar_html(rows, skipped, st, now):
                 cur = wl
             basis = " · ".join(f'{yfmt(b["date"])} {e(b["hire"])}{(" " + str(b["n"]) + "명") if b["n"] else ""}' for b in r["basis"])
             title = r["basis"][0]["title"]
+            # 기관별 상세 페이지가 없으면 정상 동작하는 기관 목록으로 안내
+            target = orgs_fname(r["org"])
+            if not (ROOT / target).is_file():
+                target = "orgs.html"
             body.append(
-                f'<li class="item"><a href="{e(orgs_fname(r["org"]))}">'
+                f'<li class="item"><a href="{e(target)}">'
                 f'<span class="dd{" hot" if r["conf"] == "매년" else ""}">{d.month}.{d.day}<br><small>경</small></span>'
                 f'<span class="bd"><span class="org">{e(r["org"])} · {"매년 이 시기" if r["conf"] == "매년" else "작년 이 시기"}</span>'
                 f'<span class="tt">{e(title)}</span><span class="meta">지난 공고: {basis}</span></span></a></li>')
