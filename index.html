@@ -501,6 +501,8 @@ footer .src b{color:var(--ink)}
 .cp-deadline-tools button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer}
 .cp-deadline-tools button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:white}
 @media(max-width:420px){.cp-deadline-tools{gap:5px}.cp-deadline-tools strong{width:100%}.cp-deadline-tools button{padding:7px 9px}}
+/* 방문자 화면에는 수집 진단 정보를 노출하지 않음. 내부 데이터 점검 및 중복 제거 로직은 유지. */
+.cp-feed-status,.data-health{display:none!important}
 /* CareerPick 2.0 · 7단계: 데이터 상태 표시 */
 .cp-feed-status{margin:8px 0 5px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:12px;line-height:1.5}
 .cp-feed-status[data-state="warn"]{border-color:#e8c88b;background:#fff9e9;color:#76520d}
