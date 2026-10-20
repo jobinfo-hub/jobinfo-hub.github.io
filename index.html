@@ -508,24 +508,23 @@ footer .src b{color:var(--ink)}
 .cp-feed-status[data-state="warn"]{border-color:#e8c88b;background:#fff9e9;color:#76520d}
 .cp-feed-status[data-state="ok"]{border-color:#cbdccf;background:#f3faf5;color:#28563a}
 
-/* CareerPick 2.0 Step 8 — mobile usability fixes */
+/* CareerPick 2.0 - Step 8: mobile layout and unobstructed apply actions */
+/* The job dialog must sit above the global fixed mobile navigation. */
+.jobview{z-index:150}
+.jobview .jv-top{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:8px}
+.jobview .jv-body{padding-top:10px}
 @media(max-width:640px){
-  /* Make the deadline filters fit even on narrow in-app browsers. */
-  .cp-deadline-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0 10px;min-width:0;width:100%}
-  .cp-deadline-tools strong{grid-column:1 / -1;width:auto!important;display:block;white-space:normal;overflow-wrap:anywhere;font-size:12px;margin:0 0 1px}
-  .cp-deadline-tools button{min-width:0;padding:9px 2px;font-size:clamp(10px,3vw,12px);line-height:1.3;white-space:nowrap;text-align:center}
-  /* Detail view takes priority over the fixed bottom tab bar. */
-  body:has(.jobview:not([hidden])) .cp-mobile-nav{display:none!important}
-  .jobview .jv-top{padding:10px 14px 9px;min-height:54px}
-  .jobview .jv-body{padding-top:10px;padding-bottom:calc(205px + env(safe-area-inset-bottom,0px))}
-  .jobview .jv-bar{z-index:25;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px))}
-  .jobview .jv-bar .main-btns{flex-wrap:nowrap}
-  .jobview .jv-bar .main-btns a{min-width:0;flex:1 1 0;white-space:normal;overflow-wrap:break-word;line-height:1.35;padding:12px 6px}
-}
-@media(max-width:350px){
-  .cp-deadline-tools{gap:4px}
-  .cp-deadline-tools button{font-size:10px;padding:9px 1px}
-  .jobview .jv-bar .main-btns a{font-size:12px}
+  /* The detail dialog owns its bottom action bar; hide the global nav underneath. */
+  body:has(.jobview:not([hidden])) .cp-mobile-nav{display:none}
+  .jobview .jv-bar{z-index:5;bottom:0;padding:9px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+  .jobview .jv-bar .main-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .jobview .jv-bar .main-btns a{display:flex;align-items:center;justify-content:center;min-height:46px;padding:10px 6px;font-size:13px;line-height:1.3}
+  .jobview .jv-bar .main-btns a:only-child{grid-column:1/-1}
+  .jobview .jv-body{padding-bottom:calc(205px + env(safe-area-inset-bottom,0px))}
+  /* Keep the four quick deadline choices visible without horizontal scrolling. */
+  .cp-deadline-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;min-width:0}
+  .cp-deadline-tools strong{grid-column:1/-1;width:auto;margin:0 0 2px;font-size:12px}
+  .cp-deadline-tools button{min-width:0;white-space:nowrap;padding:9px 2px;font-size:clamp(10px,2.8vw,12px);text-align:center}
 }
 </style>
 </head>
