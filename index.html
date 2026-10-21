@@ -693,6 +693,8 @@ const COUPANG = false;    // 쿠팡 추천 상품 표시 (ads.py 설정 후 true
 let POSTS = [], UPDATED = null, ADS = [];
 let CP_DEDUP_REMOVED = 0;
 const DATA_HEALTH = {posts:"pending", alio:"pending", monitor:"pending"};
+// Preserve blog entries independently of merged official feeds for accurate search.
+let CP_BLOG_SEARCH = [];
 // Keep the pre-rendered blog cards as a fallback if posts.json is unavailable.
 const STATIC_BLOG_HTML = document.getElementById("list").innerHTML;
 function showStaticBlogFallback(){
@@ -828,6 +830,7 @@ async function load(){
     DATA_HEALTH.posts = "ok";
     if(!Array.isArray(j.posts) || j.posts.length === 0) throw new Error("posts.json 글 목록이 비어 있습니다");
     POSTS = j.posts.map(p => ({...p, pub:new Date(p.pub), due: p.due ? new Date(p.due) : null}));
+    CP_BLOG_SEARCH = POSTS.slice();
   }catch(e){
     DATA_HEALTH.posts = "error";
     console.warn("posts.json 로딩 실패: HTML에 보관된 블로그 글을 표시합니다.", e);
@@ -2127,7 +2130,17 @@ function render(){
   if(state.tab === "spec"){ renderSpec(now); return; }
   if(state.tab === "cert"){ renderCert(now); return; }
   const q = state.q.trim().toLowerCase();
-  let rows = POSTS.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && cpRegionMatches(p, state.region) && (!q || haystack(p).includes(q)));
+  // Search the original blog feed as well as the merged feed. This prevents
+  // a blog article from disappearing if a duplicate official notice replaces it.
+  const searchPool = q ? [...POSTS, ...CP_BLOG_SEARCH.filter(p => !POSTS.some(x => x.id === p.id))] : POSTS;
+  let rows = searchPool.filter(p => inTab(p) && (!state.cat || p.cat === state.cat) && cpRegionMatches(p, state.region) && (!q || haystack(p).includes(q)));
+  // During a keyword search, show undated blog notices as well: missing due
+  // dates mean 'unverified', not 'expired'. Keep the user's explicit filters.
+  if(q && state.deadline === "all" && state.status === "all" && state.tab === "all"){
+    const extra = CP_BLOG_SEARCH.filter(p => !p.due && haystack(p).includes(q) &&
+      !rows.some(x => x.id === p.id) && (!state.cat || p.cat === state.cat) && cpRegionMatches(p,state.region));
+    rows.push(...extra);
+  }
   // 모집 마감 시각이 지난 채용공고는 기본 목록에서 제외합니다.
   // '마감' 상태를 직접 선택하거나 저장 공고 탭에서는 확인할 수 있습니다.
   if(state.status === "all" && state.tab !== "saved") rows = rows.filter(p => p.type !== "j" || statusOf(p,now) !== "closed");
@@ -2142,11 +2155,13 @@ function render(){
   if(state.tab === "mine") rows = rows.filter(p => statusOf(p, now) !== "closed");
   rows.sort(state.sort === "due" && !state.onlyNew ? (a,b) => cmp(sortKey(a,now), sortKey(b,now)) : (a,b) => b.pub - a.pub);
 
+  const undated = q ? rows.filter(p => p.type === "j" && !p.due).length : 0;
   const open = rows.filter(p => p.type === "j" && ["open","hot"].includes(statusOf(p,now))).length;
   const hot = rows.filter(p => p.type === "j" && statusOf(p,now) === "hot").length;
   let sum = (state.tab === "p" || state.tab === "m")
     ? `글 <b>${rows.length}</b>개`
     : `모집 중인 공고 <b>${open}</b>건` + (hot ? ` · 3일 내 마감 <span class="hot">${hot}</span>건` : "") + (state.tab === "mine" ? "" : ` · 전체 글 ${rows.length}개`);
+  if(undated) sum += ` · <span title="마감일 확인이 필요한 공고">마감일 미확인 ${undated}건</span>`;
   if(state.tab === "mine") sum = `🎯 ${prefSummary()} ` + sum + `<button class="linkbtn" id="editPrefs">조건 수정</button>`;
   if(state.onlyNew) sum = `🆕 새 글 <b>${rows.length}</b>개만 보는 중 <button class="linkbtn" id="offNew">전체 보기</button>`;
   $("summary").innerHTML = sum;
