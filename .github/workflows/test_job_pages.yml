@@ -1,0 +1,38 @@
+
+name: Test Job Detail Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test branch
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check Python syntax
+        run: python -m py_compile scripts/build_job_pages.py
+
+      - name: Generate job pages
+        run: python scripts/build_job_pages.py
+
+      - name: Check generated HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          pages = list(Path("jobs").glob("*.html"))
+          print("생성된 상세페이지:", len(pages))
+          assert pages, "생성된 HTML 상세페이지가 없습니다."
+          sample = pages[0].read_text(encoding="utf-8")
+          assert "<html" in sample.lower()
+          print("테스트 성공:", pages[0])
+          PY
