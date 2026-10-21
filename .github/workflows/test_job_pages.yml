@@ -48,3 +48,53 @@ jobs:
 
           print("테스트 성공:", pages[0])
           PY
+
+      - name: Audit job page quality
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+          from html.parser import HTMLParser
+
+          data = json.loads(Path("alio.json").read_text(encoding="utf-8"))
+          posts = {
+              p["id"]: p for p in data["posts"]
+              if isinstance(p, dict) and p.get("alio") and p.get("id")
+          }
+
+          pages = list(Path("jobs").glob("*.html"))
+          missing_link = []
+          missing_deadline = []
+          missing_schema = []
+          expired = []
+          now = datetime.now(timezone.utc)
+
+          for page in pages:
+              post = posts.get(page.stem, {})
+              html = page.read_text(encoding="utf-8")
+              if "공식 채용공고 확인" not in html:
+                  missing_link.append(page.stem)
+              if "접수마감" not in html:
+                  missing_deadline.append(page.stem)
+              if '"@type": "JobPosting"' not in html:
+                  missing_schema.append(page.stem)
+              due = post.get("due")
+              if due:
+                  try:
+                      if datetime.fromisoformat(due.replace("Z", "+00:00")) < now:
+                          expired.append(page.stem)
+                  except ValueError:
+                      pass
+
+          print("전체 상세페이지:", len(pages))
+          print("공식 링크 미표시:", len(missing_link))
+          print("마감일 항목 누락:", len(missing_deadline))
+          print("JobPosting 구조화 데이터 누락:", len(missing_schema))
+          print("마감일 경과 공고:", len(expired))
+          print("공식 링크 미표시 예시:", missing_link[:10])
+          print("마감일 경과 예시:", expired[:10])
+
+          assert pages, "상세페이지가 생성되지 않았습니다."
+          assert not missing_schema, "구조화 데이터가 누락됐습니다."
+          PY
