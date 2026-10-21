@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T17:24:07+09:00",
+ "updated": "2026-10-21T18:22:59+09:00",
  "posts": [
   {
    "id": "a306076",
@@ -6615,6 +6615,29 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306221",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[국립공원연구원] 2026년 국립공원연구원 국립공원지킴이(한시인력) 모집 공고",
+   "org": "국립공원공단",
+   "desc": "경비.청소 · 건설",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306221",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 경비.청소 건설",
+   "n": "2",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019930"
+  },
+  {
    "id": "a306203",
    "type": "j",
    "alio": true,
@@ -7325,6 +7348,29 @@
    "src": "https://www.kofpi.or.kr/notice/notice_04view.do"
   },
   {
+   "id": "a306227",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국지식재산보호원] 2026년도 제10차 인력채용(해외 IP센터장)",
+   "org": "한국지식재산보호원",
+   "desc": "사업관리 · 법률.경찰.소방.교도.국방",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306227",
+   "pub": "2026-10-19T00:00:00+09:00",
+   "due": "2026-11-03T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "해외",
+   "text": "비정규직 학력무관 박사 해외 사업관리 법률.경찰.소방.교도.국방",
+   "n": "1",
+   "src": "https://koipa.recruiter.co.kr/"
+  },
+  {
    "id": "a306181",
    "type": "j",
    "alio": true,
@@ -7847,6 +7893,29 @@
    "text": "비정규직 학력무관 대전 보건.의료",
    "n": "1",
    "src": "https://cnuhinsa.recruiter.co.kr"
+  },
+  {
+   "id": "a306223",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 하반기 자립준비청년 체험형 인턴 채용",
+   "org": "한국전력기술주식회사",
+   "desc": "사업관리 · 경영.회계.사무 · 건설",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306223",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경북",
+   "text": "청년인턴(체험형) 학력무관 경북 사업관리 경영.회계.사무 건설 기계 재료 화학 전기.전자 환경.에너지.안전 연구",
+   "n": "5",
+   "src": "https://kepco-enc-jobs.cairos.co.kr/kepco-enc-jobs"
   },
   {
    "id": "a306216",
