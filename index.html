@@ -1974,6 +1974,7 @@ function jobViewHTML(p, det){
       : secs.length ? secs.map(([a,b]) => `<section class="jv-sec"><h3>${esc(a)}</h3><p>${esc(plainText(b))}</p></section>`).join("")
       : `<div class="jv-sec"><p>자세한 지원 자격과 전형 절차는 아래 <b>원문 공고</b>에서 확인해 주세요.</p></div>`}
     ${cpApplicationGuide(p, det, links)}
+    ${p.alio && /^a[0-9]+$/.test(p.id) ? `<a class="jv-org-link" href="/jobs/${encodeURIComponent(p.id)}.html">🔎 채용공고 독립 상세페이지 보기 →</a>` : ""}
     <a class="jv-org-link" href="${orgFile(p.org)}">🏢 ${esc(p.org)} 채용 이력·다음 공고 예상 보기 →</a>
     <p class="jv-note">${p.alio ? "이 정보는 공공기관 경영정보 공개시스템(알리오)의 공고를 자동으로 정리한 것이에요." : "이 정보는 기관의 공개 채용공고를 바탕으로 정리한 것이에요."} 마감 시각·제출 서류·지원 자격은 반드시 원문 공고에서 확인하세요.</p>
     ${linkNotice}
