@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T19:21:15+09:00",
+ "updated": "2026-10-21T20:20:04+09:00",
  "posts": [
   {
    "id": "a306076",
@@ -7893,6 +7893,29 @@
    "text": "비정규직 학력무관 대전 보건.의료",
    "n": "1",
    "src": "https://cnuhinsa.recruiter.co.kr"
+  },
+  {
+   "id": "a306230",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[본사] 2026년도 대한적십자사 기획조정실 비정규직(기간제) 채용공고",
+   "org": "대한적십자사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306230",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/main/pt/pst/selectPstInfo.do?mi=2378&bbsId=1422&pstSn=506066"
   },
   {
    "id": "a306229",
