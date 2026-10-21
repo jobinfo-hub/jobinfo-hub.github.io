@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T13:20:27+09:00",
+ "updated": "2026-10-21T14:19:20+09:00",
  "posts": [
   {
    "id": "a306076",
@@ -3545,6 +3545,29 @@
    "text": "무기계약직 학력무관 서울 경비.청소",
    "n": "1",
    "src": "https://www.kocca.kr/shortUrl/60Cq"
+  },
+  {
+   "id": "a306201",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "우체국물류지원단 광주지사 전주, 영암사업소 기간제(운전직, 연차자대체) 채용 공고",
+   "org": "(재)우체국물류지원단",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306201",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-10-27T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전북",
+   "text": "비정규직 학력무관 전북 전남광주 운전.운송",
+   "n": "2",
+   "src": "https://www.pola.or.kr"
   },
   {
    "id": "a306178",
@@ -7617,6 +7640,27 @@
    "text": "비정규직 학력무관 대전 보건.의료",
    "n": "1",
    "src": "https://cnuhinsa.recruiter.co.kr"
+  },
+  {
+   "id": "a306199",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국농어촌공사 농지관리처 계약직(AI전문가, 공간정보전문가) 채용 공고",
+   "org": "한국농어촌공사",
+   "desc": "건설 · 정보통신",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306199",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "전남광주",
+   "text": "비정규직 대졸(4년) 석사 박사 전남광주 건설 정보통신",
+   "n": "2",
+   "src": "https://www.ekr.or.kr/planweb/board/view.krc?dataUid=8a8bb352a08a300001a15c5ec8b30977&page=1&boardUid=402880317cc0644a017cc5e8000f06b7&contentUid=8a8bb3529665d7140199501cd3ef6280&searchType=&keyword=&categoryUid1=&categoryUid2=8a8bb3529665d714019951996437"
   },
   {
    "id": "a306196",
