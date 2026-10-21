@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T18:22:59+09:00",
+ "updated": "2026-10-21T19:21:15+09:00",
  "posts": [
   {
    "id": "a306076",
@@ -7893,6 +7893,52 @@
    "text": "비정규직 학력무관 대전 보건.의료",
    "n": "1",
    "src": "https://cnuhinsa.recruiter.co.kr"
+  },
+  {
+   "id": "a306229",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "대한적십자사 서울남부혈액원 기간제(한시적) 운전원 채용 공고",
+   "org": "대한적십자사",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306229",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 운전.운송",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit/"
+  },
+  {
+   "id": "a306228",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 하반기 3차 세종학당 국외 파견 한국어 교원 선발 공고",
+   "org": "세종학당재단",
+   "desc": "교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306228",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "고졸 가능"
+   ],
+   "region": "해외",
+   "text": "비정규직 중졸이하 고졸 대졸(2~3년) 석사 박사 해외 교육.자연.사회과학",
+   "n": "13",
+   "src": "https://www.ksif.or.kr"
   },
   {
    "id": "a306223",
