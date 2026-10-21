@@ -16,7 +16,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: 저장소 가져오기
@@ -41,6 +41,54 @@ jobs:
       - name: 기관 공식 채용공고 자동 모니터링
         run: python monitor.py
 
+      - name: 상세페이지 생성 프로그램 확인
+        run: |
+          test -f scripts/build_job_pages.py
+          test -f scripts/build_sitemap.py
+          python -m py_compile scripts/build_job_pages.py
+          python -m py_compile scripts/build_sitemap.py
+
+      - name: 채용공고 상세페이지 자동 생성
+        run: python scripts/build_job_pages.py
+
+      - name: 사이트맵 자동 생성
+        run: python scripts/build_sitemap.py
+
+      - name: 생성 결과 검증
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          pages = list(Path("jobs").glob("a[0-9]*.html"))
+          assert pages, "생성된 채용공고 상세페이지가 없습니다."
+
+          root = ET.parse("sitemap.xml").getroot()
+          ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+
+          urls = [
+              e.text for e in root.findall(".//s:loc", ns)
+              if e.text
+          ]
+
+          job_urls = [
+              u for u in urls
+              if u.startswith(
+                  "https://jobinfo-hub.github.io/jobs/"
+              )
+          ]
+
+          assert len(urls) == len(set(urls)), "중복 URL 발견"
+          assert len(job_urls) == len(pages), (
+              "상세페이지 수와 사이트맵 URL 수가 다릅니다."
+          )
+
+          print("상세페이지:", len(pages))
+          print("사이트맵 전체 URL:", len(urls))
+          print("사이트맵 채용 URL:", len(job_urls))
+          print("검증 성공")
+          PY
+
       - name: 변경된 데이터 저장
         run: |
           git config user.name "github-actions[bot]"
@@ -55,6 +103,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "변경된 데이터가 없습니다."
           else
-            git commit -m "채용정보 자동 업데이트"
+            git commit -m "채용정보 상세페이지 및 사이트맵 자동 업데이트"
             git push origin HEAD:main
           fi
