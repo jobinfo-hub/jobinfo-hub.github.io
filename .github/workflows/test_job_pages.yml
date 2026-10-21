@@ -98,3 +98,62 @@ jobs:
           assert pages, "상세페이지가 생성되지 않았습니다."
           assert not missing_schema, "구조화 데이터가 누락됐습니다."
           PY
+
+      - name: Audit official job URLs
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          from urllib.parse import urlparse, parse_qs
+
+          posts = json.loads(
+              Path("alio.json").read_text(encoding="utf-8")
+          )["posts"]
+
+          total = 0
+          invalid = []
+          fallback = []
+          mismatch = []
+
+          for p in posts:
+              if not p.get("alio"):
+                  continue
+              if not re.fullmatch(r"a[0-9]+", str(p.get("id", ""))):
+                  continue
+
+              total += 1
+              src = str(p.get("src") or "").strip()
+              url = str(p.get("url") or "").strip()
+
+              def valid(link):
+                  u = urlparse(link)
+                  return (
+                      u.scheme == "https"
+                      and bool(u.hostname)
+                      and not u.username
+                      and not u.password
+                  )
+
+              if not valid(src):
+                  fallback.append(p["id"])
+
+              if not valid(src) and not valid(url):
+                  invalid.append(p["id"])
+
+              if valid(url) and urlparse(url).hostname == "job.alio.go.kr":
+                  idx = parse_qs(urlparse(url).query).get("idx", [""])[0]
+                  if idx and idx != str(p["id"])[1:]:
+                      mismatch.append(p["id"])
+
+          print("검사 대상:", total)
+          print("유효한 src가 없는 공고:", len(fallback))
+          print("사용 가능한 공식 URL 없음:", len(invalid))
+          print("잡알리오 공고 ID 불일치:", len(mismatch))
+          print("URL 누락 예시:", invalid[:10])
+          print("ID 불일치 예시:", mismatch[:10])
+
+          assert total > 0, "검사 대상 공고 없음"
+          assert not invalid, "공식 URL 누락 공고 발견"
+          assert not mismatch, "잡알리오 ID 불일치 발견"
+          PY
