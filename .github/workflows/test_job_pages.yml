@@ -1,0 +1,195 @@
+
+name: Test Job Detail Pages
+
+on:
+  push:
+    branches:
+      - feature/careerpick-seo
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/test_job_pages.yml'
+      - 'alio.json'
+      - 'alio-detail.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test branch
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check Python syntax
+        run: python -m py_compile scripts/build_job_pages.py
+
+      - name: Generate job pages
+        run: python scripts/build_job_pages.py
+
+      - name: Check generated HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          pages = list(Path("jobs").glob("*.html"))
+          print("생성된 상세페이지:", len(pages))
+
+          assert pages, "생성된 HTML 상세페이지가 없습니다."
+
+          sample = pages[0].read_text(encoding="utf-8")
+          assert "<html" in sample.lower()
+
+          print("테스트 성공:", pages[0])
+          PY
+
+      - name: Audit job page quality
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+          from html.parser import HTMLParser
+
+          data = json.loads(Path("alio.json").read_text(encoding="utf-8"))
+          posts = {
+              p["id"]: p for p in data["posts"]
+              if isinstance(p, dict) and p.get("alio") and p.get("id")
+          }
+
+          pages = list(Path("jobs").glob("*.html"))
+          missing_link = []
+          missing_deadline = []
+          missing_schema = []
+          expired = []
+          now = datetime.now(timezone.utc)
+
+          for page in pages:
+              post = posts.get(page.stem, {})
+              html = page.read_text(encoding="utf-8")
+              if "공식 채용공고 확인" not in html:
+                  missing_link.append(page.stem)
+              if "접수마감" not in html:
+                  missing_deadline.append(page.stem)
+              if '"@type": "JobPosting"' not in html:
+                  missing_schema.append(page.stem)
+              due = post.get("due")
+              if due:
+                  try:
+                      if datetime.fromisoformat(due.replace("Z", "+00:00")) < now:
+                          expired.append(page.stem)
+                  except ValueError:
+                      pass
+
+          print("전체 상세페이지:", len(pages))
+          print("공식 링크 미표시:", len(missing_link))
+          print("마감일 항목 누락:", len(missing_deadline))
+          print("JobPosting 구조화 데이터 누락:", len(missing_schema))
+          print("마감일 경과 공고:", len(expired))
+          print("공식 링크 미표시 예시:", missing_link[:10])
+          print("마감일 경과 예시:", expired[:10])
+
+          assert pages, "상세페이지가 생성되지 않았습니다."
+          assert not missing_schema, "구조화 데이터가 누락됐습니다."
+          PY
+
+      - name: Audit official job URLs
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          from urllib.parse import urlparse, parse_qs
+
+          posts = json.loads(
+              Path("alio.json").read_text(encoding="utf-8")
+          )["posts"]
+
+          total = 0
+          invalid = []
+          fallback = []
+          mismatch = []
+
+          for p in posts:
+              if not p.get("alio"):
+                  continue
+              if not re.fullmatch(r"a[0-9]+", str(p.get("id", ""))):
+                  continue
+
+              total += 1
+              src = str(p.get("src") or "").strip()
+              url = str(p.get("url") or "").strip()
+
+              def valid(link):
+                  u = urlparse(link)
+                  return (
+                      u.scheme == "https"
+                      and bool(u.hostname)
+                      and not u.username
+                      and not u.password
+                  )
+
+              if not valid(src):
+                  fallback.append(p["id"])
+
+              if not valid(src) and not valid(url):
+                  invalid.append(p["id"])
+
+              if valid(url) and urlparse(url).hostname == "job.alio.go.kr":
+                  idx = parse_qs(urlparse(url).query).get("idx", [""])[0]
+                  if idx and idx != str(p["id"])[1:]:
+                      mismatch.append(p["id"])
+
+          print("검사 대상:", total)
+          print("유효한 src가 없는 공고:", len(fallback))
+          print("사용 가능한 공식 URL 없음:", len(invalid))
+          print("잡알리오 공고 ID 불일치:", len(mismatch))
+          print("URL 누락 예시:", invalid[:10])
+          print("ID 불일치 예시:", mismatch[:10])
+
+          assert total > 0, "검사 대상 공고 없음"
+          assert not invalid, "공식 URL 누락 공고 발견"
+          assert not mismatch, "잡알리오 ID 불일치 발견"
+          PY
+
+      - name: Generate sitemap
+        run: python scripts/build_sitemap.py
+
+      - name: Validate sitemap XML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          sitemap = Path("sitemap.xml")
+          root = ET.parse(sitemap).getroot()
+
+          ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+          urls = [
+              e.text for e in root.findall(".//s:loc", ns)
+              if e.text
+          ]
+
+          job_urls = [
+              u for u in urls
+              if u.startswith("https://jobinfo-hub.github.io/jobs/")
+          ]
+
+          pages = list(Path("jobs").glob("a[0-9]*.html"))
+
+          print("사이트맵 전체 URL:", len(urls))
+          print("채용공고 URL:", len(job_urls))
+          print("생성된 채용공고 HTML:", len(pages))
+
+          assert len(urls) == len(set(urls)), "중복 URL 발견"
+          assert len(job_urls) == len(pages), "상세페이지 수와 URL 수 불일치"
+          assert pages, "채용공고 상세페이지 없음"
+
+          print("사이트맵 XML 검사 성공")
+          PY
