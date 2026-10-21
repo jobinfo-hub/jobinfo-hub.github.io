@@ -1235,7 +1235,21 @@ function calLink(p){
     + "&dates=" + f(start) + "/" + f(p.due) + "&ctz=Asia/Seoul"
     + "&details=" + encodeURIComponent("접수 마감 " + dueLong(p.due, p.dueHasTime) + "\n" + p.url);
 }
+// 16단계: 실제 개별 공고 주소가 확인된 블로그 채용글의 직접 연결.
+// 기관 전체의 다른 공고에 잘못 적용하지 않도록 제목·기관명·채용인원을 함께 확인합니다.
+function cpVerifiedRecruitLinks(p){
+  const text = [p.org,p.title].filter(Boolean).join(" ");
+  if(/서울교통공사/.test(text) && /482\s*명/.test(text)){
+    return {
+      notice:"https://www.seoulmetro.co.kr/kr/board.do?menuIdx=557&bbsIdx=2221936",
+      apply:"https://seoulmetro.incruit.com/main/main.asp?projectid=105"
+    };
+  }
+  return null;
+}
 function officialLink(p){
+  const verified = cpVerifiedRecruitLinks(p);
+  if(verified) return {href:verified.notice, label:"공식 공고 원문"};
   if(p.alio){ const l = cpJobLinks(p); return l.apply ? {href:l.apply, label:"접수처"} : {href:l.primary, label:l.exact ? "잡알리오" : "공고 검색"}; }
   if(p.alioUrl) return {href:p.alioUrl, label:"잡알리오"};
   if(p.src) return {href:p.src, label:"공식 접수처"};
@@ -1292,7 +1306,8 @@ function jobCard(p, now){
       <button class="save" data-save="${esc(p.id)}" aria-pressed="${saved}">${saved ? "★ 저장됨" : "☆ 저장"}</button>
       <button class="track" data-track="${esc(p.id)}"${ap ? ` data-st="${ap.st}"` : ""}>${ap ? "📋 " + ST[ap.st].short : "📋 지원기록"}</button>
       ${p.due && d.cls !== "closed" ? `<a href="${calLink(p)}" target="_blank" rel="noopener">📅 캘린더</a>` : ""}
-      <a href="${esc(off.href)}" target="_blank" rel="noopener">${off.label === "공식 공고 찾기" ? "공식 공고" : off.label} ↗</a>
+      <a href="${esc(off.href)}" target="_blank" rel="noopener noreferrer">${off.label === "공식 공고 찾기" ? "공식 공고" : off.label} ↗</a>
+      ${cpVerifiedRecruitLinks(p) ? `<a href="${esc(cpVerifiedRecruitLinks(p).apply)}" target="_blank" rel="noopener noreferrer">지원 사이트 ↗</a>` : ""}
     </div></li>`;
 }
 function rowCard(p, now){
