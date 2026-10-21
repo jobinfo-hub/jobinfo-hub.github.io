@@ -157,3 +157,39 @@ jobs:
           assert not invalid, "공식 URL 누락 공고 발견"
           assert not mismatch, "잡알리오 ID 불일치 발견"
           PY
+
+      - name: Generate sitemap
+        run: python scripts/build_sitemap.py
+
+      - name: Validate sitemap XML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          sitemap = Path("sitemap.xml")
+          root = ET.parse(sitemap).getroot()
+
+          ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+          urls = [
+              e.text for e in root.findall(".//s:loc", ns)
+              if e.text
+          ]
+
+          job_urls = [
+              u for u in urls
+              if u.startswith("https://jobinfo-hub.github.io/jobs/")
+          ]
+
+          pages = list(Path("jobs").glob("a[0-9]*.html"))
+
+          print("사이트맵 전체 URL:", len(urls))
+          print("채용공고 URL:", len(job_urls))
+          print("생성된 채용공고 HTML:", len(pages))
+
+          assert len(urls) == len(set(urls)), "중복 URL 발견"
+          assert len(job_urls) == len(pages), "상세페이지 수와 URL 수 불일치"
+          assert pages, "채용공고 상세페이지 없음"
+
+          print("사이트맵 XML 검사 성공")
+          PY
