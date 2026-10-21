@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T10:27:09+09:00",
+ "updated": "2026-10-21T11:18:23+09:00",
  "posts": [
   {
    "id": "a306076",
@@ -2517,6 +2517,29 @@
    "text": "무기계약직 학력무관 전남광주 음식서비스",
    "n": "1",
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
+  },
+  {
+   "id": "a306187",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[치악산] 치악산국립공원사무소 기간제(환경관리) 직원 채용",
+   "org": "국립공원공단",
+   "desc": "경비.청소",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306187",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 경비.청소",
+   "n": "1",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019923"
   },
   {
    "id": "a306186",
@@ -7299,6 +7322,27 @@
    "src": "https://nhimc.recruiter.co.kr/"
   },
   {
+   "id": "a306188",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2027년도 임상강사(Fellow) 선발 공고",
+   "org": "서울대학교병원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306188",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-04T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [],
+   "region": "서울",
+   "text": "정규직 대졸(4년) 석사 박사 서울 경기 보건.의료",
+   "n": "305",
+   "src": "https://recruit.snuh.org/joining/recruit/view.do?notice_type=F&recruit_id=26127"
+  },
+  {
    "id": "a306180",
    "type": "j",
    "alio": true,
@@ -7460,6 +7504,27 @@
    "src": "https://cnuhinsa.recruiter.co.kr"
   },
   {
+   "id": "a306190",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[재공고] 2026년 개방형 직위 채용공고",
+   "org": "한국전력기술주식회사",
+   "desc": "사업관리 · 경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306190",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "경북",
+   "text": "비정규직 대졸(4년) 석사 박사 경북 사업관리 경영.회계.사무",
+   "n": "11",
+   "src": "https://kepco-enc.cairos.co.kr/kepco-enc-jobs"
+  },
+  {
    "id": "a306170",
    "type": "j",
    "alio": true,
@@ -7574,6 +7639,29 @@
    "text": "비정규직 학력무관 제주 보건.의료",
    "n": "1",
    "src": "https://kospo.machuda.kr"
+  },
+  {
+   "id": "a306189",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "(통영적십자병원) 정규직 간호사 채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306189",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경남",
+   "text": "정규직 학력무관 경남 보건.의료",
+   "n": "2",
+   "src": "https://www.redcross.or.kr/redrecruit/"
   },
   {
    "id": "a306183",
