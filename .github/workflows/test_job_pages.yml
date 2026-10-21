@@ -2,6 +2,14 @@
 name: Test Job Detail Pages
 
 on:
+  push:
+    branches:
+      - feature/careerpick-seo
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/test_job_pages.yml'
+      - 'alio.json'
+      - 'alio-detail.json'
   workflow_dispatch:
 
 permissions:
@@ -29,10 +37,14 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+
           pages = list(Path("jobs").glob("*.html"))
           print("생성된 상세페이지:", len(pages))
+
           assert pages, "생성된 HTML 상세페이지가 없습니다."
+
           sample = pages[0].read_text(encoding="utf-8")
           assert "<html" in sample.lower()
+
           print("테스트 성공:", pages[0])
           PY
