@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T09:32:10+09:00",
+ "updated": "2026-10-21T10:27:09+09:00",
  "posts": [
   {
    "id": "a306076",
@@ -2517,6 +2517,52 @@
    "text": "무기계약직 학력무관 전남광주 음식서비스",
    "n": "1",
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
+  },
+  {
+   "id": "a306186",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[무등산동부] 2026년 무등산동부사무소 기간제[가을철 산불감시원_한시인력] 채용 공고",
+   "org": "국립공원공단",
+   "desc": "환경.에너지.안전",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306186",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "비정규직 학력무관 전남광주 환경.에너지.안전",
+   "n": "3",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019922"
+  },
+  {
+   "id": "a306185",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한전KPS(주)부산경남전력지사 통영지점 단기노무원(상주감시) 모집",
+   "org": "한전KPS(주)",
+   "desc": "전기.전자",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306185",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경남",
+   "text": "비정규직 학력무관 경남 전기.전자",
+   "n": "1",
+   "src": "https://www.kps.co.kr"
   },
   {
    "id": "a306174",
@@ -7528,6 +7574,30 @@
    "text": "비정규직 학력무관 제주 보건.의료",
    "n": "1",
    "src": "https://kospo.machuda.kr"
+  },
+  {
+   "id": "a306183",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국문화진흥(주) 뉴서울컨트리클럽 정규직(재무회계, 코스관리, 주방찬모) 및 기간제(경기진행) 채용공고",
+   "org": "한국문화진흥주식회사",
+   "desc": "이용.숙박.여행.오락.스포츠",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306183",
+   "pub": "2026-10-21T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직",
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "정규직 비정규직 학력무관 경기 이용.숙박.여행.오락.스포츠",
+   "n": "5",
+   "src": "https://www.newseoulgolf.co.kr/board/view16.asp?idx=5752"
   },
   {
    "id": "a306152",
