@@ -328,6 +328,16 @@ def verify_account(token, expected_id):
     print('Actual API ID:', actual_id)
     print('Configured ID length:', len(str(expected_id)))
     print('ID match after strip:', normalized_actual == normalized_expected)
+    print(
+    'Different positions:',
+    [
+        i + 1
+        for i, (a, b) in enumerate(
+            zip(normalized_actual, normalized_expected)
+        )
+        if a != b
+    ]
+)
     print('API username:', username)
 
     if normalized_actual != normalized_expected:
