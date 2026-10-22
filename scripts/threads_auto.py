@@ -324,7 +324,7 @@ def verify_account(token, expected_id):
             'Threads API returned an invalid user ID'
         )
 
-    if actual_id != str(expected_id):
+    if actual_id != str(expected_id).strip():
         raise RuntimeError(
             'THREADS_USER_ID does not match the token account'
         )
@@ -352,7 +352,7 @@ def publish_post(record, history):
 
     user_id = os.environ.get(
         'THREADS_USER_ID', ''
-    )
+    ).strip()
 
     if not token or not user_id:
         raise RuntimeError(
