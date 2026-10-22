@@ -61,7 +61,7 @@ jobs:
           class Parser(HTMLParser): pass
           Parser().feed(rendered)
           home = Path('index.html').read_text(encoding='utf-8')
-          ids = set(re.findall(r'ca-pub-(\\d+)', home))
+          ids = set(re.findall(r'ca-pub-(\d+)', home))
           assert len(ids) == 1, 'Expected exactly one AdSense publisher ID'
           ads = Path('ads.txt').read_text(encoding='utf-8')
           assert f'google.com, pub-{next(iter(ids))}, DIRECT, f08c47fec0942fa0' in ads
