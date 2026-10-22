@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T13:21:46+09:00",
+ "updated": "2026-10-22T14:20:33+09:00",
  "posts": [
   {
    "id": "a306124",
@@ -1692,6 +1692,29 @@
    "text": "무기계약직 학력무관 전남광주 음식서비스",
    "n": "1",
    "src": "https://www.kopo.ac.kr/jeonnam/board.do?menu=10543&mode=view&post=786696"
+  },
+  {
+   "id": "a306252",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한전KPS(주)한빛1사업처 한빛2호기 제28차 O/H공사 단기노무원 채용공고(4차)",
+   "org": "한전KPS(주)",
+   "desc": "건설 · 기계",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306252",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-10-26T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "비정규직 학력무관 전남광주 건설 기계",
+   "n": "21",
+   "src": "https://www.kps.co.kr"
   },
   {
    "id": "a306251",
@@ -3541,6 +3564,29 @@
    "text": "비정규직 박사 대전 연구",
    "n": "1",
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
+  },
+  {
+   "id": "a306253",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "우체국물류지원단 대전지사 청주사업소 기간제(운전직) 채용 공고",
+   "org": "(재)우체국물류지원단",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306253",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충북",
+   "text": "비정규직 학력무관 충북 운전.운송",
+   "n": "1",
+   "src": "https://www.pola.or.kr"
   },
   {
    "id": "a306238",
@@ -7273,8 +7319,8 @@
    "edu": [
     "학력무관"
    ],
-   "region": "서울",
-   "text": "무기계약직 학력무관 서울 경기 전남광주 사업관리 경영.회계.사무 사회복지.종교 문화.예술.디자인.방송 운전.운송 이용.숙박.여행.오락.스포츠 기계 정보통신",
+   "region": "전국",
+   "text": "무기계약직 학력무관 대졸(2~3년) 서울 경기 전남광주 경북 사업관리 경영.회계.사무 사회복지.종교 문화.예술.디자인.방송 운전.운송 이용.숙박.여행.오락.스포츠 기계 정보통신",
    "n": "16",
    "src": "https://kspo.or.kr/kspo/singl/empmn/view.do?empmnId=777&menuNo=200186&pageIndex=1"
   },
