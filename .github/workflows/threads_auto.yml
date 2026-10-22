@@ -1,54 +1,83 @@
-
 name: CareerPick Threads Auto
 
 on:
   schedule:
-    # GitHub Actions는 UTC 기준
-    # 한국시간 09:00, 11:15, 13:30, 15:45, 18:00
+    # UTC => KST 09:00, 11:15, 13:30, 15:45, 18:00
     - cron: '0 0 * * *'
     - cron: '15 2 * * *'
     - cron: '30 4 * * *'
     - cron: '45 6 * * *'
     - cron: '0 9 * * *'
-
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: careerpick-threads-preview
+  group: careerpick-threads-publisher
   cancel-in-progress: false
 
 jobs:
-  preview:
-    name: Preview CareerPick Jobs
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    env:
+      TZ: Asia/Seoul
+      THREADS_ENABLED: ${{ vars.THREADS_ENABLED || 'false' }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Check required files
+      - name: Check files
         run: |
           test -f alio.json
           test -f scripts/threads_auto.py
 
-      - name: Preview selected jobs
-        env:
-          THREADS_ENABLED: 'false'
-          TZ: Asia/Seoul
-        run: |
-          python scripts/threads_auto.py
+      - name: Preview (disabled mode)
+        if: env.THREADS_ENABLED != 'true'
+        run: python scripts/threads_auto.py preview
 
-      - name: Preview completed
+      - name: Validate publishing credentials
+        if: env.THREADS_ENABLED == 'true'
         run: |
-          echo "CareerPick preview completed."
-          echo "Threads publishing is disabled."
-          echo "No posts were published."
+          test -n "$THREADS_ACCESS_TOKEN"
+          test -n "$THREADS_USER_ID"
+
+      - name: Reserve one job
+        if: env.THREADS_ENABLED == 'true'
+        run: python scripts/threads_auto.py prepare
+
+      - name: Persist reservation before publishing
+        if: env.THREADS_ENABLED == 'true'
+        run: |
+          if [ -n "$(git status --porcelain -- threads_posted.json)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add threads_posted.json
+            git commit -m 'Reserve CareerPick Threads job'
+            git push
+          fi
+
+      - name: Publish one Threads post
+        if: env.THREADS_ENABLED == 'true'
+        run: python scripts/threads_auto.py publish
+
+      - name: Persist successful publish
+        if: env.THREADS_ENABLED == 'true'
+        run: |
+          if [ -n "$(git status --porcelain -- threads_posted.json)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add threads_posted.json
+            git commit -m 'Record published CareerPick Threads job'
+            git push
+          fi
