@@ -302,7 +302,8 @@ def api(method, path, token, params=None):
         ) from None
 
 
-def verify_account(token, expected_id):
+def verify_account(token, expected_id=None):
+    """Use the authenticated Threads ID; strictly verify the account username."""
     print('')
     print('=== Threads Account Verification ===')
 
@@ -312,43 +313,28 @@ def verify_account(token, expected_id):
         token,
         {'fields': 'id,username'}
     )
-
-    actual_id = str(account.get('id', ''))
-    username = account.get('username', '')
+    actual_id = str(account.get('id', '')).strip()
+    username = str(account.get('username', '')).strip().lstrip('@')
 
     if not actual_id.isdigit():
+        raise RuntimeError('Threads API returned an invalid user ID')
+
+    # Never rely on a manually typed ID to identify the account.
+    # Prevent publishing to another account if the token is replaced.
+    expected_username = os.environ.get(
+        'THREADS_EXPECTED_USERNAME', 'hid_119'
+    ).strip().lstrip('@')
+    if not expected_username:
+        raise RuntimeError('Missing expected Threads username')
+    if username.casefold() != expected_username.casefold():
         raise RuntimeError(
-            'Threads API returned an invalid user ID'
+            'Token belongs to a different Threads account: '
+            + username
         )
 
-    # Diagnose ID formatting without printing credentials or secret values.
-    normalized_actual = actual_id.strip()
-    normalized_expected = str(expected_id).strip()
-    print('API ID length:', len(actual_id))
-    print('Actual API ID:', actual_id)
-    print('Configured ID length:', len(str(expected_id)))
-    print('ID match after strip:', normalized_actual == normalized_expected)
-    print(
-    'Different positions:',
-    [
-        i + 1
-        for i, (a, b) in enumerate(
-            zip(normalized_actual, normalized_expected)
-        )
-        if a != b
-    ]
-)
     print('API username:', username)
-
-    if normalized_actual != normalized_expected:
-        raise RuntimeError(
-            'THREADS_USER_ID does not match the token account'
-        )
-
-    print('Username:', username)
-    print('Threads user ID verified')
+    print('Account ID obtained directly from Threads API')
     print('Account verification successful')
-
     return actual_id
 
 
@@ -370,13 +356,11 @@ def publish_post(record, history):
         'THREADS_USER_ID', ''
     ).strip()
 
-    if not token or not user_id:
-        raise RuntimeError(
-            'Missing Threads API credentials'
-        )
+    if not token:
+        raise RuntimeError('Missing THREADS_ACCESS_TOKEN')
 
-    # Verify that the token belongs to the configured user.
-    verify_account(token, user_id)
+    # Verify username and use the ID returned by the token's account.
+    user_id = verify_account(token, user_id)
 
     print('')
     print('=== Threads Publishing ===')
