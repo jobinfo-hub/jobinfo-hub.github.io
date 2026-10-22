@@ -3,13 +3,20 @@ name: CareerPick Threads Auto
 
 on:
   schedule:
-    # UTC => KST 09:00, 11:15, 13:30, 15:45, 18:00
+    # UTC -> KST 09:00, 11:15, 13:30, 15:45, 18:00
     - cron: '0 0 * * *'
     - cron: '15 2 * * *'
     - cron: '30 4 * * *'
     - cron: '45 6 * * *'
     - cron: '0 9 * * *'
+
   workflow_dispatch:
+    inputs:
+      test_publish:
+        description: '실제 Threads 게시 1건 테스트'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -25,7 +32,7 @@ jobs:
 
     env:
       TZ: Asia/Seoul
-      THREADS_ENABLED: ${{ vars.THREADS_ENABLED || 'false' }}
+      THREADS_ENABLED: ${{ vars.THREADS_ENABLED == 'true' || (github.event_name == 'workflow_dispatch' && inputs.test_publish == true) }}
       THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
       THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
 
