@@ -55,7 +55,7 @@ def main():
             existing.discard(loc)
 
     # 자체 제작 가이드는 존재하는 HTML 파일만 사이트맵에 등록합니다.
-    guide_files = [ROOT / "guides" / "index.html", ROOT / "guides" / "application-checklist.html"]
+    guide_files = [ROOT / "guides" / name for name in ("index.html", "application-checklist.html", "ncs-study-plan.html", "self-introduction-star.html")]
     guide_urls = {
         f"{BASE}/guides/" if page.name == "index.html"
         else f"{BASE}/guides/{page.name}"
