@@ -1,389 +1,183 @@
-
 #!/usr/bin/env python3
-"""CareerPick Threads job selector - safe preview mode."""
-
+"""CareerPick Threads publisher. Commands: prepare, publish, preview."""
 import json
 import os
 import re
-from datetime import datetime, date
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "alio.json"
-HISTORY = ROOT / "threads_posted.json"
-KST = ZoneInfo("Asia/Seoul")
-
-# 자동 발행 선정 조건
-MAX_DAILY = 5
-MIN_DAYS = 5
-MAX_DAYS = 20
+DATA = ROOT / 'alio.json'
+HISTORY = ROOT / 'threads_posted.json'
+KST = ZoneInfo('Asia/Seoul')
+API = 'https://graph.threads.net/v1.0'
+MIN_DAYS, MAX_DAYS, MAX_DAILY = 5, 20, 5
 
 
-def load_json(path, default):
-    if not path.exists():
-        return default
+def load(path, default):
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else default
 
-    return json.loads(
-        path.read_text(encoding="utf-8")
-    )
+
+def save(data):
+    HISTORY.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
 def parse_date(value):
     if not value:
         return None
-
-    text = str(value).strip()
-
-    # ISO 날짜/시간의 시간대를 우선 처리
     try:
-        dt = datetime.fromisoformat(
-            text.replace("Z", "+00:00")
-        )
-
-        if dt.tzinfo is not None:
-            return dt.astimezone(KST).date()
-
-        return dt.date()
-
+        dt = datetime.fromisoformat(str(value).strip().replace('Z', '+00:00'))
+        return dt.astimezone(KST).date() if dt.tzinfo else dt.date()
     except (ValueError, TypeError):
-        pass
-
-    try:
-        return date.fromisoformat(text[:10])
-
-    except (ValueError, TypeError):
-        return None
+        try:
+            return date.fromisoformat(str(value)[:10])
+        except (ValueError, TypeError):
+            return None
 
 
 def parse_count(value):
-    """숫자로 확인 가능한 모집인원만 반환."""
-
     if isinstance(value, bool):
         return None
-
     if isinstance(value, int):
         return value if value >= 0 else None
-
-    if isinstance(value, str):
-        cleaned = value.strip().replace(",", "")
-
-        if re.fullmatch(r"\d+", cleaned):
-            return int(cleaned)
-
+    if isinstance(value, str) and re.fullmatch(r'\d+', value.strip().replace(',', '')):
+        return int(value.strip().replace(',', ''))
     return None
 
 
-def hiring_count(job):
-    """
-    모집인원 확인 순서
-
-    1. verified_hiring_count
-    2. alio.json의 n 필드
-
-    주의:
-    n 필드가 실제 모집인원이라는 점은
-    ALIO 수집 코드에서 최종 확인 필요.
-    """
-
-    for key in (
-        "verified_hiring_count",
-        "n",
-    ):
-        count = parse_count(job.get(key))
-
-        if count is not None:
-            return count
-
-    return None
-
-
-def is_regular(job):
-    """정규직 또는 무기계약직 여부."""
-
-    emp = job.get("emp", [])
-
+def regular(job):
+    emp = job.get('emp', [])
     if isinstance(emp, str):
         emp = [emp]
-
-    if not isinstance(emp, list):
-        return False
-
-    return any(
-        "정규직" in str(item)
-        or "무기계약" in str(item)
-        for item in emp
-    )
-
-
-def count_priority(count):
-    """모집인원별 우선순위."""
-
-    if count is None:
-        return 0
-
-    if count >= 100:
-        return 4
-
-    if count >= 50:
-        return 3
-
-    if count >= 30:
-        return 2
-
-    return 1
+    return isinstance(emp, list) and any('정규직' in str(x) or '무기계약' in str(x) for x in emp)
 
 
 def candidates(posts, history, today):
-    """조건에 맞는 채용공고 선정."""
-
-    posted = set(
-        str(value)
-        for value in history.get("posted_ids", [])
-    )
-
-    selected = []
-    seen = set()
-
+    blocked = {str(x) for x in history.get('posted_ids', [])}
+    blocked.update(str(x.get('job_id')) for x in history.get('records', []) if x.get('job_id'))
+    seen, found = set(), []
     for job in posts:
-
         if not isinstance(job, dict):
             continue
-
-        job_id = str(
-            job.get("id", "")
-        ).strip()
-
-        due = parse_date(
-            job.get("due")
-        )
-
-        if not job_id or not due:
+        jid = str(job.get('id', '')).strip()
+        due = parse_date(job.get('due'))
+        if not jid or not due or jid in blocked or jid in seen:
             continue
-
-        # 이미 게시한 공고 제외
-        if job_id in posted:
+        days = (due - today).days
+        if not MIN_DAYS <= days <= MAX_DAYS or not job.get('title') or not job.get('org'):
             continue
-
-        # 동일 실행 내 중복 제외
-        if job_id in seen:
+        url = str(job.get('url', '')).strip()
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != 'https' or parsed.hostname not in ('job.alio.go.kr', 'jobinfo-hub.github.io'):
             continue
+        seen.add(jid)
+        count = parse_count(job.get('verified_hiring_count'))
+        if count is None:
+            count = parse_count(job.get('n'))
+        priority = 0 if count is None else 4 if count >= 100 else 3 if count >= 50 else 2 if count >= 30 else 1
+        found.append({'id': jid, 'org': str(job['org']), 'title': str(job['title']), 'url': url,
+                      'due': str(due), 'days': days, 'regular': regular(job), 'count': count, 'priority': priority})
+    found.sort(key=lambda j: (-int(j['regular']), -j['priority'], -(j['count'] if j['count'] is not None else -1), j['days'], j['id']))
+    return found
 
-        remaining = (
-            due - today
-        ).days
 
-        # 마감일 D-5 ~ D-20
-        if not MIN_DAYS <= remaining <= MAX_DAYS:
-            continue
+def compose(job):
+    title = re.sub(r'\s+', ' ', job['title']).strip()
+    org = re.sub(r'\s+', ' ', job['org']).strip()
+    if title.startswith('[' + org + ']'):
+        title = title[len(org) + 2:].strip()
+    head = f'📢 공공기관 채용정보\n\n🏢 {org}\n📌 {title}'
+    tail = (f"\n👥 모집인원: {job['count']}명" if job['count'] is not None else '\n👥 모집인원: 공고 확인')
+    tail += f"\n📅 마감: {job['due']} (D-{job['days']})\n🔗 공고 확인: {job['url']}\n\n#커리어픽 #공공기관채용"
+    max_chars = 490
+    if len(head + tail) > max_chars:
+        title = title[:max(20, len(title) - (len(head + tail) - max_chars) - 1)].rstrip() + '…'
+        head = f'📢 공공기관 채용정보\n\n🏢 {org}\n📌 {title}'
+    result = head + tail
+    if len(result) > 500:
+        raise ValueError('Post exceeds 500 characters')
+    return result
 
-        if not job.get("title"):
-            continue
 
-        if not job.get("org"):
-            continue
-
-        seen.add(job_id)
-
-        count = hiring_count(job)
-        regular = is_regular(job)
-
-        selected.append({
-            "id": job_id,
-            "org": job["org"],
-            "title": job["title"],
-            "url": job.get("url", ""),
-            "due": str(due),
-            "days": remaining,
-            "regular": regular,
-            "count": count,
-            "priority": count_priority(count),
-            "region": job.get("region", ""),
-            "edu": job.get("edu", []),
-        })
-
-    # 자동 선정 우선순위
-    #
-    # 1. 정규직 우선
-    # 2. 모집인원 100명 이상
-    # 3. 모집인원 50~99명
-    # 4. 모집인원 30~49명
-    # 5. 모집인원 1~29명
-    # 6. 모집인원 미확인
-    #
-    # 동일 조건에서는 실제 모집인원,
-    # 마감일 순으로 정렬
-
-    selected.sort(
-        key=lambda j: (
-            -int(j["regular"]),
-            -j["priority"],
-            -(
-                j["count"]
-                if j["count"] is not None
-                else -1
-            ),
-            j["days"],
-            j["id"],
-        )
-    )
-
-    return selected
+def api(method, path, token, params=None):
+    url = API + path
+    payload = urllib.parse.urlencode(params or {}).encode('utf-8') if method == 'POST' else None
+    if method == 'GET' and params:
+        url += '?' + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, data=payload, method=method,
+                                 headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/json'})
+    try:
+        with urllib.request.urlopen(req, timeout=25) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode('utf-8', errors='replace')[:1000]
+        raise RuntimeError(f'Threads API HTTP {exc.code}: {body}') from None
 
 
 def main():
-
-    now = datetime.now(KST)
-
-    data = load_json(
-        DATA,
-        {"posts": []}
-    )
-
-    history = load_json(
-        HISTORY,
-        {"posted_ids": []}
-    )
-
-    posts = data.get("posts", [])
-
+    command = sys.argv[1] if len(sys.argv) > 1 else 'preview'
+    if command not in ('prepare', 'publish', 'preview'):
+        raise ValueError('Use prepare, publish or preview')
+    today = datetime.now(KST).date().isoformat()
+    history = load(HISTORY, {'posted_ids': [], 'records': []})
+    history.setdefault('posted_ids', [])
+    history.setdefault('records', [])
+    if command == 'publish':
+        pending = [r for r in history['records'] if r.get('status') == 'pending' and r.get('run_id') == os.getenv('GITHUB_RUN_ID', '')]
+        if len(pending) != 1:
+            print('No pending post for this run. Nothing to publish.')
+            return
+        record = pending[0]
+        if os.getenv('THREADS_ENABLED', 'false').lower() != 'true':
+            print('Publishing disabled. Pending reservation requires manual reconciliation.')
+            return
+        token = os.environ['THREADS_ACCESS_TOKEN']
+        user_id = os.environ['THREADS_USER_ID']
+        # On uncertain API outcome leave pending; do not automatically retry.
+        container = api('POST', f'/{user_id}/threads', token, {'media_type': 'TEXT', 'text': record['text']})
+        if not container.get('id'):
+            raise RuntimeError('Container creation did not return an ID')
+        published = api('POST', f'/{user_id}/threads_publish', token, {'creation_id': container['id']})
+        if not published.get('id'):
+            raise RuntimeError('Publish did not return a post ID')
+        record['status'] = 'published'
+        record['threads_post_id'] = str(published['id'])
+        record['published_at'] = datetime.now(KST).isoformat()
+        if record['job_id'] not in history['posted_ids']:
+            history['posted_ids'].append(record['job_id'])
+        save(history)
+        print('Published Threads post ID:', record['threads_post_id'])
+        return
+    posts = load(DATA, {'posts': []}).get('posts', [])
     if not isinstance(posts, list):
-        raise ValueError(
-            "Invalid alio.json posts"
-        )
-
-    eligible = candidates(
-        posts,
-        history,
-        now.date()
-    )
-
-    print(
-        "=== CareerPick Threads Preview ==="
-    )
-
-    print(
-        "KST:",
-        now.isoformat()
-    )
-
-    print(
-        "Total source jobs:",
-        len(posts)
-    )
-
-    print(
-        "Eligible jobs:",
-        len(eligible)
-    )
-
-    print(
-        "\n=== Selected Top 5 ==="
-    )
-
-    for index, job in enumerate(
-        eligible[:MAX_DAILY],
-        1
-    ):
-
-        count_label = (
-            f"{job['count']}명"
-            if job["count"] is not None
-            else "미확인"
-        )
-
-        regular_label = (
-            "정규직 우선"
-            if job["regular"]
-            else "일반"
-        )
-
-        print(
-            f"{index}. [{job['org']}] "
-            f"{job['title']}"
-        )
-
-        print(
-            f"   마감: D-{job['days']}"
-        )
-
-        print(
-            f"   고용형태: {regular_label}"
-        )
-
-        print(
-            f"   모집인원: {count_label}"
-        )
-
-        print(
-            f"   우선순위: {job['priority']}"
-        )
-
-        print(
-            f"   링크: {job['url']}"
-        )
-
-    print(
-        "\n=== Data Quality ==="
-    )
-
-    verified = sum(
-        j["count"] is not None
-        for j in eligible
-    )
-
-    missing = sum(
-        j["count"] is None
-        for j in eligible
-    )
-
-    print(
-        "Available hiring counts:",
-        verified
-    )
-
-    print(
-        "Missing hiring counts:",
-        missing
-    )
-
-    print(
-        "Regular jobs:",
-        sum(
-            j["regular"]
-            for j in eligible
-        )
-    )
-
-    print(
-        "\n=== Publishing Status ==="
-    )
-
-    # 실제 Threads 게시 기능은 아직 미설치
-    # 인증 전 게시 및 이력 변경 금지
-
-    if os.getenv(
-        "THREADS_ENABLED", ""
-    ).lower() == "true":
-
-        raise RuntimeError(
-            "Threads publishing adapter "
-            "is not installed. "
-            "Keep THREADS_ENABLED disabled."
-        )
-
-    print(
-        "Preview completed."
-    )
-
-    print(
-        "No posts published."
-    )
-
-    print(
-        "Posting history unchanged."
-    )
+        raise ValueError('alio.json posts must be a list')
+    chosen = candidates(posts, history, date.fromisoformat(today))
+    print(f'Source: {len(posts)}; eligible: {len(chosen)}')
+    if command == 'preview':
+        for job in chosen[:5]:
+            print('\n' + compose(job))
+        print('\nPreview only; nothing published.')
+        return
+    if os.getenv('THREADS_ENABLED', 'false').lower() != 'true':
+        print('Publishing disabled; no reservation made.')
+        return
+    daily = sum(r.get('reserved_date') == today and r.get('status') in ('pending', 'published') for r in history['records'])
+    if daily >= MAX_DAILY or not chosen:
+        print(f'No reservation. Daily reserved: {daily}/{MAX_DAILY}; eligible: {len(chosen)}')
+        return
+    job = chosen[0]
+    history['records'].append({'job_id': job['id'], 'reserved_date': today, 'status': 'pending',
+                               'run_id': os.environ['GITHUB_RUN_ID'], 'created_at': datetime.now(KST).isoformat(),
+                               'text': compose(job)})
+    save(history)
+    print('Reserved job:', job['id'])
+    print(compose(job))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
