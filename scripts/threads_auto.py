@@ -327,6 +327,7 @@ def verify_account(token, expected_id):
     print('API ID length:', len(actual_id))
     print('Configured ID length:', len(str(expected_id)))
     print('ID match after strip:', normalized_actual == normalized_expected)
+    print('API username:', username)
 
     if normalized_actual != normalized_expected:
         raise RuntimeError(
