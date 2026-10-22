@@ -4,7 +4,7 @@ Run from the repository root: python scripts/build_job_pages.py
 """
 import json
 import re
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from html import escape
 from pathlib import Path
 from urllib.parse import quote, urlparse
@@ -14,6 +14,13 @@ DATA = ROOT / 'alio.json'
 DETAIL = ROOT / 'alio-detail.json'
 OUT = ROOT / 'jobs'
 BASE = 'https://jobinfo-hub.github.io'
+
+DETAIL_LABELS = {
+    'recrutSeNm': '채용 구분',
+    'recrutPblntTtl': '채용공고 제목',
+    'aplyQlfcCn': '지원 자격',
+    'recrutPrgsCn': '채용 절차',
+}
 
 
 def clean(value):
@@ -28,9 +35,59 @@ def safe_url(value):
     return value if parsed.scheme == 'https' and parsed.netloc else ''
 
 
+def parse_date(value, end_of_day=False):
+    """Accept valid ISO dates/times and common ALIO formats; return an ISO date/time.
+
+    For a date-only deadline, use the end of that date in Korea time, rather
+    than mistakenly expiring the posting at midnight at the start of the day.
+    """
+    raw = clean(value)
+    if not raw:
+        return ''
+    raw = raw.replace('년', '-').replace('월', '-').replace('일', ' ').strip()
+    raw = re.sub(r'(?<=\d)[./](?=\d)', '-', raw)
+    raw = re.sub(r'\s+', ' ', raw)
+    if re.fullmatch(r'\d{8}', raw):
+        raw = f'{raw[:4]}-{raw[4:6]}-{raw[6:8]}'
+    if re.fullmatch(r'\d{4}-\d{1,2}-\d{1,2}', raw):
+        y, m, d = map(int, raw.split('-'))
+        try:
+            parsed = date(y, m, d)
+        except ValueError:
+            return ''
+        return f'{parsed.isoformat()}T23:59:59+09:00' if end_of_day else parsed.isoformat()
+    normalized = raw.replace(' ', 'T', 1) if 'T' not in raw and ' ' in raw else raw
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        return ''
+    if parsed.tzinfo is None:
+        return parsed.isoformat(timespec='seconds') + '+09:00'
+    return parsed.isoformat(timespec='seconds')
+
+
 def date_label(value):
-    value = clean(value)
-    return value[:16].replace('T', ' ') if value else '상시 모집'
+    parsed = parse_date(value)
+    if not parsed:
+        return clean(value) or '공식 공고 확인'
+    if 'T' not in parsed:
+        return parsed
+    return parsed[:16].replace('T', ' ')
+
+
+def is_closed(due):
+    parsed = parse_date(due, end_of_day=True)
+    if not parsed:
+        return False
+    try:
+        deadline = datetime.fromisoformat(parsed)
+        if deadline.tzinfo is None:
+            return False
+        return deadline.astimezone(timezone.utc) < datetime.now(timezone.utc)
+    except ValueError:
+        return False
 
 
 def render(post, detail):
@@ -39,6 +96,8 @@ def render(post, detail):
     pid = clean(post.get('id'))
     canonical = f'{BASE}/jobs/{quote(pid, safe="")}.html'
     due = clean(post.get('due'))
+    deadline = parse_date(due, end_of_day=True)
+    closed = is_closed(due)
     official = safe_url(post.get('src')) or safe_url(post.get('url'))
     fields = [
         ('기관명', org),
@@ -51,32 +110,51 @@ def render(post, detail):
     rows = '\n'.join(f'<dt>{escape(k)}</dt><dd>{escape(v)}</dd>' for k, v in fields)
     extra = ''
     if isinstance(detail, dict):
-        # Display a small set of verified API-provided text fields only.
-        for key in ('recrutSeNm', 'recrutPblntTtl', 'aplyQlfcCn', 'recrutPrgsCn'):
+        for key, label in DETAIL_LABELS.items():
             val = detail.get(key)
             if isinstance(val, str) and val.strip():
-                extra += f'<section><h2>{escape(key)}</h2><p>{escape(val[:1500])}</p></section>'
+                extra += f'<section><h2>{escape(label)}</h2><p>{escape(val[:1500])}</p></section>'
+
     schema = {
         '@context': 'https://schema.org',
         '@type': 'JobPosting',
         'title': title,
         'description': clean(post.get('desc')) or f'{org} 채용공고. 지원자격과 세부사항은 공식 공고에서 확인하세요.',
-        'datePosted': clean(post.get('pub'))[:10],
         'hiringOrganization': {'@type': 'Organization', 'name': org},
         'url': canonical,
     }
-    if due:
-        schema['validThrough'] = due
+    posted = parse_date(post.get('pub'))
+    if posted:
+        schema['datePosted'] = posted
+    if deadline:
+        schema['validThrough'] = deadline
     if post.get('region'):
-        schema['jobLocation'] = {'@type': 'Place', 'address': {'@type': 'PostalAddress', 'addressCountry': 'KR', 'addressRegion': clean(post['region'])}}
+        schema['jobLocation'] = {
+            '@type': 'Place',
+            'address': {
+                '@type': 'PostalAddress',
+                'addressCountry': 'KR',
+                'addressRegion': clean(post['region']),
+            },
+        }
     if post.get('emp'):
         employment = clean(post['emp'])
         if '정규직' in employment:
             schema['employmentType'] = 'FULL_TIME'
         elif '계약직' in employment or '인턴' in employment:
             schema['employmentType'] = 'TEMPORARY'
-    schema_json = json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c')
-    link = f'<a class="apply" href="{escape(official, quote=True)}" rel="noopener noreferrer" target="_blank">공식 채용공고 확인 ↗</a>' if official else '<p>공식 지원 링크를 확인 중입니다.</p>'
+    # Google JobPosting guidance: expired postings must not remain advertised as active.
+    # Keep the informational HTML page, but remove JobPosting markup after expiry.
+    schema_json = '' if closed else (
+        '<script type="application/ld+json">'
+        + json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c')
+        + '</script>'
+    )
+    notice = '<p class="closed">접수 마감된 공고입니다. 최신 모집 여부는 공식 공고를 확인하세요.</p>' if closed else ''
+    link = (
+        f'<a class="apply" href="{escape(official, quote=True)}" rel="noopener noreferrer" target="_blank">공식 채용공고 확인 ↗</a>'
+        if official else '<p>공식 지원 링크를 확인 중입니다.</p>'
+    )
     return f'''<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{escape(title)} | {escape(org)} | 커리어픽</title>
@@ -84,11 +162,11 @@ def render(post, detail):
 <link rel="canonical" href="{escape(canonical, quote=True)}">
 <meta property="og:type" content="article"><meta property="og:title" content="{escape(title, quote=True)}">
 <meta property="og:url" content="{escape(canonical, quote=True)}">
-<script type="application/ld+json">{schema_json}</script>
-<style>body{{margin:0;background:#f5f7fb;color:#14213d;font:16px/1.7 system-ui,'Malgun Gothic',sans-serif}}main{{max-width:720px;margin:35px auto;padding:24px;background:white;border-radius:18px}}h1{{font-size:1.6rem;line-height:1.4}}dt{{font-weight:700;color:#475569}}dd{{margin:0 0 14px}}.apply{{display:inline-block;background:#1f3fbf;color:white;padding:12px 20px;border-radius:9px;text-decoration:none}}a{{color:#1f3fbf}}.muted{{color:#64748b}}@media(max-width:760px){{main{{margin:0;border-radius:0;padding:20px}}}}</style>
+{schema_json}
+<style>body{{margin:0;background:#f5f7fb;color:#14213d;font:16px/1.7 system-ui,'Malgun Gothic',sans-serif}}main{{max-width:720px;margin:35px auto;padding:24px;background:white;border-radius:18px}}h1{{font-size:1.6rem;line-height:1.4}}dt{{font-weight:700;color:#475569}}dd{{margin:0 0 14px}}.apply{{display:inline-block;background:#1f3fbf;color:white;padding:12px 20px;border-radius:9px;text-decoration:none}}a{{color:#1f3fbf}}.muted{{color:#64748b}}.closed{{padding:12px;background:#fff1f2;color:#9f1239;border-radius:8px;font-weight:700}}@media(max-width:760px){{main{{margin:0;border-radius:0;padding:20px}}}}</style>
 </head><body><main><nav><a href="/">← 커리어픽 전체 채용공고</a></nav>
 <p class="muted">공공기관 채용정보</p><h1>{escape(title)}</h1><p>{escape(org)}</p>
-<h2>모집 요약</h2><dl>{rows}</dl>{link}
+{notice}<h2>모집 요약</h2><dl>{rows}</dl>{link}
 {extra}<hr><p class="muted">본 페이지는 공공 채용정보를 요약한 안내 페이지입니다. 지원 전 반드시 공식 공고의 자격조건, 마감시각, 변경사항을 확인하세요.</p>
 <a href="/">다른 채용공고 찾아보기</a></main></body></html>'''
 
