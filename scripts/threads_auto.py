@@ -195,7 +195,7 @@ def compose(job):
 
     tail += (
         f"\n📅 마감: {job['due']} (D-{job['days']})"
-        f"\n🔗 공고 확인: {job['url']}"
+        f"\n🔎 자세한 내용은 프로필 링크를 확인하세요."
         f"\n\n#커리어픽 #공공기관채용"
     )
 
@@ -208,7 +208,7 @@ def compose(job):
 
         if available < 2:
             raise ValueError(
-                'Organization and URL are too long'
+                'Organization and closing message are too long'
             )
 
         title = title[:available - 1].rstrip() + '…'
