@@ -183,19 +183,19 @@ def compose(job):
 
     head = (
         f'📢 공공기관 채용정보\n\n'
-        f'🏢 {org}\n'
+        f'🏢 {org}\n\n'
         f'📌 {title}'
     )
 
     tail = (
-        f"\n👥 모집인원: {job['count']}명"
+        f"\n\n👥 모집인원: {job['count']}명"
         if job['count'] is not None
-        else '\n👥 모집인원: 공고 확인'
+        else '\n\n👥 모집인원: 공고 확인'
     )
 
     tail += (
-        f"\n📅 마감: {job['due']} (D-{job['days']})"
-        f"\n🔎 자세한 내용은 프로필 링크를 확인하세요."
+        f"\n\n📅 마감: {job['due']} (D-{job['days']})"
+        f"\n\n🔎 자세한 내용은 프로필 링크를 확인하세요."
         f"\n\n#커리어픽 #공공기관채용"
     )
 
@@ -215,7 +215,7 @@ def compose(job):
 
         head = (
             f'📢 공공기관 채용정보\n\n'
-            f'🏢 {org}\n'
+            f'🏢 {org}\n\n'
             f'📌 {title}'
         )
 
