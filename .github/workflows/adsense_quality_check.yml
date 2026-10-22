@@ -3,6 +3,7 @@ name: AdSense quality isolated validation
 on:
   pull_request:
     paths:
+      - 'ads.txt'
       - 'guides/**'
       - 'prep.html'
       - 'scripts/build_job_pages.py'
@@ -38,6 +39,33 @@ jobs:
           builder = Path('scripts/build_job_pages.py').read_text(encoding='utf-8')
           assert '/guides/application-checklist.html' in builder
           print('Editorial link and syntax checks passed')
+          PY
+      - name: Test real job detail rendering and AdSense publisher consistency
+        run: |
+          python - <<'PY'
+          import importlib.util
+          import json
+          import re
+          from pathlib import Path
+          from html.parser import HTMLParser
+          spec = importlib.util.spec_from_file_location('builder', 'scripts/build_job_pages.py')
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          posts = json.loads(Path('alio.json').read_text(encoding='utf-8'))['posts']
+          sample = next(p for p in posts if p.get('alio') and re.fullmatch(r'a[0-9]+', str(p.get('id',''))))
+          rendered = module.render(sample, {})
+          assert '<html lang="ko">' in rendered
+          assert '공공기관 채용 지원 전 확인할 7가지' in rendered
+          assert '/guides/application-checklist.html' in rendered
+          assert '공식 채용공고 확인' in rendered
+          class Parser(HTMLParser): pass
+          Parser().feed(rendered)
+          home = Path('index.html').read_text(encoding='utf-8')
+          ids = set(re.findall(r'ca-pub-(\\d+)', home))
+          assert len(ids) == 1, 'Expected exactly one AdSense publisher ID'
+          ads = Path('ads.txt').read_text(encoding='utf-8')
+          assert f'google.com, pub-{next(iter(ids))}, DIRECT, f08c47fec0942fa0' in ads
+          print('Real job render, HTML parse, and ads.txt consistency passed')
           PY
       - name: Test sitemap generator in disposable checkout
         run: |
