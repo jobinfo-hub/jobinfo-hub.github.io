@@ -1,0 +1,36 @@
+
+name: CareerPick Threads Diagnose
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    env:
+      TZ: Asia/Seoul
+      THREADS_ENABLED: 'false'
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify required files
+        run: |
+          test -f scripts/threads_auto.py
+          test -f threads_posted.json
+
+      - name: Diagnose Threads account and API
+        run: python scripts/threads_auto.py diagnose
