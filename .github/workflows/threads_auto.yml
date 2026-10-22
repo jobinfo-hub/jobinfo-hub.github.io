@@ -1,0 +1,66 @@
+
+name: CareerPick Threads Auto
+
+on:
+  schedule:
+    # 한국시간 기준
+    - cron: '0 0 * * *'    # 09:00
+    - cron: '15 2 * * *'   # 11:15
+    - cron: '30 4 * * *'   # 13:30
+    - cron: '45 6 * * *'   # 15:45
+    - cron: '0 9 * * *'    # 18:00
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: careerpick-threads-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish CareerPick Jobs
+    runs-on: ubuntu-latest
+
+    # 인증 및 코드 준비 전에는 게시하지 않음
+    if: ${{ vars.THREADS_ENABLED == 'true' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check required files
+        run: |
+          test -f alio.json
+          test -f scripts/threads_auto.py
+
+      - name: Publish to Threads
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ENABLED: ${{ vars.THREADS_ENABLED }}
+          TZ: Asia/Seoul
+        run: |
+          python scripts/threads_auto.py
+
+      - name: Save posting history
+        run: |
+          if [ -f threads_posted.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add threads_posted.json
+
+            if ! git diff --cached --quiet; then
+              git commit -m "Update Threads posting history"
+              git push
+            fi
+          fi
