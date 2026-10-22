@@ -3,35 +3,32 @@ name: CareerPick Threads Auto
 
 on:
   schedule:
-    # 한국시간 기준
-    - cron: '0 0 * * *'    # 09:00
-    - cron: '15 2 * * *'   # 11:15
-    - cron: '30 4 * * *'   # 13:30
-    - cron: '45 6 * * *'   # 15:45
-    - cron: '0 9 * * *'    # 18:00
+    # GitHub Actions는 UTC 기준
+    # 한국시간 09:00, 11:15, 13:30, 15:45, 18:00
+    - cron: '0 0 * * *'
+    - cron: '15 2 * * *'
+    - cron: '30 4 * * *'
+    - cron: '45 6 * * *'
+    - cron: '0 9 * * *'
 
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: careerpick-threads-publish
+  group: careerpick-threads-preview
   cancel-in-progress: false
 
 jobs:
-  publish:
-    name: Publish CareerPick Jobs
+  preview:
+    name: Preview CareerPick Jobs
     runs-on: ubuntu-latest
-
-    # 인증 및 코드 준비 전에는 게시하지 않음
-    if: ${{ vars.THREADS_ENABLED == 'true' }}
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -43,24 +40,15 @@ jobs:
           test -f alio.json
           test -f scripts/threads_auto.py
 
-      - name: Publish to Threads
+      - name: Preview selected jobs
         env:
-          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
-          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-          THREADS_ENABLED: ${{ vars.THREADS_ENABLED }}
+          THREADS_ENABLED: 'false'
           TZ: Asia/Seoul
         run: |
           python scripts/threads_auto.py
 
-      - name: Save posting history
+      - name: Preview completed
         run: |
-          if [ -f threads_posted.json ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add threads_posted.json
-
-            if ! git diff --cached --quiet; then
-              git commit -m "Update Threads posting history"
-              git push
-            fi
-          fi
+          echo "CareerPick preview completed."
+          echo "Threads publishing is disabled."
+          echo "No posts were published."
