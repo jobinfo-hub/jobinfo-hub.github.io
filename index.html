@@ -553,6 +553,7 @@ footer .src b{color:var(--ink)}
 .card.row .standalone-job-link{flex:none;font-size:11.5px;font-weight:700;color:var(--brand);text-decoration:none;padding:8px 6px;white-space:nowrap}
 @media(max-width:440px){.actions .standalone-job-link{flex-basis:100%;border-top:1px solid var(--line);border-left:0}.card.row .standalone-job-link{font-size:10px;padding:6px 3px}}
 </style>
+<script src="/jobs/available.js" defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -1274,9 +1275,12 @@ function jobAnchorAttrs(p){return isInternalJob(p) ? ` data-open="${esc(p.id)}"`
 // 검색엔진이 접근할 수 있는 잡알리오 독립 상세페이지 링크
 function standaloneJobLink(p){
   const id = String(p.id || "");
-  return p.alio && /^a[0-9]+$/.test(id)
-    ? `<a class="standalone-job-link" href="/jobs/${encodeURIComponent(id)}.html" aria-label="${esc(p.title || '채용공고')} 상세 채용정보">🔎 상세 채용정보</a>`
-    : "";
+  const available = window.CAREERPICK_JOB_IDS;
+  if (!p.alio || !/^a[0-9]+$/.test(id) ||
+      !(available instanceof Set) || !available.has(id)) {
+    return "";
+  }
+  return `<a class="standalone-job-link" href="/jobs/${encodeURIComponent(id)}.html" aria-label="${esc(p.title || '채용공고')} 상세 채용정보">🔎 상세 채용정보</a>`;
 }
 function jobCard(p, now){
   const d = dday(p, now);
