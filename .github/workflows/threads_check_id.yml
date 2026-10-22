@@ -1,0 +1,52 @@
+
+name: Check Threads User ID
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-id:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Threads account
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import json
+          import urllib.request
+          import urllib.parse
+
+          token = os.environ.get("THREADS_ACCESS_TOKEN", "")
+          if not token:
+              raise SystemExit("THREADS_ACCESS_TOKEN is missing")
+
+          url = "https://graph.threads.net/v1.0/me"
+          url += "?" + urllib.parse.urlencode({
+              "fields": "id,username",
+              "access_token": token
+          })
+
+          try:
+              with urllib.request.urlopen(url, timeout=20) as response:
+                  data = json.load(response)
+          except Exception as e:
+              print("Threads API request failed")
+              raise SystemExit(1) from None
+
+          user_id = str(data.get("id", ""))
+          username = data.get("username", "")
+
+          if not user_id.isdigit():
+              raise SystemExit("Invalid Threads user ID")
+
+          print("=== Threads Account ===")
+          print("Username:", username)
+          print("THREADS_USER_ID:", user_id)
+          print("Check completed successfully")
+          PY
