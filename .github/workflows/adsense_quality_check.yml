@@ -1,0 +1,58 @@
+name: AdSense quality isolated validation
+
+on:
+  pull_request:
+    paths:
+      - 'guides/**'
+      - 'prep.html'
+      - 'scripts/build_job_pages.py'
+      - 'scripts/build_sitemap.py'
+      - '.github/workflows/adsense_quality_check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Python syntax and editorial links
+        run: |
+          python -m py_compile scripts/build_job_pages.py scripts/build_sitemap.py
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          from html.parser import HTMLParser
+          for path in (Path('guides/index.html'), Path('guides/application-checklist.html')):
+              assert path.is_file(), f'Missing guide: {path}'
+              content = path.read_text(encoding='utf-8')
+              assert '<h1>' in content and 'canonical' in content
+          prep = Path('prep.html').read_text(encoding='utf-8')
+          assert 'guides/application-checklist.html' in prep
+          builder = Path('scripts/build_job_pages.py').read_text(encoding='utf-8')
+          assert '/guides/application-checklist.html' in builder
+          print('Editorial link and syntax checks passed')
+          PY
+      - name: Test sitemap generator in disposable checkout
+        run: |
+          python scripts/build_sitemap.py
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          root = ET.parse('sitemap.xml').getroot()
+          ns = {'s':'http://www.sitemaps.org/schemas/sitemap/0.9'}
+          urls = [x.text for x in root.findall('.//s:loc', ns)]
+          assert len(urls) == len(set(urls)), 'Duplicate sitemap URL'
+          assert 'https://jobinfo-hub.github.io/guides/' in urls
+          assert 'https://jobinfo-hub.github.io/guides/application-checklist.html' in urls
+          job_urls = [x for x in urls if x.startswith('https://jobinfo-hub.github.io/jobs/')]
+          pages = list(Path('jobs').glob('a[0-9]*.html'))
+          assert len(job_urls) == len(pages), 'Job sitemap count mismatch'
+          print(f'Validated {len(urls)} sitemap URLs and {len(job_urls)} job pages')
+          PY
