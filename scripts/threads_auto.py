@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """CareerPick Threads publisher. Commands: prepare, publish, preview."""
 
@@ -324,7 +323,14 @@ def verify_account(token, expected_id):
             'Threads API returned an invalid user ID'
         )
 
-    if actual_id != str(expected_id).strip():
+    # Diagnose ID formatting without printing credentials or secret values.
+    normalized_actual = actual_id.strip()
+    normalized_expected = str(expected_id).strip()
+    print('API ID length:', len(actual_id))
+    print('Configured ID length:', len(str(expected_id)))
+    print('ID match after strip:', normalized_actual == normalized_expected)
+
+    if normalized_actual != normalized_expected:
         raise RuntimeError(
             'THREADS_USER_ID does not match the token account'
         )
