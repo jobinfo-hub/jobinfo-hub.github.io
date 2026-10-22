@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CareerPick Threads publisher. Commands: prepare, publish, preview."""
+"""CareerPick Threads publisher. Commands: prepare, publish, preview, diagnose."""
 
 import json
 import os
@@ -234,13 +234,11 @@ def api(method, path, token, params=None):
 
     payload = None
 
-    if method == 'POST':
-        payload = urllib.parse.urlencode(
-            params or {}
-        ).encode('utf-8')
-
-    if method == 'GET' and params:
+    if params:
         url += '?' + urllib.parse.urlencode(params)
+
+    if method == 'POST':
+        payload = b''
 
     request = urllib.request.Request(
         url,
@@ -440,10 +438,11 @@ def main():
     if command not in (
         'prepare',
         'publish',
-        'preview'
+        'preview',
+        'diagnose'
     ):
         raise ValueError(
-            'Use prepare, publish or preview'
+            'Use prepare, publish, preview or diagnose'
         )
 
     today = datetime.now(
@@ -460,6 +459,29 @@ def main():
 
     history.setdefault('posted_ids', [])
     history.setdefault('records', [])
+
+    if command == 'diagnose':
+        token = os.environ.get('THREADS_ACCESS_TOKEN', '')
+        configured_id = os.environ.get('THREADS_USER_ID', '')
+        if not token:
+            raise RuntimeError('Missing THREADS_ACCESS_TOKEN')
+        actual_id = verify_account(token, configured_id)
+        print('Publishing enabled:', os.getenv('THREADS_ENABLED', 'false'))
+        print('Pending reservations:', sum(
+            r.get('status') == 'pending' for r in history['records']
+        ))
+        print('Published records:', sum(
+            r.get('status') == 'published' for r in history['records']
+        ))
+        print('Account ID:', actual_id)
+        try:
+            limits = api('GET', '/me/threads_publishing_limit', token,
+                         {'fields': 'quota_usage,config'})
+            print('Publishing limit response:', json.dumps(limits, ensure_ascii=False))
+        except RuntimeError as exc:
+            print('Publishing limit check failed:', str(exc))
+        print('Diagnostic only: no post was created, no history changed.')
+        return
 
     if command == 'publish':
         run_id = os.getenv(
