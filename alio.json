@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T18:23:36+09:00",
+ "updated": "2026-10-22T21:22:23+09:00",
  "posts": [
   {
    "id": "a306124",
@@ -6043,6 +6043,31 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306285",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제1차 직원(일반정규직, 실무직(보훈제한경쟁 포함), 조사직, 기간제 근로자, 체험형 청년인턴(장애인 제한경쟁채용 포함) 채용 공고",
+   "org": "한국수산자원공단",
+   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306285",
+   "pub": "2026-10-16T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "정규직",
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전국",
+   "text": "정규직 무기계약직 비정규직 청년인턴(체험형) 학력무관 대졸(2~3년) 대졸(4년) 석사 박사 부산 경기 강원 충남 전북 전남광주 경북 경남 제주 사업관리 경영.회계.사무 교육.자연.사회과학 건설 환경.에너지.안전 농림어업 연구",
+   "n": "79",
+   "src": "https://www.fira.or.kr/newfira/web/news/news01_02.jsp?mode=view&article_no=35879&board_wrapper=%2Fnewfira%2Fweb%2Fnews%2Fnews01_02.jsp&pager.offset=0&board_no=3"
+  },
+  {
    "id": "a306270",
    "type": "j",
    "alio": true,
@@ -6409,31 +6434,6 @@
    "text": "비정규직 학력무관 경북 경영.회계.사무",
    "n": "1",
    "src": "https://k-water.recruiter.co.kr/"
-  },
-  {
-   "id": "a306125",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "2026년도 제1차 직원(일반정규직, 실무직(보훈제한경쟁 포함), 조사직, 기간제 근로자, 체험형 청년인턴(장애인 제한경쟁채용 포함) 채용 공고",
-   "org": "한국수산자원공단",
-   "desc": "사업관리 · 경영.회계.사무 · 교육.자연.사회과학",
-   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306125",
-   "pub": "2026-10-16T00:00:00+09:00",
-   "due": "2026-11-02T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "무기계약직",
-    "정규직",
-    "인턴"
-   ],
-   "edu": [
-    "학력무관"
-   ],
-   "region": "전국",
-   "text": "정규직 무기계약직 비정규직 청년인턴(체험형) 학력무관 대졸(2~3년) 대졸(4년) 석사 박사 부산 경기 강원 충남 전북 전남광주 경북 경남 제주 사업관리 경영.회계.사무 교육.자연.사회과학 건설 환경.에너지.안전 농림어업 연구",
-   "n": "79",
-   "src": "https://www.fira.or.kr/newfira/web/news/news01_02.jsp?mode=view&article_no=35879&board_wrapper=%2Fnewfira%2Fweb%2Fnews%2Fnews01_02.jsp&pager.offset=0&board_no=3"
   },
   {
    "id": "a306116",
@@ -7529,7 +7529,7 @@
     "고졸 가능"
    ],
    "region": "전국",
-   "text": "청년인턴(채용형) 학력무관 고졸 서울 부산 대구 인천 대전 울산 세종 경기 강원 충북 충남 전북 전남광주 경북 경남 제주 경영.회계.사무 건설 기계 전기.전자",
+   "text": "청년인턴(체험형) 학력무관 고졸 서울 부산 대구 인천 대전 울산 세종 경기 강원 충북 충남 전북 전남광주 경북 경남 제주 경영.회계.사무 건설 기계 전기.전자",
    "n": "450",
    "src": "http://recruit.kepco.co.kr"
   },
@@ -8506,6 +8506,159 @@
    "text": "비정규직 박사 대전 연구",
    "n": "4",
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
+  },
+  {
+   "id": "a306283",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(초단시간/간호사/육군훈련소(토요일)) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306283",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "충북",
+   "text": "비정규직 대졸(2~3년) 대졸(4년) 충북 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306282",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(초단시간/간호사/헌혈의집 충주센터) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306282",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "충북",
+   "text": "비정규직 대졸(2~3년) 대졸(4년) 충북 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306281",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(대체인력(1년)/임상병리사/제제공급팀) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306281",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "충북",
+   "text": "비정규직 대졸(2~3년) 대졸(4년) 충북 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306280",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(대체인력(9개월)/임상병리사/제제공급팀) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306280",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "충북",
+   "text": "비정규직 대졸(2~3년) 대졸(4년) 충북 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306279",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(대체인력(1년 1개월)/사무보조/헌혈지원팀) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306279",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충북",
+   "text": "비정규직 학력무관 충북 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306278",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(대체인력(5개월)/사무보조/헌혈개발팀) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306278",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충북",
+   "text": "비정규직 학력무관 충북 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306277",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "충북혈액원 비정규직(한시적근로자(1년)/사무보조/헌혈개발팀) 채용 모집 공고",
+   "org": "대한적십자사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306277",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-08T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "충북",
+   "text": "비정규직 학력무관 충북 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
    "id": "a306166",
