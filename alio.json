@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T14:20:33+09:00",
+ "updated": "2026-10-22T15:22:07+09:00",
  "posts": [
   {
    "id": "a306124",
@@ -4250,6 +4250,29 @@
    "src": "https://ibs.recruiter.co.kr/career/job"
   },
   {
+   "id": "a306255",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울적십자병원 계약직 간호사(수술실) 신규채용 공고",
+   "org": "대한적십자사",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306255",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
    "id": "a306154",
    "type": "j",
    "alio": true,
@@ -5928,6 +5951,29 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306257",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[치악산] 2026년 치악산사무소 기간제(국립공원지킴이) 직원 채용",
+   "org": "국립공원공단",
+   "desc": "경비.청소",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306257",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "비정규직 학력무관 강원 경비.청소",
+   "n": "8",
+   "src": "https://www.knps.or.kr/front/portal/recruit/recruitDtl.do?menuNo=7070064&emplyId=EMPM019937"
+  },
+  {
    "id": "a306221",
    "type": "j",
    "alio": true,
@@ -7208,6 +7254,52 @@
    "src": "https://cnuhinsa.recruiter.co.kr"
   },
   {
+   "id": "a306259",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년도 제2차 체험형 청년인턴 채용",
+   "org": "한국전력공사",
+   "desc": "경영.회계.사무 · 건설 · 기계",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306259",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관",
+    "고졸 가능"
+   ],
+   "region": "전국",
+   "text": "청년인턴(채용형) 학력무관 고졸 서울 부산 대구 인천 대전 울산 세종 경기 강원 충북 충남 전북 전남광주 경북 경남 제주 경영.회계.사무 건설 기계 전기.전자",
+   "n": "450",
+   "src": "http://recruit.kepco.co.kr"
+  },
+  {
+   "id": "a306256",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한국고전번역원 2026년 4분기 제2차 직원 신규 채용",
+   "org": "한국고전번역원",
+   "desc": "사업관리 · 교육.자연.사회과학 · 연구",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306256",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직",
+    "계약직"
+   ],
+   "edu": [],
+   "region": "서울",
+   "text": "정규직 비정규직 대졸(2~3년) 대졸(4년) 석사 박사 서울 사업관리 교육.자연.사회과학 연구",
+   "n": "3",
+   "src": "https://www.itkc.or.kr/bbs/boardView.do?id=2&bIdx=316490&page=1&menuId=99&bc=0&sortName=&sortType="
+  },
+  {
    "id": "a306250",
    "type": "j",
    "alio": true,
@@ -7803,6 +7895,52 @@
    "text": "비정규직 학력무관 제주 보건.의료",
    "n": "1",
    "src": "https://kospo.machuda.kr"
+  },
+  {
+   "id": "a306258",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국산업기술진흥원] 2026년 하반기 전문분야 신규직원 공개채용 공고",
+   "org": "한국산업기술진흥원",
+   "desc": "경영.회계.사무 · 정보통신",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306258",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "정규직 학력무관 서울 경영.회계.사무 정보통신",
+   "n": "2",
+   "src": "https://www.kiat.or.kr"
+  },
+  {
+   "id": "a306254",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 하반기 영화진흥위원회 정규직 공개채용 공고",
+   "org": "영화진흥위원회",
+   "desc": "사업관리 · 경영.회계.사무 · 문화.예술.디자인.방송",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306254",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "부산",
+   "text": "정규직 학력무관 부산 사업관리 경영.회계.사무 문화.예술.디자인.방송",
+   "n": "5",
+   "src": "https://kofic.or.kr/kofic/business/board/selectBoardDetail.do?boardNumber=4&boardSeqNumber=76182"
   },
   {
    "id": "a306246",
