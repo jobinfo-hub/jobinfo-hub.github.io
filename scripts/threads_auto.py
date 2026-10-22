@@ -28,44 +28,78 @@ def load_json(path, default):
 def parse_date(value):
     if not value:
         return None
+
+    text = str(value).strip()
+
+    # 날짜만 있는 값은 시간대 변환 없이 처리
     try:
-        return datetime.fromisoformat(
-            str(value).replace("Z", "+00:00")
-        ).astimezone(KST).date()
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        pass
+
+    try:
+        dt = datetime.fromisoformat(
+            text.replace("Z", "+00:00")
+        )
+        if dt.tzinfo is None:
+            return dt.date()
+        return dt.astimezone(KST).date()
     except (ValueError, TypeError):
-        try:
-            return date.fromisoformat(str(value)[:10])
-        except (ValueError, TypeError):
-            return None
+        return None
 
 
 def hiring_count(job):
-    # 'n' 필드는 실제 모집인원인지 확인 전까지
-    # 순위 산정에 사용하지 않습니다.
-    for key in ("verified_hiring_count",):
-        value = job.get(key)
-        if isinstance(value, int) and not isinstance(value, bool):
-            return max(value, 0)
-        if isinstance(value, str) and re.fullmatch(
-            r"\d+", value.strip()
-        ):
-            return int(value.strip())
+    # 검증된 모집인원만 사용
+    value = job.get("verified_hiring_count")
+
+    if isinstance(value, bool):
+        return None
+
+    if isinstance(value, int):
+        return value if value >= 0 else None
+
+    if isinstance(value, str):
+        cleaned = value.strip().replace(",", "")
+        if re.fullmatch(r"\d+", cleaned):
+            return int(cleaned)
+
     return None
 
 
 def is_regular(job):
     emp = job.get("emp", [])
+
     if isinstance(emp, str):
         emp = [emp]
+
+    if not isinstance(emp, list):
+        return False
+
     return any(
         "정규직" in str(item) or "무기계약" in str(item)
         for item in emp
     )
 
 
+def count_priority(count):
+    if count is None:
+        return 0
+    if count >= 100:
+        return 4
+    if count >= 50:
+        return 3
+    if count >= 30:
+        return 2
+    return 1
+
+
 def candidates(posts, history, today):
-    posted = set(history.get("posted_ids", []))
+    posted = set(
+        str(value) for value in history.get("posted_ids", [])
+    )
+
     selected = []
+    seen = set()
 
     for job in posts:
         if not isinstance(job, dict):
@@ -74,15 +108,21 @@ def candidates(posts, history, today):
         job_id = str(job.get("id", "")).strip()
         due = parse_date(job.get("due"))
 
-        if not job_id or not due or job_id in posted:
+        if not job_id or not due:
+            continue
+
+        if job_id in posted or job_id in seen:
             continue
 
         remaining = (due - today).days
+
         if not MIN_DAYS <= remaining <= MAX_DAYS:
             continue
 
         if not job.get("title") or not job.get("org"):
             continue
+
+        seen.add(job_id)
 
         count = hiring_count(job)
         regular = is_regular(job)
@@ -96,13 +136,15 @@ def candidates(posts, history, today):
             "days": remaining,
             "regular": regular,
             "count": count,
+            "priority": count_priority(count),
             "region": job.get("region", ""),
             "edu": job.get("edu", []),
         })
 
+    # 정규직 → 모집인원 등급 → 실제 인원 → 마감일
     selected.sort(key=lambda j: (
         -int(j["regular"]),
-        -int(j["count"] is not None and j["count"] >= 30),
+        -j["priority"],
         -(j["count"] if j["count"] is not None else -1),
         j["days"],
         j["id"],
@@ -113,36 +155,57 @@ def candidates(posts, history, today):
 
 def main():
     now = datetime.now(KST)
+
     data = load_json(DATA, {"posts": []})
     history = load_json(HISTORY, {"posted_ids": []})
 
     posts = data.get("posts", [])
+
     if not isinstance(posts, list):
         raise ValueError("Invalid alio.json posts")
 
     eligible = candidates(posts, history, now.date())
 
-    print("CareerPick Threads preview")
+    print("=== CareerPick Threads Preview ===")
     print("KST:", now.isoformat())
     print("Eligible jobs:", len(eligible))
 
+    print("\n=== Selected Top 5 ===")
+
     for index, job in enumerate(eligible[:MAX_DAILY], 1):
+        count_label = (
+            str(job["count"]) + "명"
+            if job["count"] is not None
+            else "미확인"
+        )
+
         print(
             f"{index}. [{job['org']}] "
-            f"{job['title']} | D-{job['days']} "
-            f"| regular={job['regular']} "
-            f"| count={job['count']}"
+            f"{job['title']} "
+            f"| D-{job['days']} "
+            f"| 정규직={job['regular']} "
+            f"| 모집인원={count_label} "
+            f"| 우선순위={job['priority']}"
         )
 
-    # 실제 게시 기능은 인증 후 추가합니다.
-    # 인증 전에는 이력을 변경하지 않습니다.
+    print("\n=== Data Quality ===")
+    print(
+        "Verified hiring counts:",
+        sum(j["count"] is not None for j in eligible)
+    )
+    print(
+        "Missing hiring counts:",
+        sum(j["count"] is None for j in eligible)
+    )
+
+    # 인증 완료 전 실제 게시 금지
     if os.getenv("THREADS_ENABLED") == "true":
         raise RuntimeError(
-            "Publishing adapter not installed. "
-            "Do not enable Threads yet."
+            "Threads publishing adapter is not installed. "
+            "Keep THREADS_ENABLED disabled."
         )
 
-    print("Preview completed. No posts published.")
+    print("\nPreview completed. No posts published.")
 
 
 if __name__ == "__main__":
