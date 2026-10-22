@@ -54,6 +54,14 @@ def main():
             root.remove(entry)
             existing.discard(loc)
 
+    # 자체 제작 가이드는 존재하는 HTML 파일만 사이트맵에 등록합니다.
+    guide_files = [ROOT / "guides" / "index.html", ROOT / "guides" / "application-checklist.html"]
+    guide_urls = {
+        f"{BASE}/guides/" if page.name == "index.html"
+        else f"{BASE}/guides/{page.name}"
+        for page in guide_files if page.is_file()
+    }
+
     added = 0
     today = date.today().isoformat()
 
@@ -63,6 +71,15 @@ def main():
         entry = ET.SubElement(root, TAG("url"))
         ET.SubElement(entry, TAG("loc")).text = loc
         ET.SubElement(entry, TAG("lastmod")).text = today
+        added += 1
+
+    for loc in sorted(guide_urls):
+        if loc in existing:
+            continue
+        entry = ET.SubElement(root, TAG("url"))
+        ET.SubElement(entry, TAG("loc")).text = loc
+        ET.SubElement(entry, TAG("lastmod")).text = today
+        existing.add(loc)
         added += 1
 
     ET.indent(tree, space="  ")
