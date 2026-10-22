@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Threads account and permissions
+      - name: Compare Threads account IDs
         env:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
         run: |
           python3 - <<'PY'
           import os
@@ -24,13 +25,14 @@ jobs:
           import urllib.error
 
           token = os.environ.get("THREADS_ACCESS_TOKEN", "")
+          configured_id = os.environ.get("THREADS_USER_ID", "")
 
           if not token:
-              raise SystemExit("THREADS_ACCESS_TOKEN is missing")
+              raise SystemExit("THREADS_ACCESS_TOKEN missing")
 
-          print("=== CareerPick Threads API Check ===")
+          if not configured_id:
+              raise SystemExit("THREADS_USER_ID missing")
 
-          # 1. Threads 사용자 계정 확인
           url = "https://graph.threads.net/v1.0/me"
           url += "?" + urllib.parse.urlencode({
               "fields": "id,username"
@@ -45,89 +47,30 @@ jobs:
           )
 
           try:
-              with urllib.request.urlopen(request, timeout=20) as response:
-                  data = json.load(response)
-          except Exception:
-              print("Threads account request failed")
+              with urllib.request.urlopen(request, timeout=25) as response:
+                  account = json.load(response)
+          except urllib.error.HTTPError as exc:
+              print("Account API HTTP error:", exc.code)
               raise SystemExit(1) from None
 
-          user_id = str(data.get("id", ""))
-          username = data.get("username", "")
+          actual_id = str(account.get("id", ""))
+          username = account.get("username", "")
 
-          if not user_id.isdigit():
-              raise SystemExit("Invalid Threads user ID")
-
-          print("")
-          print("=== Threads Account ===")
+          print("=== CareerPick Threads ID Diagnosis ===")
           print("Username:", username)
-          print("THREADS_USER_ID:", user_id)
-          print("Account check completed successfully")
+          print("API account ID:", actual_id)
+          print("Configured ID length:", len(configured_id))
+          print("API ID length:", len(actual_id))
+          print("Exact match:", actual_id == configured_id)
+          print("Trimmed match:", actual_id == configured_id.strip())
 
-          # 2. Threads API 권한 확인
-          print("")
-          print("=== Token Permission Check ===")
+          if actual_id == configured_id:
+              print("RESULT: MATCH")
+          elif actual_id == configured_id.strip():
+              print("RESULT: WHITESPACE ISSUE")
+          else:
+              print("RESULT: ID MISMATCH")
+              print("Configured ID differs from API account ID")
 
-          permissions_url = (
-              "https://graph.threads.net/v1.0/me/permissions"
-          )
-
-          permissions_request = urllib.request.Request(
-              permissions_url,
-              headers={
-                  "Authorization": "Bearer " + token,
-                  "Accept": "application/json"
-              }
-          )
-
-          try:
-              with urllib.request.urlopen(
-                  permissions_request,
-                  timeout=20
-              ) as response:
-                  permissions = json.load(response)
-
-              permission_list = permissions.get("data", [])
-
-              if not permission_list:
-                  print("No permission data returned")
-
-              for item in permission_list:
-                  permission = item.get("permission", "unknown")
-                  status = item.get("status", "unknown")
-                  print(f"{permission}: {status}")
-
-              granted = {
-                  item.get("permission")
-                  for item in permission_list
-                  if item.get("status") == "granted"
-              }
-
-              print("")
-              print("=== Permission Summary ===")
-
-              if "threads_basic" in granted:
-                  print("threads_basic: GRANTED")
-              else:
-                  print("threads_basic: NOT CONFIRMED")
-
-              if "threads_content_publish" in granted:
-                  print("threads_content_publish: GRANTED")
-              else:
-                  print("threads_content_publish: NOT CONFIRMED")
-
-          except urllib.error.HTTPError as exc:
-              print("Permission check HTTP error:", exc.code)
-              print("Permission endpoint may be unavailable")
-          except Exception as exc:
-              print(
-                  "Permission check unavailable:",
-                  type(exc).__name__
-              )
-
-          # 3. 결과 안내
-          print("")
-          print("=== Final Result ===")
-          print("Threads account verification completed")
           print("No Threads posts were created")
-          print("Check the permission results above")
           PY
