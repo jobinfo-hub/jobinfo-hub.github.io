@@ -4,6 +4,10 @@ on:
     paths:
       - '.github/workflows/public-job-page-smoke.yml'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/public-job-page-smoke.yml'
   workflow_run:
     workflows: ['CareerPick rebuild static job pages']
     types: [completed]
@@ -73,4 +77,22 @@ jobs:
                       time.sleep(30)
           else:
               raise SystemExit(f'Public deployment check failed for {url}: {last_error}')
+          # Also verify the updated official-link help on the published ALIO example.
+          guidance_url = 'https://jobinfo-hub.github.io/jobs/a306101.html'
+          for attempt in range(5):
+              try:
+                  with urlopen(Request(guidance_url, headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
+                      guidance_html = response.read(300000).decode('utf-8', errors='replace')
+                  if '실시간 접속 상태를 보증하지 않습니다' not in guidance_html:
+                      raise RuntimeError('Published page missing new official-link guidance')
+                  if 'ALIO 원본에서 공고 확인' not in guidance_html:
+                      raise RuntimeError('Published page missing ALIO fallback')
+                  print('Public page contains updated official-link guidance:', guidance_url)
+                  break
+              except (URLError, HTTPError, TimeoutError, RuntimeError) as exc:
+                  print(f'Guidance check attempt {attempt + 1}/5: {type(exc).__name__}: {exc}')
+                  if attempt < 4:
+                      time.sleep(30)
+          else:
+              raise SystemExit('Updated official-link guidance is not yet publicly served')
           PY
