@@ -170,7 +170,7 @@ def markdown_summary(report):
         '개별 공고 ID 및 오류 내용은 업로드된 JSON 보고서를 확인하세요.',
         '',
     ])
-    return '\\n'.join(lines)
+    return '\n'.join(lines)
 
 
 def main():
