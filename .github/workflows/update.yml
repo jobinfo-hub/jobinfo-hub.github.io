@@ -118,6 +118,18 @@ jobs:
         continue-on-error: true
         run: python scripts/check_api_freshness.py
 
+      - name: API 데이터 상태를 실행 요약에 기록
+        if: always()
+        shell: bash
+        run: |
+          echo '## ALIO·큐넷 데이터 상태' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '아래 검사는 로컬 JSON 스냅샷 기준이며 실제 API 호출 성공을 보증하지 않습니다.' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '\`\`\`text' >> "$GITHUB_STEP_SUMMARY"
+          python scripts/check_api_freshness.py >> "$GITHUB_STEP_SUMMARY" 2>&1 || true
+          echo '\`\`\`' >> "$GITHUB_STEP_SUMMARY"
+
       - name: 데이터 최신성 경고 표시
         if: steps.api_freshness.outcome == 'failure'
         run: echo '::warning title=API 데이터 최신성 확인 필요::ALIO 또는 큐넷 데이터가 오래되었거나 비어 있습니다. API 응답 및 수집 로그를 확인하세요.'
