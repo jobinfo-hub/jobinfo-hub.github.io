@@ -36,6 +36,8 @@ jobs:
         run: python scripts/build_job_pages.py
       - name: Repair institution links to existing job pages
         run: python scripts/fix_org_job_links.py
+      - name: Explain institution ALIO source date ranges
+        run: python scripts/annotate_org_source_window.py
       - name: Update sitemap from generated job pages
         run: python scripts/build_sitemap.py
       - name: Validate sitemap job URL integrity
