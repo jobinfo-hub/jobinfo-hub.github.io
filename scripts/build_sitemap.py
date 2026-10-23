@@ -62,6 +62,19 @@ def main():
         for page in guide_files if page.is_file()
     }
 
+    # Prune removed first-party guides; keep unrelated sitemap entries intact.
+    for entry in list(root.findall(TAG("url"))):
+        loc = entry.findtext(TAG("loc"), default="").strip()
+        parsed = urlparse(loc)
+        if (
+            parsed.scheme == "https"
+            and parsed.netloc == "jobinfo-hub.github.io"
+            and parsed.path.startswith("/guides/")
+            and loc not in guide_urls
+        ):
+            root.remove(entry)
+            existing.discard(loc)
+
     added = 0
     today = date.today().isoformat()
 
