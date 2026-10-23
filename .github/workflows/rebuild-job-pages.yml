@@ -49,7 +49,16 @@ jobs:
           listed = {unquote(urlsplit(u).path).removeprefix('/') for u in urls if urlsplit(u).path.startswith('/jobs/')}
           generated = {p.as_posix() for p in Path('jobs').glob('a[0-9]*.html') if p.stem[1:].isdigit()}
           assert listed == generated, f'Sitemap job mismatch: missing={sorted(generated-listed)[:5]} stale={sorted(listed-generated)[:5]}'
-          print(f'Sitemap integrity PASS: {len(urls)} URLs, {len(listed)} job pages, no duplicates')
+          from urllib.parse import quote
+          other_urls = [u for u in urls if not urlsplit(u).path.startswith('/jobs/')]
+          missing = []
+          for url in other_urls:
+              path = unquote(urlsplit(url).path).lstrip('/')
+              file_path = Path(path, 'index.html') if not path or path.endswith('/') else Path(path)
+              if not file_path.is_file():
+                  missing.append(url)
+          assert not missing, f'Sitemap URLs without local HTML files: {missing[:10]}'
+          print(f'Sitemap integrity PASS: {len(urls)} URLs, {len(listed)} job pages, {len(other_urls)} non-job files, no duplicates')
           PY
       - name: Verify ALIO fallback in a generated page
         run: |
