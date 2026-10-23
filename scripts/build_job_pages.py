@@ -738,6 +738,17 @@ def self_test():
         'src': 'https://job.alio.go.kr/example',
     }
     html = render(sample, {'aplyQlfcCn': '지원 자격 확인'})
+    # Structured-data regression: canonical, publisher, deadline and safe title.
+    schema_match = re.search(r'<script type="application/ld\\+json">(.*?)</script>', html, re.S)
+    assert schema_match, 'Active job must expose JobPosting JSON-LD'
+    schema_data = json.loads(schema_match.group(1))
+    assert schema_data['@type'] == 'JobPosting'
+    assert schema_data['title'] == sample['title']
+    assert schema_data['hiringOrganization']['name'] == sample['org']
+    assert schema_data['url'] == BASE + '/jobs/a12345.html'
+    assert schema_data['validThrough'], 'Active job must carry a known deadline'
+    assert '<script>test</script>' not in schema_match.group(1)
+    assert html.count('type="application/ld+json"') == 1
     for marker in (
         'id="job-summary"', 'id="job-checks"', 'id="job-duties"',
         'id="job-official"', 'href="#job-official"',
@@ -784,7 +795,7 @@ def self_test():
     sample['due'] = '2020-01-01'
     closed_html = render(sample, {})
     assert '접수 마감된 공고입니다' in closed_html
-    assert '"@type": "JobPosting"' not in closed_html
+    assert 'type="application/ld+json"' not in closed_html
     # 동일한 입력은 동일한 HTML을 생성해야 합니다.
     assert render(sample, {}) == closed_html
     print('CareerPick job-page regression checks: PASS')
