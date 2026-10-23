@@ -18,10 +18,10 @@ LINK = re.compile(r'href="jobs/(a[0-9]+)\.html"')
 FULL = re.compile(r'<!-- careerpick-alio-list:start -->(.*?)<!-- careerpick-alio-list:end -->', re.S)
 
 def normalized_org_name(name):
-    """For audit suggestions only; never automatically merge different entities."""
-    value = re.sub(r"\\s+", "", name)
-    value = re.sub(r"^\\(재\\)|^\\(주\\)|^㈜", "", value)
-    value = re.sub(r"\\(주\\)$|㈜$", "", value)
+    """Suggest likely page aliases without automatically equating institutions."""
+    value = re.sub(r"\s+", "", name)
+    value = re.sub(r"^(?:\(재\)|\(주\)|㈜)", "", value)
+    value = re.sub(r"(?:\(주\)|㈜)$", "", value)
     return value
 
 def main():
