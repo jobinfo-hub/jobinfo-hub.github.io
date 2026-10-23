@@ -184,16 +184,22 @@ def render(post, detail):
     ]
     # 직무 분류나 기관 유형만으로 NCS 필기시험 실시를 추정하지 않습니다.
     context = ' '.join((title, clean(post.get('desc')), qualification, process))
-    # 필기전형과 시험 과목이 같은 문단/인접 줄에 있는 경우만 인정합니다.
-    # 서류·면접의 직업기초역량 평가를 필기시험으로 오인하지 않습니다.
+    # 필기전형 및 같은 줄/인접 줄의 NCS 시험과목만 인정합니다.
+    # 서류·면접 단계의 직업기초능력 평가를 필기시험으로 오인하지 않습니다.
     process_lines = [line.strip() for line in process.splitlines() if line.strip()]
     ncs_exam_confirmed = False
     for index, line in enumerate(process_lines):
-        if not re.search(r'필기\\s*(?:전형|시험|평가|검사)', line):
+        written_stage = bool(re.search(r'필기\s*(?:전형|시험|평가|검사)', line))
+        # "NCS 직업기초능력 필기시험"처럼 과목이 먼저 나오는 경우
+        inline_exam = bool(re.search(
+            r'(?:NCS|직업\s*기초\s*능력)[^\n]{0,35}필기\s*(?:전형|시험|평가|검사)',
+            line, re.I
+        ))
+        if not (written_stage or inline_exam):
             continue
-        nearby = ' '.join(process_lines[index:index + 3])
-        nearby = re.split(r'(?:면접|서류)\\s*(?:전형|심사|평가)', nearby, maxsplit=1)[0]
-        if re.search(r'NCS|직업\\s*기초\\s*능력|직무공통능력검사', nearby, re.I):
+        nearby = ' '.join(process_lines[index:index + 3]) if written_stage else line
+        nearby = re.split(r'(?:면접|서류)\s*(?:전형|심사|평가)', nearby, maxsplit=1)[0]
+        if re.search(r'NCS|직업\s*기초\s*능력|직무공통능력검사', nearby, re.I):
             ncs_exam_confirmed = True
             break
     if ncs_exam_confirmed:
