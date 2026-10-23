@@ -4,6 +4,10 @@ on:
     paths:
       - '.github/workflows/public-job-page-smoke.yml'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/public-job-page-smoke.yml'
   workflow_run:
     workflows: ['CareerPick rebuild static job pages']
     types: [completed]
