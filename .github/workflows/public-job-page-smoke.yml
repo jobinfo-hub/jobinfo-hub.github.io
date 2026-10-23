@@ -31,7 +31,6 @@ jobs:
           print('Public smoke workflow PR validation: PASS')
           PY
       - name: Check published job HTML and fallback link
-        if: github.event_name != 'pull_request'
         env:
           PYTHONUNBUFFERED: '1'
         run: |
