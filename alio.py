@@ -156,7 +156,7 @@ def detail_of(it):
             continue
         if k.endswith("Cd") or k.endswith("CdLst") or (k.endswith("Lst") and not k.endswith("NmLst")):
             continue
-        out[k] = v[:3000]
+        out[k] = v  # 원문은 보존하고, 화면 표시 길이는 페이지 생성기에서 관리
     return out
 
 
