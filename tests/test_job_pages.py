@@ -40,6 +40,21 @@ class JobPageTests(unittest.TestCase):
         self.assertNotIn('<h2>지원 전 체크리스트</h2>', html)
         self.assertNotIn('<h2>공고 핵심정보</h2>', html)
 
+    def test_official_link_explains_application_site_difference(self):
+        html = render(self.post, {})
+        self.assertIn('공식 원문 및 지원 방법 확인', html)
+        self.assertIn('별도의 채용 접수 사이트로 이동해야 할 수 있습니다', html)
+        self.assertIn('공식 채용공고 열기', html)
+        self.assertIn('rel="noopener noreferrer"', html)
+
+    def test_missing_official_link_has_no_false_apply_button(self):
+        post = dict(self.post)
+        post.pop('src', None)
+        post.pop('url', None)
+        html = render(post, {})
+        self.assertIn('공식 링크를 확인할 수 없습니다', html)
+        self.assertNotIn('공식 채용공고 열기', html)
+
     def test_repeated_alio_title_not_rendered_as_detail(self):
         html = render(self.post, {
             'recrutPblntTtl': '채용 공고 테스트',
