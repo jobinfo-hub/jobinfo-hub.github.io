@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -361,7 +362,30 @@ def create_media(token, params):
     creation_id = container.get('id')
     if not creation_id:
         raise RuntimeError('Threads container ID missing')
-    published = api('POST', '/me/threads_publish', token, {'creation_id': creation_id})
+
+    # Image containers are asynchronous. Publishing immediately after creation
+    # can fail while Threads is still processing the media.
+    if params.get('media_type') == 'IMAGE':
+        for attempt in range(24):
+            status = api('GET', '/' + str(creation_id), token,
+                         {'fields': 'status,error_message'})
+            state = str(status.get('status', '')).upper()
+            print('Threads media processing:', state, f'({attempt + 1}/24)')
+            if state == 'FINISHED':
+                break
+            if state in ('ERROR', 'EXPIRED'):
+                raise RuntimeError(
+                    'Threads media processing failed: '
+                    + str(status.get('error_message') or state)
+                )
+            time.sleep(5)
+        else:
+            raise RuntimeError(
+                'Threads media processing timed out; do not publish prematurely'
+            )
+
+    published = api('POST', '/me/threads_publish', token,
+                    {'creation_id': creation_id})
     post_id = published.get('id')
     if not post_id:
         raise RuntimeError('Threads publish ID missing')
