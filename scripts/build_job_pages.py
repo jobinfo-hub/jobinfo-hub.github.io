@@ -541,7 +541,7 @@ def main():
     }
     report_path = ROOT / 'job-quality-report.json'
     report_path.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + '\\n',
+        json.dumps(report, ensure_ascii=False, indent=2) + '\n',
         encoding='utf-8',
     )
     print(f'채용공고 품질 보고서: {report_path.name}')
