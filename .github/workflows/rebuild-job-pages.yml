@@ -10,6 +10,7 @@ on:
       - 'scripts/annotate_org_source_window.py'
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/mark_expired_org_jobs.py'
+      - 'scripts/test_mark_expired_org_jobs.py'
       - '.github/workflows/rebuild-job-pages.yml'
   push:
     branches: [main]
@@ -19,6 +20,7 @@ on:
       - 'scripts/annotate_org_source_window.py'
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/mark_expired_org_jobs.py'
+      - 'scripts/test_mark_expired_org_jobs.py'
       - '.github/workflows/rebuild-job-pages.yml'
 jobs:
   rebuild:
@@ -45,6 +47,8 @@ jobs:
         run: python scripts/fix_org_job_links.py
       - name: Explain institution ALIO source date ranges
         run: python scripts/annotate_org_source_window.py
+      - name: Test institution expired-deadline labeling
+        run: python scripts/test_mark_expired_org_jobs.py
       - name: Mark institution listings past stored deadlines
         run: python scripts/mark_expired_org_jobs.py
       - name: Audit institution recruitment deadlines
