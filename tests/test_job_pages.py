@@ -30,6 +30,13 @@ class JobPageTests(unittest.TestCase):
         html = render(self.post, collected)
         self.assertIn('이 항목은 원문이 길어 일부만 표시됩니다', html)
 
+    def test_official_duties_checklist_does_not_invent_job_description(self):
+        html = render(self.post, {'aplyQlfcCn': '자격요건 원문'})
+        self.assertIn('실제 담당업무는 어디서 확인하나요?', html)
+        self.assertIn('직무기술서 또는 모집분야별 설명', html)
+        self.assertIn('공식 문의처에 확인하세요', html)
+        self.assertIn('공고별 업무를 추정한 설명이 아니라', html)
+
     def test_correction_notice_guide_is_linked(self):
         html = render(self.post, {})
         self.assertIn('/guides/recruitment-corrections-guide.html', html)
