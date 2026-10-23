@@ -444,6 +444,7 @@ def main():
 
     # 자동 품질 보고서: 검색 노출이나 채용공고 생성 여부는 변경하지 않습니다.
     quality_rows = []
+    detail_field_counts = {}
     # 1. 잡알리오 채용공고 상세페이지 생성
     for post in posts:
         if not isinstance(post, dict) or not post.get('alio'):
@@ -456,6 +457,10 @@ def main():
         job_detail = details.get(pid, {})
         if not isinstance(job_detail, dict):
             job_detail = {}
+        # 원본 API 상세 필드의 실제 제공률을 기록해 필드명 변경/누락을 탐지합니다.
+        for field, value in job_detail.items():
+            if clean(value):
+                detail_field_counts[field] = detail_field_counts.get(field, 0) + 1
         has_qualification = bool(clean(job_detail.get('aplyQlfcCn')))
         has_process = bool(clean(job_detail.get('recrutPrgsCn')))
         raw_desc = clean(post.get('desc'))
@@ -537,6 +542,10 @@ def main():
         'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'source': 'ALIO',
         'summary': quality,
+        'detail_field_counts': dict(sorted(
+            detail_field_counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )),
         'posts': quality_rows,
     }
     report_path = ROOT / 'job-quality-report.json'
@@ -545,6 +554,9 @@ def main():
         encoding='utf-8',
     )
     print(f'채용공고 품질 보고서: {report_path.name}')
+    print('ALIO 상세 필드 제공 건수:', json.dumps(
+        report['detail_field_counts'], ensure_ascii=False,
+    ))
 
     # 읽기 전용 진단: 기존 생성·게시·색인 동작은 변경하지 않습니다.
     print('채용공고 원본 데이터 품질 진단:', json.dumps(quality, ensure_ascii=False))
