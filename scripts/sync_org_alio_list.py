@@ -10,6 +10,8 @@ from pathlib import Path
 import json
 import re
 
+from audit_org_alio_coverage import normalized_org_name
+
 ROOT = Path(__file__).resolve().parent.parent
 KST = timezone(timedelta(hours=9))
 BLOCK = re.compile(r'(?:<h2 data-careerpick-alio-heading="true">📢 ALIO 수록 모집 공고</h2>)?\n?<!-- careerpick-alio-list:start -->.*?<!-- careerpick-alio-list:end -->', re.S)
@@ -35,13 +37,28 @@ def main():
         if not (ROOT / "jobs" / (job_id + ".html")).is_file():
             continue
         grouped[org].append((job_id, str(post.get("title", "")), due))
+    # Only map an ALIO institution to a page when its normalized name is unique.
+    pages = sorted(ROOT.glob("org-*.html"))
+    page_aliases = defaultdict(list)
+    for page in pages:
+        page_aliases[normalized_org_name(page.stem.removeprefix("org-"))].append(page.stem.removeprefix("org-"))
+    mapped = defaultdict(list)
+    ambiguous = []
+    for org, posts in grouped.items():
+        candidates = page_aliases.get(normalized_org_name(org), [])
+        if len(candidates) == 1:
+            mapped[candidates[0]].extend(posts)
+        elif len(candidates) > 1:
+            ambiguous.append((org, candidates))
+    for org, candidates in ambiguous:
+        print(f"AMBIGUOUS ALIO ORG: {org}: {', '.join(candidates)}")
     updated_pages = 0
     listings = 0
-    for page in sorted(ROOT.glob("org-*.html")):
+    for page in pages:
         original = page.read_text(encoding="utf-8")
         html = BLOCK.sub("", original)
         org = page.stem.removeprefix("org-")
-        posts = sorted(grouped.get(org, []), key=lambda item: (item[2], item[0]))
+        posts = sorted(mapped.get(org, []), key=lambda item: (item[2], item[0]))
         if not posts:
             if html != original:
                 page.write_text(html, encoding="utf-8")
@@ -77,7 +94,7 @@ def main():
             page.write_text(html, encoding="utf-8")
             updated_pages += 1
         listings += len(posts)
-    print(f"Institution complete ALIO lists: {updated_pages} pages updated, {listings} current ALIO job links shown across {len(grouped)} institutions")
+    print(f"Institution complete ALIO lists: {updated_pages} pages updated, {listings} current ALIO job links shown across {len(mapped)} matched institutions")
 
 if __name__ == "__main__":
     main()
