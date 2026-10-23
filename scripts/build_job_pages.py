@@ -739,7 +739,7 @@ def self_test():
     }
     html = render(sample, {'aplyQlfcCn': '지원 자격 확인'})
     # Structured-data regression: canonical, publisher, deadline and safe title.
-    schema_match = re.search(r'<script type="application/ld\\+json">(.*?)</script>', html, re.S)
+    schema_match = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
     assert schema_match, 'Active job must expose JobPosting JSON-LD'
     schema_data = json.loads(schema_match.group(1))
     assert schema_data['@type'] == 'JobPosting'
