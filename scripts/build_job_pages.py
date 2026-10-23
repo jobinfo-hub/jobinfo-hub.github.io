@@ -257,7 +257,7 @@ def render(post, detail):
     # 실제 담당업무는 ALIO 직무 분류만으로 추정할 수 없습니다.
     # 공식 공고/첨부 직무기술서에서 직접 확인할 질문을 안내합니다.
     duties_checklist_html = (
-        '<section aria-label="실제 담당업무 확인 안내">'
+        '<section id="job-duties" aria-label="실제 담당업무 확인 안내">'
         '<h2>실제 담당업무는 어디서 확인하나요?</h2>'
         '<p>현재 수집된 ALIO 데이터에는 실제 수행 업무를 설명하는 독립적인 항목이 없습니다. '
         '직무 분류만으로 담당업무나 근무 조건을 단정하지 마세요.</p>'
@@ -276,6 +276,7 @@ def render(post, detail):
     )
 
     extra = ''
+    detail_anchors = []
     if isinstance(detail, dict):
         for key, label in DETAIL_LABELS.items():
             val = detail.get(key)
@@ -284,8 +285,10 @@ def render(post, detail):
                 # 화면에는 최대 6,000자를 제공하고 초과 시 누락을 명시합니다.
                 visible = val[:6000]
                 truncated = len(val) > len(visible)
+                anchor = 'detail-' + key.lower()
+                detail_anchors.append((anchor, label))
                 extra += (
-                    f'<section><h2>{escape(label)}</h2>'
+                    f'<section id="{anchor}"><h2>{escape(label)}</h2>'
                     f'<div class="detail-text">{escape(visible)}</div>'
                     + (
                         '<p class="source-note">이 항목은 원문이 길어 일부만 표시됩니다. '
@@ -294,6 +297,25 @@ def render(post, detail):
                     )
                     + '</section>'
                 )
+
+    toc_items = [
+        ('job-summary', '모집 요약'),
+        ('job-checks', '지원 전 확인'),
+        ('job-duties', '담당업무 확인'),
+        ('job-official', '공식 공고'),
+    ] + detail_anchors
+    toc_html = (
+        '<nav class="job-toc" aria-label="채용공고 목차"><strong>목차 · 빠른 이동</strong><div>'
+        + ''.join(f'<a href="#{escape(anchor, quote=True)}">{escape(label)}</a>' for anchor, label in toc_items)
+        + '</div></nav>'
+    )
+    source_stamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+    # 공고 원문 자체의 갱신일이 아닌 정적 페이지 생성 시각입니다.
+    source_html = (
+        '<p class="source-meta">자료 출처: ALIO 제공 데이터 · 페이지 생성: '
+        + escape(source_stamp)
+        + ' · 최신 변경사항은 공식 공고에서 확인</p>'
+    )
 
     # 공고마다 고유한 확인 가능 정보로 설명을 구성합니다.
     # 직무 분류처럼 짧은 원본 설명만으로는 채용 내용을 설명하기 어렵습니다.
@@ -372,7 +394,7 @@ def render(post, detail):
     # 공식 원문 확인과 실제 지원 접수는 서로 다를 수 있습니다.
     # ALIO가 제공한 링크를 지원서 제출 URL로 오인하지 않도록 안내합니다.
     link = (
-        '<section aria-label="공식 채용공고 확인">'
+        '<section id="job-official" aria-label="공식 채용공고 확인">'
         '<h2>공식 원문 및 지원 방법 확인</h2>'
         '<p>지원 자격, 제출서류, 정확한 마감시각과 접수처는 공식 공고문을 기준으로 확인하세요. '
         '공식 공고 페이지에서 별도의 채용 접수 사이트로 이동해야 할 수 있습니다.</p>'
@@ -434,6 +456,13 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 .guide-links{{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}}
 .guide-links a{{padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;text-decoration:none}}
 .apply{{margin:12px 0}}
+.job-toc{{margin:18px 0;padding:15px;background:#f1f5ff;border:1px solid #dbe4ff;border-radius:12px}}
+.job-toc strong{{display:block;margin-bottom:9px}}
+.job-toc div{{display:flex;flex-wrap:wrap;gap:8px}}
+.job-toc a{{background:#fff;border:1px solid #c7d2fe;border-radius:999px;padding:7px 11px;text-decoration:none;font-size:13px;font-weight:700}}
+.source-meta{{font-size:12px;color:#475569;border-left:3px solid #1f3fbf;padding:8px 12px;background:#f8fafc}}
+html{{scroll-behavior:smooth}}
+section[id],h2[id]{{scroll-margin-top:20px}}
 @media(max-width:480px){{dl{{grid-template-columns:1fr;gap:0}}dt{{border:0;padding-bottom:0}}dd{{padding-top:0}}}}
 @media(max-width:760px){{main{{margin:0;border-radius:0;padding:20px}}h1{{font-size:1.4rem}}section h2{{font-size:1.2rem}}.apply{{display:block;text-align:center;overflow-wrap:anywhere}}.guide-links a{{flex:1 1 auto;text-align:center}}}}
 </style>
@@ -445,12 +474,14 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 <p class="muted">공공기관 채용정보</p>
 <h1>{escape(title)}</h1>
 <p>{escape(org)}</p>
+{source_html}
 {notice}
+{toc_html}
 <h2 id="job-summary">모집 요약</h2>
 <dl>{rows}</dl>
 
 {f'<section><h2>직무 분류</h2><p>{escape(desc)}</p><p class="muted">직무 분류는 실제 담당업무 설명이 아닙니다. 세부 직무는 공식 공고를 확인하세요.</p></section>' if is_category_only else ''}
-<section aria-label="지원 전 핵심 확인사항">
+<section id="job-checks" aria-label="지원 전 핵심 확인사항">
 <h2>지원 전 핵심 확인사항</h2>
 <ul class="checks">{checks}</ul>
 </section>
