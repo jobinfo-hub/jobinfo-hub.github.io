@@ -86,6 +86,15 @@ class JobPageTests(unittest.TestCase):
         self.assertIn('이 항목은 원문이 길어 일부만 표시됩니다', html)
         self.assertIn('전체 내용은 반드시 공식 채용공고에서 확인하세요', html)
 
+    def test_disqualification_field_is_rendered(self):
+        html = render(self.post, {'disqlfcRsn': '결격사유 원문 확인'})
+        self.assertIn('<h2>결격사유</h2>', html)
+        self.assertIn('결격사유 원문 확인', html)
+
+    def test_disqualification_field_is_not_fabricated(self):
+        html = render(self.post, {})
+        self.assertNotIn('<h2>결격사유</h2>', html)
+
     def test_missing_details_are_not_invented(self):
         html = render(self.post, {})
         self.assertIn('상세 자격·전형 데이터가 제공되지 않았습니다', html)
