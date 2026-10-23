@@ -35,6 +35,22 @@ jobs:
         run: python scripts/build_job_pages.py
       - name: Update sitemap from generated job pages
         run: python scripts/build_sitemap.py
+      - name: Validate sitemap job URL integrity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlsplit, unquote
+          import xml.etree.ElementTree as ET
+          root = ET.parse('sitemap.xml').getroot()
+          ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+          urls = [e.text.strip() for e in root.findall('s:url/s:loc', ns) if e.text]
+          assert len(urls) == len(set(urls)), 'Duplicate sitemap URLs'
+          assert all(urlsplit(u).scheme == 'https' and urlsplit(u).netloc == 'jobinfo-hub.github.io' for u in urls), 'Unexpected sitemap host or scheme'
+          listed = {unquote(urlsplit(u).path).removeprefix('/') for u in urls if urlsplit(u).path.startswith('/jobs/')}
+          generated = {p.as_posix() for p in Path('jobs').glob('a[0-9]*.html') if p.stem[1:].isdigit()}
+          assert listed == generated, f'Sitemap job mismatch: missing={sorted(generated-listed)[:5]} stale={sorted(listed-generated)[:5]}'
+          print(f'Sitemap integrity PASS: {len(urls)} URLs, {len(listed)} job pages, no duplicates')
+          PY
       - name: Verify ALIO fallback in a generated page
         run: |
           python - <<'PY'
