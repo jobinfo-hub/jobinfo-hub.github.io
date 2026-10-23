@@ -1,0 +1,54 @@
+name: CareerPick public job page smoke
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '13 3 * * *'
+jobs:
+  check-public-pages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check published job HTML and fallback link
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.error import URLError, HTTPError
+          from scripts.build_job_pages import safe_url
+          data = json.loads(Path('alio.json').read_text(encoding='utf-8'))
+          candidates = [p for p in data.get('posts', []) if isinstance(p, dict)
+              and p.get('alio') and safe_url(p.get('src')) and safe_url(p.get('url'))
+              and safe_url(p.get('src')) != safe_url(p.get('url'))]
+          if not candidates:
+              print('No eligible distinct official/ALIO URLs; skip')
+              raise SystemExit(0)
+          target = next((p for p in candidates if Path('jobs', str(p.get('id')) + '.html').exists()), None)
+          if target is None:
+              raise SystemExit('No generated candidate HTML found')
+          from urllib.parse import quote
+          url = 'https://jobinfo-hub.github.io/jobs/' + quote(str(target['id']), safe='') + '.html'
+          last_error = None
+          for attempt in range(3):
+              try:
+                  with urlopen(Request(url, headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
+                      html = response.read(300000).decode('utf-8', errors='replace')
+                  if 'ALIO 원본에서 공고 확인' not in html:
+                      raise RuntimeError('Public page missing ALIO fallback link')
+                  print('Public page contains ALIO fallback:', url)
+                  break
+              except (URLError, HTTPError, TimeoutError, RuntimeError) as exc:
+                  last_error = exc
+                  if attempt < 2:
+                      time.sleep(15)
+          else:
+              raise SystemExit(f'Public deployment check failed for {url}: {last_error}')
+          PY
