@@ -79,6 +79,19 @@ class JobPageTests(unittest.TestCase):
         self.assertIn('상세 자격·전형 데이터가 제공되지 않았습니다', html)
         self.assertNotIn('관련 자격증 필수', html)
 
+    def test_ncs_classification_alone_does_not_imply_written_exam(self):
+        post = dict(self.post, title='공공기관 NCS 직무 채용', desc='NCS 경영·사무 직무 분류')
+        html = render(post, {'scrnprcdrMthdExpln': '서류전형 후 면접'})
+        self.assertNotIn('NCS 4주 학습 계획', html)
+
+    def test_ncs_written_exam_in_selection_process_shows_guide(self):
+        html = render(self.post, {'scrnprcdrMthdExpln': '서류심사 → NCS 직업기초능력 필기시험 → 면접'})
+        self.assertIn('NCS 4주 학습 계획', html)
+
+    def test_generic_written_exam_does_not_imply_ncs(self):
+        html = render(self.post, {'scrnprcdrMthdExpln': '서류심사 → 전공 필기시험 → 면접'})
+        self.assertNotIn('NCS 4주 학습 계획', html)
+
     def test_long_ncs_classification_is_not_presented_as_job_duties(self):
         post = dict(
             self.post,
