@@ -331,13 +331,22 @@ def render(post, detail):
         else '<p>공식 지원 링크를 확인 중입니다.</p>'
     )
 
+    meta_parts = [org, title]
+    if post.get('region'):
+        meta_parts.append('근무지역 ' + clean(post['region']))
+    if post.get('emp'):
+        meta_parts.append('고용형태 ' + clean(post['emp']))
+    if due:
+        meta_parts.append('접수마감 ' + date_label(due))
+    meta_description = ' | '.join(meta_parts)[:155]
+
     return f'''<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{escape(title)} | {escape(org)} | 커리어픽</title>
-<meta name="description" content="{escape((org+' '+title+' 모집정보, 지원자격 및 접수마감 확인')[:155], quote=True)}">
+<meta name="description" content="{escape(meta_description, quote=True)}">
 <link rel="canonical" href="{escape(canonical, quote=True)}">
 <meta property="og:type" content="article">
 <meta property="og:title" content="{escape(title, quote=True)}">
@@ -401,6 +410,10 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 {guide_links}
 </section>
 <a href="/">다른 채용공고 찾아보기</a>
+<footer aria-label="사이트 안내">
+<p class="muted">커리어픽은 공식 채용공고를 안내하는 정보 서비스이며, 채용기관을 대신해 지원서를 접수하지 않습니다.</p>
+<nav class="guide-links" aria-label="사이트 정책 및 연락처"><a href="/about.html">사이트 소개</a><a href="/privacy.html">개인정보처리방침</a><a href="/contact.html">문의하기</a></nav>
+</footer>
 </main>
 </body>
 </html>'''
