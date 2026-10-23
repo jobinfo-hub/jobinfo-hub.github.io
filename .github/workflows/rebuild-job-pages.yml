@@ -1,0 +1,68 @@
+name: CareerPick rebuild static job pages
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 1 * * *'
+  pull_request:
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/rebuild-job-pages.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/rebuild-job-pages.yml'
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: careerpick-job-page-rebuild
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run offline generator regression checks
+        run: python scripts/build_job_pages.py --self-test
+      - name: Regenerate job pages from committed ALIO data
+        run: python scripts/build_job_pages.py
+      - name: Verify ALIO fallback in a generated page
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.build_job_pages import safe_url
+          posts = json.loads(Path('alio.json').read_text(encoding='utf-8')).get('posts', [])
+          candidates = [
+              p for p in posts
+              if isinstance(p, dict) and p.get('alio')
+              and safe_url(p.get('src')) and safe_url(p.get('url'))
+              and safe_url(p.get('src')) != safe_url(p.get('url'))
+          ]
+          if not candidates:
+              print('No ALIO fallback candidates in current data')
+          else:
+              p = next((x for x in candidates if Path('jobs', x['id'] + '.html').exists()), None)
+              if p is None:
+                  raise SystemExit('Expected generated page not found')
+              page = Path('jobs', p['id'] + '.html').read_text(encoding='utf-8')
+              assert 'ALIO 원본에서 공고 확인' in page, p['id']
+              print('Verified ALIO fallback in', p['id'])
+          PY
+      - name: Commit generated HTML only when changed
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add jobs/ job-quality-report.json
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+          else
+            git commit -m "chore: refresh static ALIO job pages [skip ci]"
+            git push
+          fi
