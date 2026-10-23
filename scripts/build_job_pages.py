@@ -36,7 +36,13 @@ def clean(value):
 def safe_url(value):
     value = clean(value)
     parsed = urlparse(value)
-    return value if parsed.scheme == 'https' and parsed.netloc else ''
+    # URL은 공식 링크 후보만 허용합니다. 자격증명·비표준 포트·내부 주소는 배제합니다.
+    host = (parsed.hostname or '').lower().rstrip('.')
+    if parsed.scheme != 'https' or not host or parsed.username or parsed.password or parsed.port not in (None, 443):
+        return ''
+    if host in ('localhost', '127.0.0.1', '0.0.0.0', '::1') or host.endswith(('.local', '.internal')):
+        return ''
+    return value
 
 
 def parse_date(value, end_of_day=False):
@@ -128,6 +134,7 @@ def render(post, detail):
         safe_url(post.get('src'))
         or safe_url(post.get('url'))
     )
+    # 허용 가능한 HTTPS 링크라는 뜻이지, 링크 응답이나 접수 가능성을 실시간 검증한 것은 아닙니다.
 
     fields = [
         ('기관명', org),
