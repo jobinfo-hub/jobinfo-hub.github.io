@@ -196,14 +196,9 @@ def render(post, detail):
         + '</nav>'
     )
     # 자료가 없는 공고에 사실처럼 보이는 직무 설명을 생성하지 않습니다.
-    raw_desc_for_quality = clean(post.get('desc'))
-    category_only_for_quality = (
-        bool(raw_desc_for_quality)
-        and len(raw_desc_for_quality) < 80
-        and (' · ' in raw_desc_for_quality or 'ㆍ' in raw_desc_for_quality)
-        and not any(mark in raw_desc_for_quality for mark in ('합니다', '담당', '수행', '업무내용'))
-    )
-    has_substantive_desc = len(raw_desc_for_quality) >= 25 and not category_only_for_quality
+    # ALIO desc는 alio.py에서 ncsCdNmLst로 생성된 직무 분류입니다.
+    # 글자 수나 구분자에 관계없이 실제 담당업무 설명으로 판단하지 않습니다.
+    has_substantive_desc = False
     if qualification and process:
         coverage_note = '지원 자격과 채용 절차 정보가 제공된 공고입니다.'
     elif qualification or process or has_substantive_desc:
@@ -258,10 +253,8 @@ def render(post, detail):
         f'모집인원: {clean(post.get("n"))}명.' if post.get('n') else '',
         f'접수마감: {date_label(due)}.' if due else '',
     ]
-    # ALIO의 직무 분류 문자열은 실제 담당업무 설명으로 취급하지 않습니다.
-    is_category_only = bool(desc) and len(desc) < 80 and (' · ' in desc or 'ㆍ' in desc) and not any(mark in desc for mark in ('합니다', '담당', '수행', '업무내용'))
-    if desc and len(desc) >= 25 and not is_category_only:
-        summary_parts.append(desc[:500])
+    # ALIO desc는 NCS 직무 분류이며 실제 담당업무가 아닙니다.
+    is_category_only = bool(desc)
     if qualification:
         summary_parts.append('지원자격: ' + qualification[:900])
     if process:
@@ -390,7 +383,7 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 {notice}
 <h2>모집 요약</h2>
 <dl>{rows}</dl>
-{f'<h2>공고 세부 요약</h2><p>{escape(desc[:500])}</p>' if desc and len(desc) >= 25 and not is_category_only else ''}
+
 {f'<section><h2>직무 분류</h2><p>{escape(desc)}</p><p class="muted">직무 분류는 실제 담당업무 설명이 아닙니다. 세부 직무는 공식 공고를 확인하세요.</p></section>' if is_category_only else ''}
 <section aria-label="지원 전 핵심 확인사항">
 <h2>지원 전 핵심 확인사항</h2>
@@ -480,9 +473,9 @@ def main():
                 detail_field_counts[field] = detail_field_counts.get(field, 0) + 1
         has_qualification = bool(clean(job_detail.get('aplyQlfcCn')))
         has_process = bool(clean(job_detail.get('scrnprcdrMthdExpln')))
-        raw_desc = clean(post.get('desc'))
-        category_only = bool(raw_desc) and len(raw_desc) < 80 and (' · ' in raw_desc or 'ㆍ' in raw_desc) and not any(mark in raw_desc for mark in ('합니다', '담당', '수행', '업무내용'))
-        has_description = len(raw_desc) >= 25 and not category_only
+        # ALIO desc는 NCS 분류이므로 직무설명 충실도로 집계하지 않습니다.
+        category_only = bool(clean(post.get('desc')))
+        has_description = False
         quality['with_category_only_description'] += int(category_only)
         has_official = bool(safe_url(post.get('src')) or safe_url(post.get('url')))
         quality['total'] += 1
