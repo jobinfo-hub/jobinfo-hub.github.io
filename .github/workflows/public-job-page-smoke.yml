@@ -96,3 +96,36 @@ jobs:
           else:
               raise SystemExit('Updated official-link guidance is not yet publicly served')
           PY
+
+      - name: Verify published sitemap and robots discovery
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python - <<'PY'
+          import time
+          import xml.etree.ElementTree as ET
+          from urllib.error import HTTPError, URLError
+          from urllib.request import Request, urlopen
+          base = 'https://jobinfo-hub.github.io'
+          expected = {base + '/jobs/a306101.html', base + '/jobs/a306139.html'}
+          for attempt in range(5):
+              try:
+                  with urlopen(Request(base + '/robots.txt', headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
+                      robots = response.read(20000).decode('utf-8', errors='replace')
+                  assert 'Sitemap: ' + base + '/sitemap.xml' in robots, 'robots.txt missing sitemap declaration'
+                  with urlopen(Request(base + '/sitemap.xml', headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
+                      xml_bytes = response.read(5000000)
+                  root = ET.fromstring(xml_bytes)
+                  ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+                  urls = [e.text.strip() for e in root.findall('s:url/s:loc', ns) if e.text]
+                  assert len(urls) == len(set(urls)), 'Published sitemap has duplicate URLs'
+                  assert expected.issubset(set(urls)), 'Published sitemap missing known job URLs'
+                  print(f'Public sitemap PASS: {len(urls)} URLs, both job URLs present, robots discovery valid')
+                  break
+              except (URLError, HTTPError, TimeoutError, ET.ParseError, AssertionError) as exc:
+                  print(f'Public sitemap attempt {attempt + 1}/5: {type(exc).__name__}: {exc}')
+                  if attempt < 4:
+                      time.sleep(30)
+          else:
+              raise SystemExit('Public sitemap or robots.txt verification failed')
+          PY
