@@ -1,0 +1,38 @@
+name: CareerPick official link audit
+on:
+  workflow_dispatch:
+    inputs:
+      sample_size:
+        description: 'Number of ALIO links to check (1-50)'
+        required: true
+        default: '20'
+        type: choice
+        options: ['10', '20', '50']
+  pull_request:
+    paths:
+      - 'scripts/audit_official_links.py'
+      - '.github/workflows/official-link-audit.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile audit script
+        run: python -m py_compile scripts/audit_official_links.py
+      - name: Run bounded read-only URL audit
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          SAMPLE_SIZE: ${{ inputs.sample_size }}
+        run: python scripts/audit_official_links.py --limit "$SAMPLE_SIZE"
+      - name: Upload diagnostic report
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: careerpick-official-link-audit
+          path: link-audit-results.json
+          retention-days: 7
