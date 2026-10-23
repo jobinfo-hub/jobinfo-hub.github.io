@@ -13,6 +13,7 @@ def main():
         jobs.mkdir()
         (root / "guides").mkdir()
         (root / "guides" / "index.html").write_text("<html></html>", encoding="utf-8")
+        (root / "guides" / "qualification-preference-guide.html").write_text("<html></html>", encoding="utf-8")
         (jobs / "a100.html").write_text("<html></html>", encoding="utf-8")
         (jobs / "a200.html").write_text("<html></html>", encoding="utf-8")
         site = root / "sitemap.xml"
@@ -35,6 +36,7 @@ def main():
             assert "https://jobinfo-hub.github.io/jobs/a100.html" in found
             assert "https://jobinfo-hub.github.io/jobs/a200.html" in found
             assert "https://jobinfo-hub.github.io/guides/" in found
+            assert "https://jobinfo-hub.github.io/guides/qualification-preference-guide.html" in found
             assert "https://jobinfo-hub.github.io/guides/removed.html" not in found
             assert len(found) == len(set(found))
             generator.main()
