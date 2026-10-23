@@ -254,6 +254,22 @@ def render(post, detail):
         + (f'<p class="source-note">공식 원문에서 추가 확인할 항목: {escape(", ".join(missing_facts))}</p>' if missing_facts else '')
         + '</section>'
     )
+    # 실제 담당업무는 ALIO 직무 분류만으로 추정할 수 없습니다.
+    # 공식 공고/첨부 직무기술서에서 직접 확인할 질문을 안내합니다.
+    duties_checklist_html = (
+        '<section aria-label="실제 담당업무 확인 안내">'
+        '<h2>실제 담당업무는 어디서 확인하나요?</h2>'
+        '<p>현재 수집된 ALIO 데이터에는 실제 수행 업무를 설명하는 독립적인 항목이 없습니다. '
+        '직무 분류만으로 담당업무나 근무 조건을 단정하지 마세요.</p>'
+        '<ol class="checks">'
+        '<li>아래 공식 채용공고를 열고 첨부된 직무기술서 또는 모집분야별 설명을 찾으세요.</li>'
+        '<li>담당업무·근무부서·근무장소와 교대근무 여부 등 실제 근무 조건을 확인하세요.</li>'
+        '<li>자격요건과 우대조건이 지원하려는 모집분야에 적용되는지 구분하세요.</li>'
+        '<li>직무기술서가 없거나 내용이 불명확하면 공고의 공식 문의처에 확인하세요.</li>'
+        '</ol>'
+        '<p class="source-note">이 안내는 공고별 업무를 추정한 설명이 아니라 공식 원문 확인을 돕는 점검표입니다.</p>'
+        '</section>'
+    )
     coverage_html = (
         '<section aria-label="공고 정보 제공 범위"><h2>공고 정보 제공 범위</h2>'
         f'<p class="source-note">{escape(coverage_note)}</p></section>'
@@ -439,6 +455,7 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 <ul class="checks">{checks}</ul>
 </section>
 {coverage_html}
+{duties_checklist_html}
 {completeness_html}
 {detail_status}
 {link}
