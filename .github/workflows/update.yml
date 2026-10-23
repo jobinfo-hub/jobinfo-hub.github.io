@@ -71,6 +71,10 @@ jobs:
       - name: 채용공고 상세페이지 자동 생성
         run: python scripts/build_job_pages.py
 
+      - name: 저장된 공고로 기관별 링크 복구 (API 실패 시에도 동작)
+        continue-on-error: true
+        run: python scripts/refresh_org_links.py
+
       - name: 사이트맵 자동 생성
         run: python scripts/build_sitemap.py
 
