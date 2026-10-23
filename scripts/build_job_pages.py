@@ -758,6 +758,16 @@ def self_test():
     assert duplicate_key({'org': 'A', 'title': '공고', 'due': '2099-01-01'}) != duplicate_key(
         {'org': 'A', 'title': '공고', 'due': '2099-01-02'}
     )
+    # 기관 공고와 ALIO 링크가 다를 때만 보조 경로를 표시합니다.
+    sample['src'] = 'https://agency.example.org/recruit/123'
+    sample['url'] = 'https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=123'
+    fallback_html = render(sample, {})
+    assert 'ALIO 원본에서 공고 확인' in fallback_html
+    assert 'https://agency.example.org/recruit/123' in fallback_html
+    sample['url'] = sample['src']
+    assert 'ALIO 원본에서 공고 확인' not in render(sample, {})
+    sample['url'] = 'javascript:alert(1)'
+    assert 'ALIO 원본에서 공고 확인' not in render(sample, {})
     # 공식 URL이 없거나 안전하지 않으면 지원 버튼을 만들지 않습니다.
     sample['src'] = 'https://192.168.1.2/private'
     sample['url'] = 'javascript:alert(1)'
