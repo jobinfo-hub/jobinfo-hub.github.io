@@ -44,7 +44,7 @@ def check_url(url):
             with opener.open(req, timeout=7) as response:
                 return {'status': 'responded', 'http_status': response.status, 'method': method}
         except HTTPError as exc:
-            if method == 'HEAD' and exc.code in (403, 405, 501):
+            if method == 'HEAD' and exc.code in (403, 404, 405, 410, 501):
                 continue
             return {'status': 'http_error_or_redirect', 'http_status': exc.code, 'method': method}
         except (URLError, TimeoutError, OSError, ValueError) as exc:
@@ -122,6 +122,17 @@ def self_test():
     assert all(row['id'] != 'x4' for row in rows)
     assert len(audit([], 20)) == 0
     assert triage({'status': 'http_error_or_redirect', 'http_status': 404}) == 'review_missing_page'
+    # HEAD 404 may be a false negative; confirm using GET before classifying.
+    from urllib.error import HTTPError
+    from unittest.mock import MagicMock
+    opener = MagicMock()
+    ok_response = MagicMock()
+    ok_response.__enter__.return_value.status = 200
+    opener.open.side_effect = [HTTPError('https://example.org', 404, 'Not Found', {}, None), ok_response]
+    with patch(__name__ + '.public_https', return_value=True), patch(__name__ + '.build_opener', return_value=opener):
+        confirmed = check_url('https://example.org/jobs')
+    assert confirmed == {'status': 'responded', 'http_status': 200, 'method': 'GET'}
+    assert opener.open.call_count == 2
     assert triage({'status': 'http_error_or_redirect', 'http_status': 403}) == 'access_restricted_or_rate_limited'
     assert triage({'status': 'http_error_or_redirect', 'http_status': 302}) == 'review_redirect_without_following'
     assert triage({'status': 'http_error_or_redirect', 'http_status': 503}) == 'retry_server_error'
