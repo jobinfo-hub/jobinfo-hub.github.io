@@ -408,8 +408,9 @@ def publish_post(record, history):
         if image_url and image_ready(image_url):
             print('Publishing image post')
             params = {'media_type': 'IMAGE', 'image_url': image_url, 'text': record['text']}
+        elif image_url:
+            raise RuntimeError('Public image not ready; preserve reservation and retry later')
         else:
-            print('Image unavailable; retaining existing text publishing fallback')
             params = {'media_type': 'TEXT', 'text': record['text']}
         post_id = create_media(token, params)
         record['status'] = 'published'
@@ -577,7 +578,8 @@ def main():
         for record in history['records']
     )
 
-    if daily >= MAX_DAILY or not chosen:
+    has_waiting = any(r.get('status') == 'pending' and r.get('image_url') and not r.get('threads_post_id') for r in history['records'])
+    if (daily >= MAX_DAILY and not has_waiting) or (not chosen and not has_waiting):
         print(
             f'No reservation. '
             f'Daily reserved: {daily}/{MAX_DAILY}; '
@@ -593,6 +595,19 @@ def main():
         raise RuntimeError(
             'GITHUB_RUN_ID is required for reservation'
         )
+
+    # Resume an unfinished image reservation rather than reserving another job.
+    waiting = [
+        r for r in history['records']
+        if r.get('status') == 'pending' and r.get('image_url')
+        and not r.get('threads_post_id')
+    ]
+    if waiting:
+        waiting.sort(key=lambda r: r.get('created_at', ''))
+        waiting[0]['run_id'] = run_id
+        save(history)
+        print('Retrying image reservation:', waiting[0]['job_id'])
+        return
 
     job = chosen[0]
 
