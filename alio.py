@@ -189,6 +189,14 @@ def main():
             done = False
         if len(rows) < PER_PAGE or done:
             break
+    # Never publish a truncated snapshot if the API reports more than our page cap.
+    try:
+        expected = int(total) if total is not None else None
+    except (TypeError, ValueError):
+        expected = None
+    if expected is not None and expected > len(items):
+        print(f"잡알리오 수집 불완전: 응답 {len(items)}건 / 전체 {expected}건. 기존 데이터를 유지합니다.")
+        return None
     posts, seen = [], set()
     bad = 0
     details = {}
