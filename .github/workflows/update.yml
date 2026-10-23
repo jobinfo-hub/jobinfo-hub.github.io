@@ -125,6 +125,27 @@ jobs:
           print("검증 성공")
           PY
 
+      - name: 기관별 채용 상세링크 검사 (경고 전용)
+        id: org_links
+        continue-on-error: true
+        run: python scripts/audit_org_links.py
+
+      - name: 기관별 링크 검사 결과를 실행 요약에 기록
+        if: always()
+        shell: bash
+        run: |
+          echo '## 기관별 채용 링크 점검' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '오류가 발견되더라도 기존 정기 수집 및 사이트 배포를 중단하지 않습니다.' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          python scripts/audit_org_links.py >> "$GITHUB_STEP_SUMMARY" 2>&1 || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 기관별 채용 링크 오류 경고 표시
+        if: steps.org_links.outcome == 'failure'
+        run: echo '::warning title=기관별 채용 링크 오류::기관별 페이지에서 누락된 상세페이지 또는 해시 링크가 발견됐습니다. 실행 요약을 확인하세요.'
+
       - name: ALIO·큐넷 데이터 최신성 검사 (경고 전용)
         id: api_freshness
         continue-on-error: true
