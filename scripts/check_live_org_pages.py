@@ -72,6 +72,21 @@ def verify_job_detail(block):
         raise RuntimeError(f"Public JobPosting URL mismatch: {url}")
     print(f"Live job detail PASS: {url}")
 
+def verify_live_search_files(root=None):
+    """Check deployed sitemap and robots against this exact checkout."""
+    root = root or Path(__file__).resolve().parent.parent
+    for name in ("sitemap.xml", "robots.txt"):
+        local = (root / name).read_bytes()
+        request = Request(urljoin(BASE, name), headers={
+            "User-Agent": "CareerPick-deployment-smoke-test/1.0",
+            "Cache-Control": "no-cache",
+        })
+        with urlopen(request, timeout=20) as response:
+            remote = response.read()
+            if response.status != 200 or remote != local:
+                raise RuntimeError(f"Public {name} differs from deployment")
+        print(f"Live {name} equality PASS")
+
 def main():
     expected = expected_block()
     for attempt in range(1, 9):
@@ -81,6 +96,7 @@ def main():
                 html = response.read().decode("utf-8")
                 if response.status == 200 and alio_block(html) == expected:
                     verify_job_detail(expected)
+                    verify_live_search_files()
                     print(f"Live Pages content equality PASS: {URL}, attempt {attempt}")
                     return
                 print(f"Attempt {attempt}: live institution ALIO block differs from this deployment")
