@@ -193,10 +193,14 @@ def render(post, detail):
         f'모집인원: {clean(post.get("n"))}명.' if post.get('n') else '',
         f'접수마감: {date_label(due)}.' if due else '',
     ]
-    if desc and len(desc) >= 25:
+    # ALIO의 직무 분류 문자열은 실제 담당업무 설명으로 취급하지 않습니다.
+    is_category_only = bool(desc) and len(desc) < 80 and (' · ' in desc or 'ㆍ' in desc) and not any(mark in desc for mark in ('합니다', '담당', '수행', '업무내용'))
+    if desc and len(desc) >= 25 and not is_category_only:
         summary_parts.append(desc[:500])
     if qualification:
         summary_parts.append('지원자격: ' + qualification[:900])
+    if process:
+        summary_parts.append('전형 절차: ' + process[:500])
     job_description = ' '.join(part for part in summary_parts if part)
 
     schema = {
@@ -312,7 +316,8 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 {notice}
 <h2>모집 요약</h2>
 <dl>{rows}</dl>
-{f'<h2>공고 세부 요약</h2><p>{escape(desc[:500])}</p>' if desc and len(desc) >= 25 else ''}
+{f'<h2>공고 세부 요약</h2><p>{escape(desc[:500])}</p>' if desc and len(desc) >= 25 and not is_category_only else ''}
+{f'<section><h2>직무 분류</h2><p>{escape(desc)}</p><p class="muted">직무 분류는 실제 담당업무 설명이 아닙니다. 세부 직무는 공식 공고를 확인하세요.</p></section>' if is_category_only else ''}
 <section aria-label="지원 전 핵심 확인사항">
 <h2>지원 전 핵심 확인사항</h2>
 <ul class="checks">{checks}</ul>
@@ -365,6 +370,7 @@ def main():
     created = 0
     quality = {
         'total': 0,
+        'with_category_only_description': 0,
         'with_qualification': 0,
         'with_process': 0,
         'with_both': 0,
@@ -387,7 +393,10 @@ def main():
             job_detail = {}
         has_qualification = bool(clean(job_detail.get('aplyQlfcCn')))
         has_process = bool(clean(job_detail.get('recrutPrgsCn')))
-        has_description = len(clean(post.get('desc'))) >= 25
+        raw_desc = clean(post.get('desc'))
+        category_only = bool(raw_desc) and len(raw_desc) < 80 and (' · ' in raw_desc or 'ㆍ' in raw_desc) and not any(mark in raw_desc for mark in ('합니다', '담당', '수행', '업무내용'))
+        has_description = len(raw_desc) >= 25 and not category_only
+        quality['with_category_only_description'] += int(category_only)
         has_official = bool(safe_url(post.get('src')) or safe_url(post.get('url')))
         quality['total'] += 1
         quality['with_qualification'] += int(has_qualification)
