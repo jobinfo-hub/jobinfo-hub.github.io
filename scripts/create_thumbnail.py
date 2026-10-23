@@ -56,11 +56,11 @@ def generate(job):
     d.text((75, 75), "CAREERPICK  |  채용정보", font=font(46), fill="white")
     d.text((65, 220), clean(job.get("org"))[:38], font=font(40), fill=blue)
     title = clean(job.get("title"))
-    lines = wrap(d, title, font(70), 950, 3)
+    lines = wrap(d, title, font(65), 950, 2)
     y = 300
     for line in lines:
-        d.text((65, y), line, font=font(70), fill=navy)
-        y += 92
+        d.text((65, y), line, font=font(65), fill=navy)
+        y += 90
     d.rounded_rectangle((45, 610, 1035, 925), radius=30, fill="white")
     count = job.get("count")
     count_text = f"{count}명" if isinstance(count, int) and not isinstance(count, bool) and count >= 0 else "공고 확인"
