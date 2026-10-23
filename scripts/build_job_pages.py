@@ -146,6 +146,34 @@ def render(post, detail):
         for k, v in fields
     )
 
+    # 표시하는 내용은 ALIO 원본 필드에 존재하는 사실만 사용합니다.
+    detail = detail if isinstance(detail, dict) else {}
+    qualification = clean(detail.get('aplyQlfcCn'))
+    process = clean(detail.get('recrutPrgsCn'))
+    check_items = [
+        ('지원 자격', '공고에 기재된 지원 자격을 확인하세요.' if qualification else '상세 자격조건은 공식 채용공고에서 확인하세요.'),
+        ('접수 마감', f'표시된 마감일은 {date_label(due)}입니다. 실제 마감시각과 접수방법은 공식 공고를 확인하세요.' if due else '공식 채용공고에서 접수기간과 마감시각을 확인하세요.'),
+        ('전형 절차', '아래 채용 절차 항목과 공식 공고의 최신 일정을 비교하세요.' if process else '서류·필기·면접 실시 여부와 일정은 공식 공고에서 확인하세요.'),
+    ]
+    checks = ''.join(
+        f'<li><strong>{escape(label)}</strong> — {escape(message)}</li>'
+        for label, message in check_items
+    )
+    detail_status = (
+        '<p class="source-note">ALIO에서 제공된 상세 자격·전형 정보를 아래에 표시합니다. '
+        '최종 지원 조건은 반드시 공식 원문을 기준으로 확인하세요.</p>'
+        if qualification or process
+        else '<p class="source-note">이 공고는 상세 자격·전형 데이터가 제공되지 않았습니다. '
+        '아래 공식 채용공고에서 첨부파일과 최신 안내를 확인하세요.</p>'
+    )
+    guide_links = (
+        '<nav class="guide-links" aria-label="관련 취업 준비 가이드">'
+        '<a href="/guides/application-checklist.html">지원 전 7가지 확인사항</a>'
+        '<a href="/guides/ncs-study-plan.html">NCS 4주 학습 계획</a>'
+        '<a href="/guides/self-introduction-star.html">STAR 자기소개서 작성법</a>'
+        '</nav>'
+    )
+
     extra = ''
     if isinstance(detail, dict):
         for key, label in DETAIL_LABELS.items():
@@ -168,10 +196,8 @@ def render(post, detail):
     ]
     if desc and len(desc) >= 25:
         summary_parts.append(desc[:500])
-    if isinstance(detail, dict):
-        qualification = clean(detail.get('aplyQlfcCn'))
-        if qualification:
-            summary_parts.append('지원자격: ' + qualification[:900])
+    if qualification:
+        summary_parts.append('지원자격: ' + qualification[:900])
     job_description = ' '.join(part for part in summary_parts if part)
 
     schema = {
@@ -264,6 +290,12 @@ a{{color:#1f3fbf}}
 dl{{display:grid;grid-template-columns:minmax(100px,145px) 1fr;gap:8px 12px}}
 dt,dd{{margin:0;padding:8px 0;border-bottom:1px solid #e5e7eb}}
 section p{{white-space:pre-line;overflow-wrap:anywhere}}
+.checks{{padding-left:22px}}
+.checks li{{margin:10px 0}}
+.source-note{{background:#f1f5f9;padding:12px 14px;border-radius:9px;color:#334155}}
+.guide-links{{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}}
+.guide-links a{{padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;text-decoration:none}}
+.apply{{margin:12px 0}}
 @media(max-width:480px){{dl{{grid-template-columns:1fr;gap:0}}dt{{border:0;padding-bottom:0}}dd{{padding-top:0}}}}
 @media(max-width:760px){{main{{margin:0;border-radius:0;padding:20px}}}}
 </style>
@@ -279,6 +311,11 @@ section p{{white-space:pre-line;overflow-wrap:anywhere}}
 <dl>{rows}</dl>
 <h2>공고 핵심정보</h2>
 <p>{escape(job_description[:1300])}</p>
+<section aria-label="지원 전 핵심 확인사항">
+<h2>지원 전 핵심 확인사항</h2>
+<ul class="checks">{checks}</ul>
+</section>
+{detail_status}
 {link}
 {extra}
 <hr>
@@ -291,6 +328,7 @@ section p{{white-space:pre-line;overflow-wrap:anywhere}}
 <h2>지원 전 체크리스트</h2>
 <p>채용공고의 필수 자격과 우대사항을 구분하고, 공식 원문에서 전형별 일정·증빙서류·접수 마감시각을 다시 확인하세요.</p>
 <p><a href="/guides/application-checklist.html">공공기관 채용 지원 전 확인할 7가지 →</a></p>
+{guide_links}
 </section>
 <a href="/">다른 채용공고 찾아보기</a>
 </main>
