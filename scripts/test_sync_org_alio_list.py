@@ -58,6 +58,12 @@ def main():
             generator.main()
             assert "jobs/a123.html" not in page.read_text(encoding="utf-8")
             assert "jobs/a123.html" not in duplicate.read_text(encoding="utf-8")
+            # Exact ALIO name must still resolve when alias-normalized pages collide.
+            data["posts"][0]["org"] = "시험기관"
+            (root / "alio.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            generator.main()
+            assert page.read_text(encoding="utf-8").count("jobs/a123.html") == 1
+            assert "jobs/a123.html" not in duplicate.read_text(encoding="utf-8")
     print("Institution ALIO list regression PASS: idempotent rebuild, expired removal, heading cleanup")
 
 if __name__ == "__main__":
