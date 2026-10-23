@@ -1,5 +1,5 @@
 """Check ALIO organization alias suggestions without conflating distinct names."""
-from audit_org_alio_coverage import normalized_org_name, main
+from audit_org_alio_coverage import normalized_org_name, main as audit_main
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -33,7 +33,7 @@ def main():
         ]}, ensure_ascii=False), encoding="utf-8")
         output = StringIO()
         with patch("audit_org_alio_coverage.ROOT", root), redirect_stdout(output):
-            main()
+            audit_main()
         assert "1 ambiguous (1 jobs)" in output.getvalue(), output.getvalue()
         assert "1 active jobs in ALIO snapshot" in output.getvalue(), output.getvalue()
     print("ALIO institution name normalization and resolution PASS")
