@@ -16,13 +16,15 @@ def check_page(page, root=ROOT):
         link = urlsplit(href)
         if link.scheme or link.netloc:
             continue
-        if link.fragment.startswith("job="):
-            job_id = unquote(link.fragment[4:])
+        fragment = unquote(link.fragment)
+        if fragment.startswith("job="):
+            job_id = fragment[4:]
             if JOB_ID.fullmatch(job_id):
                 errors.append(f"{page.name}: ALIO job {job_id} uses homepage hash instead of static detail page")
         path = unquote(link.path)
-        if path.startswith("jobs/") and JOB_ID.fullmatch(Path(path).stem) and path.endswith(".html"):
-            if not (root / path).is_file():
+        normalized = path.removeprefix("./")
+        if normalized.startswith("jobs/") and JOB_ID.fullmatch(Path(normalized).stem) and normalized.endswith(".html"):
+            if not (root / normalized).is_file():
                 errors.append(f"{page.name}: missing static job detail {path}")
     return errors
 
