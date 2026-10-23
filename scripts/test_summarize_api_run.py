@@ -5,6 +5,7 @@ def main():
     assert classify("ALIO_KEY 가 없어 잡알리오 연동을 건너뜁니다.")[0].startswith("SKIPPED")
     assert classify("잡알리오 요청 실패: timeout\n잡알리오 변경 없음")[0].startswith("ERROR")
     assert classify("잡알리오 변경 없음")[0].startswith("SUCCESS")
+    assert classify("잡알리오 수집 불완전: 응답 1000건 / 전체 1200건. 기존 데이터를 유지합니다.")[0].startswith("ERROR")
     assert classify("alio.json 갱신: 모집 중 공식 공고 4건")[0].startswith("SUCCESS")
     assert classify("가져온 공고가 없어 기존 alio.json 을 유지합니다.")[0].startswith("WARNING")
     assert classify("qnet.json 갱신: 시험 회차 30건")[1].startswith("SUCCESS")
