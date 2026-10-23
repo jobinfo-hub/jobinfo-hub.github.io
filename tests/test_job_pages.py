@@ -35,6 +35,14 @@ class JobPageTests(unittest.TestCase):
         self.assertNotIn('<h2>지원 전 체크리스트</h2>', html)
         self.assertNotIn('<h2>공고 핵심정보</h2>', html)
 
+    def test_multiline_details_preserved(self):
+        html = render(self.post, {
+            'aplyQlfcCn': '1. 필수 조건\\n2. 우대 조건',
+        })
+        self.assertIn('class="detail-text"', html)
+        self.assertIn('1. 필수 조건\\n2. 우대 조건', html)
+        self.assertIn('white-space:pre-wrap', html)
+
     def test_missing_details_are_not_invented(self):
         html = render(self.post, {})
         self.assertIn('상세 자격·전형 데이터가 제공되지 않았습니다', html)
