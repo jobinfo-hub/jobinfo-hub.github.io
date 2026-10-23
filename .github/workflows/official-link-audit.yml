@@ -30,9 +30,9 @@ jobs:
       - name: Run offline audit regression checks
         run: python scripts/audit_official_links.py --self-test
       - name: Run bounded read-only URL audit
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || github.event_name == 'pull_request' || github.event_name == 'pull_request'
         env:
-          SAMPLE_SIZE: ${{ github.event_name == 'schedule' && '20' || inputs.sample_size }}
+          SAMPLE_SIZE: ${{ github.event_name == 'pull_request' && '10' || (github.event_name == 'schedule' && '20' || inputs.sample_size) }}
           AUDIT_MODE: ${{ github.event_name }}
         run: |
           if [ "$AUDIT_MODE" = 'schedule' ]; then
@@ -41,10 +41,10 @@ jobs:
             python scripts/audit_official_links.py --limit "$SAMPLE_SIZE"
           fi
       - name: Show Korean audit summary
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || github.event_name == 'pull_request'
         run: cat link-audit-summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload diagnostic report
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: careerpick-official-link-audit
