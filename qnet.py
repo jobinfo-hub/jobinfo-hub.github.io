@@ -78,9 +78,11 @@ class IncompleteQnetResponse(RuntimeError):
 
 
 def collect(key, year, gb):
-    rows, page = [], 1
+    rows, page, reported_total = [], 1, None
     while page <= 6:
         items, total = ask(key, year, gb, page)
+        if total is not None and reported_total is None:
+            reported_total = total
         rows += items
         try:
             if len(items) < 50 or (total and len(rows) >= int(total)):
@@ -90,7 +92,7 @@ def collect(key, year, gb):
         page += 1
     # Reject incomplete pagination rather than replacing a complete daily cache.
     try:
-        expected = int(total) if total is not None else None
+        expected = int(reported_total) if reported_total is not None else None
     except (TypeError, ValueError):
         expected = None
     if expected is not None and expected > len(rows):
