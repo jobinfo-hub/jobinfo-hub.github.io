@@ -55,6 +55,8 @@ def main():
             # Avoid silently merging if more than one page normalizes to the same name.
             duplicate = root / "org-(주)시험기관.html"
             duplicate.write_text(original, encoding="utf-8")
+            data["posts"][0]["org"] = "㈜시험기관"
+            (root / "alio.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
             generator.main()
             assert "jobs/a123.html" not in page.read_text(encoding="utf-8")
             assert "jobs/a123.html" not in duplicate.read_text(encoding="utf-8")
