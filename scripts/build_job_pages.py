@@ -195,6 +195,10 @@ def render(post, detail):
             r'(?:NCS|직업\s*기초\s*능력)[^\n]{0,35}필기\s*(?:전형|시험|평가|검사)',
             line, re.I
         ))
+        # 과목명 뒤에 '필기시험'이 나오는 한 줄 전형도 명시적 근거입니다.
+        if inline_exam:
+            ncs_exam_confirmed = True
+            break
         if not (written_stage or inline_exam):
             continue
         nearby = ' '.join(process_lines[index:index + 3]) if written_stage else line
