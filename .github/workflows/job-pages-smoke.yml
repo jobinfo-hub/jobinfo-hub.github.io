@@ -1,0 +1,21 @@
+name: CareerPick job page smoke test
+on:
+  pull_request:
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/job-pages-smoke.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate Python syntax
+        run: python -m py_compile scripts/build_job_pages.py
+      - name: Check job page rendering and URL rules
+        run: python scripts/build_job_pages.py --self-test
