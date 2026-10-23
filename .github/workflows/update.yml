@@ -113,8 +113,14 @@ jobs:
           print("검증 성공")
           PY
 
-      - name: ALIO·큐넷 데이터 최신성 검사
+      - name: ALIO·큐넷 데이터 최신성 검사 (경고 전용)
+        id: api_freshness
+        continue-on-error: true
         run: python scripts/check_api_freshness.py
+
+      - name: 데이터 최신성 경고 표시
+        if: steps.api_freshness.outcome == 'failure'
+        run: echo '::warning title=API 데이터 최신성 확인 필요::ALIO 또는 큐넷 데이터가 오래되었거나 비어 있습니다. API 응답 및 수집 로그를 확인하세요.'
 
       - name: 변경된 데이터 저장
         run: |
