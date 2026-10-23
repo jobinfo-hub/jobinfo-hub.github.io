@@ -3,7 +3,7 @@
 import re
 import sys
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 JOB_ID = re.compile(r"a[0-9]+")
@@ -17,10 +17,10 @@ def check_page(page, root=ROOT):
         if link.scheme or link.netloc:
             continue
         fragment = unquote(link.fragment)
-        if fragment.startswith("job="):
-            job_id = fragment[4:]
+        ids = parse_qs(fragment).get("job", []) + parse_qs(link.query).get("job", [])
+        for job_id in ids:
             if JOB_ID.fullmatch(job_id):
-                errors.append(f"{page.name}: ALIO job {job_id} uses homepage hash instead of static detail page")
+                errors.append(f"{page.name}: ALIO job {job_id} uses dynamic URL instead of static detail page")
         path = unquote(link.path)
         normalized = path.removeprefix("./")
         if normalized.startswith("jobs/") and JOB_ID.fullmatch(Path(normalized).stem) and normalized.endswith(".html"):
