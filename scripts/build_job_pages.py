@@ -38,8 +38,8 @@ def safe_url(value):
     value = clean(value)
     parsed = urlparse(value)
     # URL은 공식 링크 후보만 허용합니다. 자격증명·비표준 포트·내부 주소는 배제합니다.
-    host = (parsed.hostname or '').lower().rstrip('.')
     try:
+        host = (parsed.hostname or '').lower().rstrip('.')
         port = parsed.port
     except ValueError:
         return ''
