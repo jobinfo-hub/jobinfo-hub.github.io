@@ -1,39 +1,39 @@
 {
-  "updated_at": "2026-10-23T08:24:10+00:00",
+  "updated_at": "2026-10-23T09:22:36+00:00",
   "source": "ALIO",
   "summary": {
-    "total": 486,
-    "with_category_only_description": 486,
-    "with_qualification": 486,
-    "with_process": 486,
-    "with_both": 486,
+    "total": 492,
+    "with_category_only_description": 492,
+    "with_qualification": 492,
+    "with_process": 492,
+    "with_both": 492,
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0
   },
   "detail_field_counts": {
-    "acbgCondNmLst": 486,
-    "aplyQlfcCn": 486,
-    "decimalDay": 486,
-    "disqlfcRsn": 486,
-    "hireTypeNmLst": 486,
-    "instNm": 486,
-    "ncsCdNmLst": 486,
-    "ongoingYn": 486,
-    "pbancBgngYmd": 486,
-    "pbancEndYmd": 486,
-    "prefCn": 486,
-    "recrutNope": 486,
-    "recrutPbancTtl": 486,
-    "recrutPblntSn": 486,
-    "recrutSe": 486,
-    "recrutSeNm": 486,
-    "replmprYn": 486,
-    "scrnprcdrMthdExpln": 486,
-    "srcUrl": 486,
-    "workRgnNmLst": 486,
-    "prefCondCn": 466,
-    "nonatchRsn": 88
+    "acbgCondNmLst": 492,
+    "aplyQlfcCn": 492,
+    "decimalDay": 492,
+    "disqlfcRsn": 492,
+    "hireTypeNmLst": 492,
+    "instNm": 492,
+    "ncsCdNmLst": 492,
+    "ongoingYn": 492,
+    "pbancBgngYmd": 492,
+    "pbancEndYmd": 492,
+    "prefCn": 492,
+    "recrutNope": 492,
+    "recrutPbancTtl": 492,
+    "recrutPblntSn": 492,
+    "recrutSe": 492,
+    "recrutSeNm": 492,
+    "replmprYn": 492,
+    "scrnprcdrMthdExpln": 492,
+    "srcUrl": 492,
+    "workRgnNmLst": 492,
+    "prefCondCn": 472,
+    "nonatchRsn": 89
   },
   "posts": [
     {
@@ -1532,6 +1532,19 @@
       }
     },
     {
+      "id": "a306308",
+      "title": "2026년 10월 제3차 임시직원 모집 공고(기계설비, 응급구조사, 간호조무사, 임상병리사)",
+      "organization": "경북대학교병원",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
       "id": "a306284",
       "title": "칠곡경북대학교병원 2026년 10월 4차 임시직원 채용공고(간호사, 청소)",
       "organization": "경북대학교병원",
@@ -1929,6 +1942,19 @@
       "id": "a305901",
       "title": "제2026-6회 기초과학연구원 별정직 채용",
       "organization": "기초과학연구원",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306313",
+      "title": "우체국물류지원단 서울지사 동서울물류사업소 기간제(발착직) 채용 공고",
+      "organization": "(재)우체국물류지원단",
       "missing": [
         "실질 직무설명"
       ],
@@ -2957,6 +2983,19 @@
       "id": "a306070",
       "title": "[전북혈액원] 비정규직 초단시간 근로자(임상병리사) 채용공고(3차)",
       "organization": "대한적십자사",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306310",
+      "title": "[광주보훈병원] 중증장애인 체험형 청년인턴(재택 사무보조) 채용 공고",
+      "organization": "한국보훈복지의료공단",
       "missing": [
         "실질 직무설명"
       ],
@@ -4282,6 +4321,45 @@
       "id": "a306089",
       "title": "한국남부발전(주) 2026년 제2차 기간제근로자(육아휴직대체) 채용공고",
       "organization": "한국남부발전(주)",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306312",
+      "title": "[중앙보훈병원] 의사직(내과 당직전담의) 채용 공고",
+      "organization": "한국보훈복지의료공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306311",
+      "title": "[중앙보훈병원] 의사직(소화기내과 전문의) 채용 공고",
+      "organization": "한국보훈복지의료공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306309",
+      "title": "[중앙보훈병원] 의사직(서울요양병원 주간진료 전문의·당직전담의) 채용 공고",
+      "organization": "한국보훈복지의료공단",
       "missing": [
         "실질 직무설명"
       ],

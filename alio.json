@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-23T16:33:20+09:00",
+ "updated": "2026-10-23T18:22:10+09:00",
  "posts": [
   {
    "id": "a306139",
@@ -2550,6 +2550,29 @@
    "src": "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do"
   },
   {
+   "id": "a306308",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 10월 제3차 임시직원 모집 공고(기계설비, 응급구조사, 간호조무사, 임상병리사)",
+   "org": "경북대학교병원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306308",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-10-28T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "대구",
+   "text": "비정규직 학력무관 대구 보건.의료",
+   "n": "11",
+   "src": "https://www.knuh.kr/content/04information/02_01.asp"
+  },
+  {
    "id": "a306284",
    "type": "j",
    "alio": true,
@@ -3255,6 +3278,29 @@
    "text": "비정규직 학력무관 대전 사업관리 경영.회계.사무 환경.에너지.안전",
    "n": "6",
    "src": "https://ibs.recruiter.co.kr/career/job"
+  },
+  {
+   "id": "a306313",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "우체국물류지원단 서울지사 동서울물류사업소 기간제(발착직) 채용 공고",
+   "org": "(재)우체국물류지원단",
+   "desc": "운전.운송",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306313",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-10-29T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 운전.운송",
+   "n": "11",
+   "src": "https://www.pola.or.kr"
   },
   {
    "id": "a306261",
@@ -5025,6 +5071,29 @@
    "text": "비정규직 학력무관 전북 보건.의료",
    "n": "1",
    "src": "https://www.redcross.or.kr/redrecruit"
+  },
+  {
+   "id": "a306310",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[광주보훈병원] 중증장애인 체험형 청년인턴(재택 사무보조) 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306310",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "인턴"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "전남광주",
+   "text": "청년인턴(체험형) 학력무관 전남광주 보건.의료",
+   "n": "6",
+   "src": "https://www.bohun.or.kr/gwangju/na/ntt/selectNttInfo.do?mi=32890&bbsId=1158&bbsSysId=gwangju&nttSn=190673"
   },
   {
    "id": "a306303",
@@ -7342,6 +7411,75 @@
    "text": "비정규직 학력무관 제주 보건.의료",
    "n": "1",
    "src": "https://kospo.machuda.kr"
+  },
+  {
+   "id": "a306312",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[중앙보훈병원] 의사직(내과 당직전담의) 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306312",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 보건.의료",
+   "n": "2",
+   "src": "https://www.bohun.or.kr/seoul/na/ntt/selectNttInfo.do?mi=32253&bbsId=1158&bbsSysId=seoul&nttSn=190675"
+  },
+  {
+   "id": "a306311",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[중앙보훈병원] 의사직(소화기내과 전문의) 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306311",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 보건.의료",
+   "n": "1",
+   "src": "https://www.bohun.or.kr/seoul/na/ntt/selectNttInfo.do?mi=32253&bbsId=1158&bbsSysId=seoul&nttSn=190674"
+  },
+  {
+   "id": "a306309",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[중앙보훈병원] 의사직(서울요양병원 주간진료 전문의·당직전담의) 채용 공고",
+   "org": "한국보훈복지의료공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306309",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 보건.의료",
+   "n": "2",
+   "src": "https://www.bohun.or.kr/seoul/na/ntt/selectNttInfo.do?mi=32253&bbsId=1158&bbsSysId=seoul&nttSn=190672"
   },
   {
    "id": "a306301",
