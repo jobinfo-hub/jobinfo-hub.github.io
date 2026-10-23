@@ -52,6 +52,31 @@ def check_url(url):
     return {'status': 'method_not_allowed'}
 
 
+
+def triage(result):
+    """HTTP status alone never proves whether applications are open."""
+    status = result.get('status')
+    code = result.get('http_status')
+    if status == 'missing':
+        return 'review_missing_link'
+    if status == 'unsafe_or_unresolvable':
+        return 'review_url_or_dns'
+    if status == 'network_error':
+        return 'retry_later'
+    if status == 'responded':
+        return 'reachable_not_verified'
+    if status == 'http_error_or_redirect':
+        if code in (404, 410):
+            return 'review_missing_page'
+        if code in (401, 403, 429):
+            return 'access_restricted_or_rate_limited'
+        if code in (301, 302, 303, 307, 308):
+            return 'review_redirect_without_following'
+        if isinstance(code, int) and 500 <= code < 600:
+            return 'retry_server_error'
+        return 'review_http_response'
+    return 'review_unknown'
+
 def audit(posts, limit, offset=0):
     eligible = [post for post in posts if isinstance(post, dict) and post.get('alio')]
     if not eligible:
@@ -67,14 +92,14 @@ def audit(posts, limit, offset=0):
             continue
         official = str(post.get('src') or post.get('url') or '').strip()
         if not official:
-            results.append({'id': post.get('id'), 'status': 'missing'})
+            results.append({'id': post.get('id'), 'status': 'missing', 'triage': 'review_missing_link'})
             continue
         try:
             host = urlsplit(official).hostname
         except ValueError:
             host = None
         outcome = check_url(official)
-        results.append({'id': post.get('id'), 'host': host, **outcome})
+        results.append({'id': post.get('id'), 'host': host, **outcome, 'triage': triage(outcome)})
     return results
 
 
@@ -96,6 +121,12 @@ def self_test():
     assert rows[2]['host'] is None
     assert all(row['id'] != 'x4' for row in rows)
     assert len(audit([], 20)) == 0
+    assert triage({'status': 'http_error_or_redirect', 'http_status': 404}) == 'review_missing_page'
+    assert triage({'status': 'http_error_or_redirect', 'http_status': 403}) == 'access_restricted_or_rate_limited'
+    assert triage({'status': 'http_error_or_redirect', 'http_status': 302}) == 'review_redirect_without_following'
+    assert triage({'status': 'http_error_or_redirect', 'http_status': 503}) == 'retry_server_error'
+    assert triage({'status': 'responded', 'http_status': 200}) == 'reachable_not_verified'
+    assert triage({'status': 'network_error'}) == 'retry_later'
     with patch(__name__ + '.check_url', return_value={'status': 'responded', 'http_status': 200}):
         rotated = audit(posts, 1, offset=1)
     assert rotated[0]['id'] == 'a2'
@@ -119,7 +150,12 @@ def main():
     # Weekly audit advances through the feed in batches; manual runs start at the top.
     offset = (datetime.now(timezone.utc).date().toordinal() // 7) * args.limit if args.rotate_weekly else 0
     results = audit(data.get('posts', []), args.limit, offset=offset)
+    summary = {}
+    for result in results:
+        category = result['triage']
+        summary[category] = summary.get(category, 0) + 1
     output = {
+        'triage_summary': dict(sorted(summary.items())),
         'checked_at': datetime.now(timezone.utc).isoformat(),
         'note': 'HTTP responses do not prove the vacancy is active or applications are accepted. Redirects are not followed.',
         'checked_count': len(results),
