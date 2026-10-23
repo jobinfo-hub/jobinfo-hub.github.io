@@ -38,7 +38,11 @@ def safe_url(value):
     parsed = urlparse(value)
     # URL은 공식 링크 후보만 허용합니다. 자격증명·비표준 포트·내부 주소는 배제합니다.
     host = (parsed.hostname or '').lower().rstrip('.')
-    if parsed.scheme != 'https' or not host or parsed.username or parsed.password or parsed.port not in (None, 443):
+    try:
+        port = parsed.port
+    except ValueError:
+        return ''
+    if parsed.scheme != 'https' or not host or parsed.username or parsed.password or port not in (None, 443):
         return ''
     if host in ('localhost', '127.0.0.1', '0.0.0.0', '::1') or host.endswith(('.local', '.internal')):
         return ''
