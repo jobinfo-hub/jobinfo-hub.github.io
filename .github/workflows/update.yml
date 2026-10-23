@@ -113,6 +113,9 @@ jobs:
           print("검증 성공")
           PY
 
+      - name: ALIO·큐넷 데이터 최신성 검사
+        run: python scripts/check_api_freshness.py
+
       - name: 변경된 데이터 저장
         run: |
           git config user.name "github-actions[bot]"
