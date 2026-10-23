@@ -61,7 +61,7 @@ def main():
     total = 0
     for page in sorted(ROOT.glob("org-*.html")):
         org = page.stem[4:]
-        expected = normalized_latest.get(normalized_org_name(org), set()) if page_alias_counts[normalized_org_name(org)] == 1 else latest.get(org, set())
+        expected = (latest.get(org, set()) if page_alias_counts[normalized_org_name(org)] > 1 else normalized_latest.get(normalized_org_name(org), set()))
         if not expected:
             continue
         matched += 1
