@@ -22,6 +22,14 @@ class JobPageTests(unittest.TestCase):
             'src': 'https://example.org/jobs/123',
         }
 
+    def test_mobile_layout_and_keyboard_navigation(self):
+        html = render(self.post, {})
+        self.assertIn('class="skip-link" href="#job-summary"', html)
+        self.assertIn('<h2 id="job-summary">모집 요약</h2>', html)
+        self.assertIn('a:focus-visible', html)
+        self.assertIn('.apply{{display:block;text-align:center', html)
+        self.assertIn('box-sizing:border-box', html)
+
     def test_detail_content_and_official_link(self):
         html = render(self.post, {
             'aplyQlfcCn': '관련 자격증 필수',
