@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-23T00:23:35+09:00",
+ "updated": "2026-10-23T11:16:10+09:00",
  "posts": [
   {
    "id": "a306139",
@@ -7135,6 +7135,48 @@
    "text": "비정규직 학력무관 제주 보건.의료",
    "n": "1",
    "src": "https://kospo.machuda.kr"
+  },
+  {
+   "id": "a306288",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 4분기 1차 KDI 위촉직원(대체인력 등) 채용 공고(연구직)",
+   "org": "한국개발연구원",
+   "desc": "사업관리 · 연구",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306288",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "세종",
+   "text": "비정규직 대졸(4년) 석사 세종 사업관리 연구",
+   "n": "9",
+   "src": "https://www.kdi.re.kr/share/recruitView?rec_no=309&pg=1&rec_type="
+  },
+  {
+   "id": "a306287",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "2026년 4분기 1차 KDI 위촉직원(대체인력) 채용 공고(행정직_재무팀)",
+   "org": "한국개발연구원",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306287",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [],
+   "region": "세종",
+   "text": "비정규직 대졸(4년) 세종 경영.회계.사무",
+   "n": "1",
+   "src": "https://www.kdi.re.kr/share/recruitView?rec_no=308&pg=1&rec_type="
   },
   {
    "id": "a306276",
