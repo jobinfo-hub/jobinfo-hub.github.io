@@ -63,6 +63,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No generated changes"
           else
-            git commit -m "chore: refresh static ALIO job pages [skip ci]"
+            git commit -m "chore: refresh static ALIO job pages"
             git push
           fi
