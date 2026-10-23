@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-23T14:19:27+09:00",
+ "updated": "2026-10-23T15:21:10+09:00",
  "posts": [
   {
    "id": "a306139",
@@ -5027,6 +5027,98 @@
    "src": "https://www.redcross.or.kr/redrecruit"
   },
   {
+   "id": "a306303",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[인천병원] 의료직(산업위생사) 6급 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306303",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "인천",
+   "text": "정규직 학력무관 인천 보건.의료",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306302",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "한전KPS(주)남제주사업소 복합ST&HRSG 계획예방정비공사 단기노무원 채용 공고",
+   "org": "한전KPS(주)",
+   "desc": "기계 · 환경.에너지.안전",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306302",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "제주",
+   "text": "비정규직 학력무관 제주 기계 환경.에너지.안전",
+   "n": "14",
+   "src": "https://www.kps.co.kr/"
+  },
+  {
+   "id": "a306298",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[동해병원] 의료직(간호사) 6급 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306298",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "정규직 학력무관 강원 보건.의료",
+   "n": "3",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
+   "id": "a306297",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[동해병원] 의료직(약사) 4급 채용 공고",
+   "org": "근로복지공단",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306297",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-02T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "정규직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "강원",
+   "text": "정규직 학력무관 강원 보건.의료",
+   "n": "1",
+   "src": "https://www.comwel.or.kr/recruit/hp/main.do"
+  },
+  {
    "id": "a306296",
    "type": "j",
    "alio": true,
@@ -7250,6 +7342,76 @@
    "text": "비정규직 학력무관 제주 보건.의료",
    "n": "1",
    "src": "https://kospo.machuda.kr"
+  },
+  {
+   "id": "a306301",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "공간정보품질관리원 2026년 제4차 채용 공고(기간제근로자)",
+   "org": "공간정보품질관리원",
+   "desc": "교육.자연.사회과학 · 건설",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306301",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 경기 교육.자연.사회과학 건설",
+   "n": "9",
+   "src": "https://www.siqms.or.kr/M2001000/board_view.do?idx=525741"
+  },
+  {
+   "id": "a306300",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "[한국수자원공사] 화성권지사 시흥물환경센터 특수직(기술관리_전문기술) 채용 공고",
+   "org": "한국수자원공사",
+   "desc": "건설 · 기계 · 전기.전자",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306300",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "경기",
+   "text": "비정규직 학력무관 경기 건설 기계 전기.전자 환경.에너지.안전",
+   "n": "1",
+   "src": "https://k-water.recruiter.co.kr/"
+  },
+  {
+   "id": "a306299",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "서울대학교병원 블라인드 직원채용 (대체근로자) 공고 (장애인 특별우대)",
+   "org": "서울대학교병원",
+   "desc": "보건.의료",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306299",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-06T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관",
+    "고졸 가능"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 중졸이하 고졸 대졸(2~3년) 대졸(4년) 석사 서울 보건.의료",
+   "n": "28",
+   "src": "https://recruit.snuh.org/joining/recruit/view.do?notice_type=E&recruit_id=26132"
   },
   {
    "id": "a306288",

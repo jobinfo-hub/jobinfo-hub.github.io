@@ -1,39 +1,39 @@
 {
-  "updated_at": "2026-10-23T05:19:54+00:00",
+  "updated_at": "2026-10-23T06:21:31+00:00",
   "source": "ALIO",
   "summary": {
-    "total": 478,
-    "with_category_only_description": 478,
-    "with_qualification": 478,
-    "with_process": 478,
-    "with_both": 478,
+    "total": 485,
+    "with_category_only_description": 485,
+    "with_qualification": 485,
+    "with_process": 485,
+    "with_both": 485,
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0
   },
   "detail_field_counts": {
-    "acbgCondNmLst": 478,
-    "aplyQlfcCn": 478,
-    "decimalDay": 478,
-    "disqlfcRsn": 478,
-    "hireTypeNmLst": 478,
-    "instNm": 478,
-    "ncsCdNmLst": 478,
-    "ongoingYn": 478,
-    "pbancBgngYmd": 478,
-    "pbancEndYmd": 478,
-    "prefCn": 478,
-    "recrutNope": 478,
-    "recrutPbancTtl": 478,
-    "recrutPblntSn": 478,
-    "recrutSe": 478,
-    "recrutSeNm": 478,
-    "replmprYn": 478,
-    "scrnprcdrMthdExpln": 478,
-    "srcUrl": 478,
-    "workRgnNmLst": 478,
-    "prefCondCn": 458,
-    "nonatchRsn": 86
+    "acbgCondNmLst": 485,
+    "aplyQlfcCn": 485,
+    "decimalDay": 485,
+    "disqlfcRsn": 485,
+    "hireTypeNmLst": 485,
+    "instNm": 485,
+    "ncsCdNmLst": 485,
+    "ongoingYn": 485,
+    "pbancBgngYmd": 485,
+    "pbancEndYmd": 485,
+    "prefCn": 485,
+    "recrutNope": 485,
+    "recrutPbancTtl": 485,
+    "recrutPblntSn": 485,
+    "recrutSe": 485,
+    "recrutSeNm": 485,
+    "replmprYn": 485,
+    "scrnprcdrMthdExpln": 485,
+    "srcUrl": 485,
+    "workRgnNmLst": 485,
+    "prefCondCn": 465,
+    "nonatchRsn": 88
   },
   "posts": [
     {
@@ -2967,6 +2967,58 @@
       }
     },
     {
+      "id": "a306303",
+      "title": "[인천병원] 의료직(산업위생사) 6급 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306302",
+      "title": "한전KPS(주)남제주사업소 복합ST&HRSG 계획예방정비공사 단기노무원 채용 공고",
+      "organization": "한전KPS(주)",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306298",
+      "title": "[동해병원] 의료직(간호사) 6급 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306297",
+      "title": "[동해병원] 의료직(약사) 4급 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
       "id": "a306296",
       "title": "[인천병원] 의료직(간호사) 6급 채용 공고",
       "organization": "근로복지공단",
@@ -4230,6 +4282,45 @@
       "id": "a306089",
       "title": "한국남부발전(주) 2026년 제2차 기간제근로자(육아휴직대체) 채용공고",
       "organization": "한국남부발전(주)",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306301",
+      "title": "공간정보품질관리원 2026년 제4차 채용 공고(기간제근로자)",
+      "organization": "공간정보품질관리원",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306300",
+      "title": "[한국수자원공사] 화성권지사 시흥물환경센터 특수직(기술관리_전문기술) 채용 공고",
+      "organization": "한국수자원공사",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306299",
+      "title": "서울대학교병원 블라인드 직원채용 (대체근로자) 공고 (장애인 특별우대)",
+      "organization": "서울대학교병원",
       "missing": [
         "실질 직무설명"
       ],
