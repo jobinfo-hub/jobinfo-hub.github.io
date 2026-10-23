@@ -49,7 +49,7 @@ def ask(key, year, gb, page=1, jm=None):
                 items = [items]
             return [x for x in items if isinstance(x, dict)], body.get("totalCount")
         except Exception as e:
-            last = str(e).replace(key, "***")
+            last = str(e).replace(key, "***").replace(urllib.parse.quote_plus(key), "***")
     raise RuntimeError(last)
 
 
