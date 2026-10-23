@@ -45,6 +45,25 @@ def run():
             pass
         else:
             raise AssertionError("Wrong canonical must fail")
+    canonical = '<link rel="canonical" href="https://jobinfo-hub.github.io/jobs/a306139.html">'
+    valid_schema = '<script type="application/ld+json">{"@type":"JobPosting","url":"https://jobinfo-hub.github.io/jobs/a306139.html"}</script>'
+    with patch.object(checker, "urlopen", return_value=Response("<html>" + canonical + valid_schema + "</html>")):
+        checker.verify_job_detail(BLOCK)
+    wrong_schema = valid_schema.replace("jobs/a306139.html", "jobs/a999.html")
+    with patch.object(checker, "urlopen", return_value=Response("<html>" + canonical + wrong_schema + "</html>")):
+        try:
+            checker.verify_job_detail(BLOCK)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("Wrong live JobPosting URL must fail")
+    with patch.object(checker, "urlopen", return_value=Response("<html>" + canonical + valid_schema * 2 + "</html>")):
+        try:
+            checker.verify_job_detail(BLOCK)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("Duplicate live JobPosting must fail")
     assert checker.JobLinkParser is not None
     print("Public Pages content equality regression PASS: match, retry, outdated list rejection, job detail")
 
