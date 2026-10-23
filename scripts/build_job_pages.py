@@ -691,5 +691,34 @@ def main():
     print('상세페이지 연결 목록: jobs/available.js')
 
 
+def self_test():
+    """Offline regression checks; never reads production data or publishes posts."""
+    sample = {
+        'id': 'a12345', 'title': '<script>test</script>', 'org': '테스트기관',
+        'due': '2099-10-28', 'n': 3, 'alio': True,
+        'src': 'https://job.alio.go.kr/example',
+    }
+    html = render(sample, {'aplyQlfcCn': '지원 자격 확인'})
+    for marker in (
+        'id="job-summary"', 'id="job-checks"', 'id="job-duties"',
+        'id="job-official"', 'href="#job-official"',
+        '자료 출처: ALIO', 'https://job.alio.go.kr/example',
+        '&lt;script&gt;test&lt;/script&gt;',
+    ):
+        assert marker in html, f'누락된 페이지 요소: {marker}'
+    for unsafe in (
+        'javascript:alert(1)', 'https://localhost/private',
+        'https://192.168.1.1/private', 'https://example.com:bad/path',
+        'https://user:pass@example.com/',
+    ):
+        assert not safe_url(unsafe), f'위험 URL 허용: {unsafe}'
+    assert safe_url('https://job.alio.go.kr/example')
+    print('CareerPick job-page regression checks: PASS')
+
+
 if __name__ == '__main__':
-    main()
+    import sys
+    if '--self-test' in sys.argv:
+        self_test()
+    else:
+        main()
