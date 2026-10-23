@@ -590,7 +590,8 @@ def main():
         category_only = bool(clean(post.get('desc')))
         has_description = False
         quality['with_category_only_description'] += int(category_only)
-        has_official = bool(safe_url(post.get('src')) or safe_url(post.get('url')))
+        official_url = safe_url(post.get('src')) or safe_url(post.get('url'))
+        has_official = bool(official_url)
         quality['total'] += 1
         quality['with_qualification'] += int(has_qualification)
         quality['with_process'] += int(has_process)
@@ -615,6 +616,8 @@ def main():
             'id': pid,
             'title': clean(post.get('title')),
             'organization': clean(post.get('org')),
+            'official_link_host': (urlparse(official_url).hostname or '') if official_url else '',
+            'official_link_status': 'url_format_ok_not_live_checked' if official_url else 'missing_or_invalid',
             'missing': missing,
             'detail_fields': {
                 'qualification': has_qualification,
