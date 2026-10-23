@@ -23,10 +23,10 @@ def classify(log):
 
     if "큐넷 시험일정 오류(무시하고 계속):" in log or "큐넷 시험일정을 받지 못해" in log:
         qnet = "ERROR (no usable schedule; snapshot retained)"
+    elif "큐넷 " in log and "요청 실패:" in log:
+        qnet = "WARNING (some QNet requests failed; snapshot may be partial)"
     elif "qnet.json 갱신:" in log:
         qnet = "SUCCESS (snapshot updated)"
-    elif "큐넷 " in log and "요청 실패:" in log:
-        qnet = "WARNING (some QNet requests failed)"
     else:
         qnet = "SKIPPED/UNKNOWN (daily cache or no credentials; not proof of success)"
     return alio, qnet
