@@ -360,6 +360,15 @@ def main():
 
     OUT.mkdir(exist_ok=True)
     created = 0
+    quality = {
+        'total': 0,
+        'with_qualification': 0,
+        'with_process': 0,
+        'with_both': 0,
+        'with_description': 0,
+        'without_official_link': 0,
+        'thin_data': 0,
+    }
 
     # 1. 잡알리오 채용공고 상세페이지 생성
     for post in posts:
@@ -370,8 +379,25 @@ def main():
         if not re.fullmatch(r'a[0-9]+', pid):
             continue
 
+        job_detail = details.get(pid, {})
+        if not isinstance(job_detail, dict):
+            job_detail = {}
+        has_qualification = bool(clean(job_detail.get('aplyQlfcCn')))
+        has_process = bool(clean(job_detail.get('recrutPrgsCn')))
+        has_description = len(clean(post.get('desc'))) >= 25
+        has_official = bool(safe_url(post.get('src')) or safe_url(post.get('url')))
+        quality['total'] += 1
+        quality['with_qualification'] += int(has_qualification)
+        quality['with_process'] += int(has_process)
+        quality['with_both'] += int(has_qualification and has_process)
+        quality['with_description'] += int(has_description)
+        quality['without_official_link'] += int(not has_official)
+        quality['thin_data'] += int(
+            not has_qualification and not has_process and not has_description
+        )
+
         target = OUT / f'{pid}.html'
-        html = render(post, details.get(pid, {}))
+        html = render(post, job_detail)
 
         if (
             not target.exists()
@@ -407,6 +433,8 @@ def main():
             encoding='utf-8'
         )
 
+    # 읽기 전용 진단: 기존 생성·게시·색인 동작은 변경하지 않습니다.
+    print('채용공고 원본 데이터 품질 진단:', json.dumps(quality, ensure_ascii=False))
     print(f'채용 상세페이지 생성/변경: {created}개')
     print(f'연결 가능한 상세페이지: {len(available)}개')
     print('상세페이지 연결 목록: jobs/available.js')
