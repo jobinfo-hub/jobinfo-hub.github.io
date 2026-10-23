@@ -10,7 +10,7 @@ from pathlib import Path
 def classify(log):
     if "ALIO_KEY 가 없어" in log:
         alio = "SKIPPED (ALIO_KEY missing)"
-    elif "잡알리오 요청 실패:" in log or "잡알리오 연동 오류(" in log:
+    elif "잡알리오 요청 실패:" in log or "잡알리오 연동 오류(" in log or "잡알리오 수집 불완전:" in log:
         alio = "ERROR (request or processing failed; check logs)"
     elif "가져온 공고가 없어 기존 alio.json" in log:
         alio = "WARNING (no active records; snapshot retained)"
