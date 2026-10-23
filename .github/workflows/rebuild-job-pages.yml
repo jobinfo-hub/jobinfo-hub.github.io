@@ -6,6 +6,8 @@ on:
   pull_request:
     paths:
       - 'scripts/build_job_pages.py'
+      - 'scripts/build_sitemap.py'
+      - 'scripts/test_build_sitemap.py'
       - 'scripts/test_duplicate_source_links.py'
       - 'scripts/audit_generated_job_schema.py'
       - 'scripts/test_audit_generated_job_schema.py'
@@ -25,6 +27,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/build_job_pages.py'
+      - 'scripts/build_sitemap.py'
+      - 'scripts/test_build_sitemap.py'
       - 'scripts/test_duplicate_source_links.py'
       - 'scripts/audit_generated_job_schema.py'
       - 'scripts/test_audit_generated_job_schema.py'
@@ -87,6 +91,8 @@ jobs:
         run: python scripts/audit_org_alio_coverage.py --strict
       - name: Audit institution recruitment deadlines
         run: python scripts/audit_org_deadlines.py
+      - name: Test sitemap generator offline
+        run: python scripts/test_build_sitemap.py
       - name: Update sitemap from generated job pages
         run: python scripts/build_sitemap.py
       - name: Validate sitemap job URL integrity
