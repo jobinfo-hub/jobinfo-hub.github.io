@@ -184,10 +184,18 @@ def render(post, detail):
     ]
     # 직무 분류나 기관 유형만으로 NCS 필기시험 실시를 추정하지 않습니다.
     context = ' '.join((title, clean(post.get('desc')), qualification, process))
-    ncs_exam_confirmed = bool(
-        re.search(r'(?:NCS|직업기초(?:능력)?)\s*(?:기반\s*)?(?:필기|시험|평가|검사)', process, re.I)
-        or re.search(r'(?:필기|시험|평가|검사)\s*(?:전형|시험)?\s*[:：-]?\s*(?:NCS|직업기초(?:능력)?)', process, re.I)
-    )
+    # 필기전형과 시험 과목이 같은 문단/인접 줄에 있는 경우만 인정합니다.
+    # 서류·면접의 직업기초역량 평가를 필기시험으로 오인하지 않습니다.
+    process_lines = [line.strip() for line in process.splitlines() if line.strip()]
+    ncs_exam_confirmed = False
+    for index, line in enumerate(process_lines):
+        if not re.search(r'필기\\s*(?:전형|시험|평가|검사)', line):
+            continue
+        nearby = ' '.join(process_lines[index:index + 3])
+        nearby = re.split(r'(?:면접|서류)\\s*(?:전형|심사|평가)', nearby, maxsplit=1)[0]
+        if re.search(r'NCS|직업\\s*기초\\s*능력|직무공통능력검사', nearby, re.I):
+            ncs_exam_confirmed = True
+            break
     if ncs_exam_confirmed:
         guide_items.append(('/guides/ncs-study-plan.html', 'NCS 4주 학습 계획'))
     if any(word in context for word in ('자기소개서', '자소서', '서류전형', '입사지원서', '경험기술')):
