@@ -570,6 +570,7 @@ def main():
 
     # 자동 품질 보고서: 검색 노출이나 채용공고 생성 여부는 변경하지 않습니다.
     quality_rows = []
+    duplicate_groups = {}
     detail_field_counts = {}
     # 1. 잡알리오 채용공고 상세페이지 생성
     for post in posts:
@@ -615,6 +616,11 @@ def main():
                 ('공식링크', has_official),
             ) if not present
         ]
+        # 같은 기관·제목·마감일은 중복 가능성만 진단합니다.
+        # 동일 제목의 서로 다른 직무일 수 있어 게시물을 자동 삭제하지 않습니다.
+        duplicate_key = tuple(re.sub(r'\\s+', ' ', clean(post.get(field))).casefold() for field in ('org', 'title', 'due'))
+        if all(duplicate_key):
+            duplicate_groups.setdefault(duplicate_key, set()).add(pid)
         quality_rows.append({
             'id': pid,
             'title': clean(post.get('title')),
@@ -666,6 +672,13 @@ def main():
             encoding='utf-8'
         )
 
+    # 같은 기관·제목·마감일의 공고 ID만 보고서에 기록합니다.
+    suspected_duplicates = [
+        {'organization': key[0], 'title': key[1], 'deadline': key[2], 'ids': sorted(ids)}
+        for key, ids in duplicate_groups.items() if len(ids) > 1
+    ]
+    suspected_duplicates.sort(key=lambda item: (item['organization'], item['title'], item['deadline']))
+    quality['suspected_duplicate_groups'] = len(suspected_duplicates)
     # JSON 보고서는 배포 중 자동 생성되며 공개 페이지에서는 링크하지 않습니다.
     report = {
         'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
@@ -676,6 +689,7 @@ def main():
             key=lambda item: (-item[1], item[0]),
         )),
         'posts': quality_rows,
+        'suspected_duplicates': suspected_duplicates,
     }
     report_path = ROOT / 'job-quality-report.json'
     report_path.write_text(
