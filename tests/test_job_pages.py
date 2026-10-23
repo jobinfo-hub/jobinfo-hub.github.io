@@ -64,6 +64,18 @@ class JobPageTests(unittest.TestCase):
         self.assertIn('상세 자격·전형 데이터가 제공되지 않았습니다', html)
         self.assertNotIn('관련 자격증 필수', html)
 
+    def test_long_ncs_classification_is_not_presented_as_job_duties(self):
+        post = dict(
+            self.post,
+            desc='경영·회계·사무 · 총무·인사 · 재무·회계 · 사무행정 · '
+                 '경영기획 · 일반사무 · 기타 공공기관 직무 분류',
+        )
+        html = render(post, {'aplyQlfcCn': '지원 가능'})
+        self.assertIn('<h2>직무 분류</h2>', html)
+        self.assertIn('직무 분류는 실제 담당업무 설명이 아닙니다', html)
+        self.assertNotIn('<h2>공고 세부 요약</h2>', html)
+        self.assertIn('공식 원문에서 추가 확인할 항목: 상세 직무 설명', html)
+
     def test_html_escaping(self):
         post = dict(self.post, title='<script>alert(1)</script>')
         html = render(post, {})
