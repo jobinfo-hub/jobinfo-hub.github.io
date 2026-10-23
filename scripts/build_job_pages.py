@@ -198,7 +198,8 @@ def render(post, detail):
         if not (written_stage or inline_exam):
             continue
         nearby = ' '.join(process_lines[index:index + 3]) if written_stage else line
-        nearby = re.split(r'(?:면접|서류)\s*(?:전형|심사|평가)', nearby, maxsplit=1)[0]
+        if written_stage:
+            nearby = re.split(r'(?:면접|서류)\s*(?:전형|심사|평가)', nearby, maxsplit=1)[0]
         if re.search(r'NCS|직업\s*기초\s*능력|직무공통능력검사', nearby, re.I):
             ncs_exam_confirmed = True
             break
