@@ -309,8 +309,7 @@ section p{{white-space:pre-line;overflow-wrap:anywhere}}
 {notice}
 <h2>모집 요약</h2>
 <dl>{rows}</dl>
-<h2>공고 핵심정보</h2>
-<p>{escape(job_description[:1300])}</p>
+{f'<h2>공고 세부 요약</h2><p>{escape(desc[:500])}</p>' if desc and len(desc) >= 25 else ''}
 <section aria-label="지원 전 핵심 확인사항">
 <h2>지원 전 핵심 확인사항</h2>
 <ul class="checks">{checks}</ul>
@@ -324,10 +323,8 @@ section p{{white-space:pre-line;overflow-wrap:anywhere}}
 지원 전 반드시 공식 공고의 자격조건, 마감시각,
 변경사항을 확인하세요.
 </p>
-<section aria-label="지원 전 확인 사항">
-<h2>지원 전 체크리스트</h2>
-<p>채용공고의 필수 자격과 우대사항을 구분하고, 공식 원문에서 전형별 일정·증빙서류·접수 마감시각을 다시 확인하세요.</p>
-<p><a href="/guides/application-checklist.html">공공기관 채용 지원 전 확인할 7가지 →</a></p>
+<section aria-label="취업 준비 참고자료">
+<h2>관련 취업 준비 자료</h2>
 {guide_links}
 </section>
 <a href="/">다른 채용공고 찾아보기</a>
