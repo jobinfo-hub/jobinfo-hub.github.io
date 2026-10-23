@@ -1,0 +1,28 @@
+name: 채용 상세페이지 품질 테스트
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/build_job_pages.py'
+      - 'tests/test_job_pages.py'
+      - '.github/workflows/test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+      - name: Python 3.12 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python 문법 확인
+        run: python -m py_compile scripts/build_job_pages.py tests/test_job_pages.py
+      - name: 채용 상세페이지 회귀 테스트
+        run: python -m unittest discover -s tests -p 'test_job_pages.py' -v
