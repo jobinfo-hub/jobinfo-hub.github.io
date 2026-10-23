@@ -24,7 +24,7 @@ def normalized_org_name(name):
     value = re.sub(r"(?:\(주\)|㈜)$", "", value)
     return value
 
-def main():
+def main(strict=False):
     data = json.loads((ROOT / "alio.json").read_text(encoding="utf-8"))
     latest = defaultdict(set)
     for post in data.get("posts", []):
@@ -91,7 +91,11 @@ def main():
     for org, count, ids in sorted(missing, key=lambda item: -item[1])[:15]:
         print(f"ORG COVERAGE GAP: {org}: {count} missing, sample {','.join(ids)}")
     print(f"ALIO snapshot updated: {data.get('updated', 'unknown')}")
-    # Informational: org pages have a separate generation pipeline.
+    # New institutions without a page are reported, not failed; those need the
+    # separate institution-page generator. Existing mapped pages must not lose jobs.
+    if strict and missing:
+        raise SystemExit(f"Institution ALIO coverage failed: {sum(item[1] for item in missing)} missing jobs across {len(missing)} pages")
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(strict="--strict" in sys.argv)

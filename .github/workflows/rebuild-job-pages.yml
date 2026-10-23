@@ -84,7 +84,7 @@ jobs:
       - name: Mark institution listings past stored deadlines
         run: python scripts/mark_expired_org_jobs.py
       - name: Audit institution ALIO active listing coverage
-        run: python scripts/audit_org_alio_coverage.py
+        run: python scripts/audit_org_alio_coverage.py --strict
       - name: Audit institution recruitment deadlines
         run: python scripts/audit_org_deadlines.py
       - name: Update sitemap from generated job pages
