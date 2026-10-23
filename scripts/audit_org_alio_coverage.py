@@ -41,27 +41,39 @@ def main():
             if (ROOT / "jobs" / (job_id + ".html")).is_file():
                 latest[org].add(job_id)
     available_orgs = {page.stem[4:] for page in ROOT.glob("org-*.html")}
-    unmatched = [(org, len(ids)) for org, ids in latest.items() if org not in available_orgs]
-    print(f"ALIO institutions without matching HTML page: {len(unmatched)}; active job records: {sum(count for _, count in unmatched)}")
     normalized_pages = defaultdict(list)
     for existing in available_orgs:
         normalized_pages[normalized_org_name(existing)].append(existing)
-    for org, count in sorted(unmatched, key=lambda item: (-item[1], item[0]))[:30]:
-        suggestions = sorted(normalized_pages.get(normalized_org_name(org), []))
-        suffix = f"; possible existing page(s): {', '.join(suggestions)}" if suggestions else "; no normalized page match"
-        print(f"UNMATCHED ALIO INSTITUTION: {org}: {count} active jobs{suffix}")
-    normalized_latest = defaultdict(set)
+    # Match exactly first; use a normalized alias only when it is unambiguous.
+    resolved = defaultdict(set)
+    aliased = []
+    ambiguous = []
+    unresolved = []
     for org, ids in latest.items():
-        normalized_latest[normalized_org_name(org)].update(ids)
-    page_alias_counts = defaultdict(int)
-    for org in available_orgs:
-        page_alias_counts[normalized_org_name(org)] += 1
+        if org in available_orgs:
+            resolved[org].update(ids)
+            continue
+        candidates = sorted(normalized_pages.get(normalized_org_name(org), []))
+        if len(candidates) == 1:
+            resolved[candidates[0]].update(ids)
+            aliased.append((org, candidates[0], len(ids)))
+        elif len(candidates) > 1:
+            ambiguous.append((org, len(ids), candidates))
+        else:
+            unresolved.append((org, len(ids)))
+    print(f"ALIO institution resolution: {len(aliased)} safe aliases ({sum(x[2] for x in aliased)} jobs); {len(ambiguous)} ambiguous ({sum(x[1] for x in ambiguous)} jobs); {len(unresolved)} without pages ({sum(x[1] for x in unresolved)} jobs)")
+    for org, page, count in sorted(aliased, key=lambda item: (-item[2], item[0]))[:30]:
+        print(f"SAFE ALIO PAGE ALIAS: {org} -> {page}: {count} active jobs")
+    for org, count, pages in sorted(ambiguous, key=lambda item: (-item[1], item[0]))[:30]:
+        print(f"AMBIGUOUS ALIO INSTITUTION: {org}: {count} active jobs; candidate pages: {', '.join(pages)}")
+    for org, count in sorted(unresolved, key=lambda item: (-item[1], item[0]))[:30]:
+        print(f"ALIO INSTITUTION WITHOUT PAGE: {org}: {count} active jobs")
     matched = 0
     missing = []
     total = 0
     for page in sorted(ROOT.glob("org-*.html")):
         org = page.stem[4:]
-        expected = (latest.get(org, set()) if page_alias_counts[normalized_org_name(org)] > 1 else normalized_latest.get(normalized_org_name(org), set()))
+        expected = resolved.get(org, set())
         if not expected:
             continue
         matched += 1
