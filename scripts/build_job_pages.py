@@ -593,6 +593,7 @@ def main():
     # 자동 품질 보고서: 검색 노출이나 채용공고 생성 여부는 변경하지 않습니다.
     quality_rows = []
     duplicate_groups = {}
+    official_by_id = {}
     detail_field_counts = {}
     # 1. 잡알리오 채용공고 상세페이지 생성
     for post in posts:
@@ -618,6 +619,7 @@ def main():
         quality['with_category_only_description'] += int(category_only)
         official_url = safe_url(post.get('src')) or safe_url(post.get('url'))
         has_official = bool(official_url)
+        official_by_id[pid] = official_url
         quality['total'] += 1
         quality['with_qualification'] += int(has_qualification)
         quality['with_process'] += int(has_process)
@@ -695,12 +697,26 @@ def main():
         )
 
     # 같은 기관·제목·마감일의 공고 ID만 보고서에 기록합니다.
-    suspected_duplicates = [
-        {'organization': key[0], 'title': key[1], 'deadline': key[2], 'ids': sorted(ids)}
-        for key, ids in duplicate_groups.items() if len(ids) > 1
-    ]
+    suspected_duplicates = []
+    for key, ids in duplicate_groups.items():
+        if len(ids) <= 1:
+            continue
+        links = sorted({official_by_id.get(pid, '') for pid in ids if official_by_id.get(pid)})
+        suspected_duplicates.append({
+            'organization': key[0], 'title': key[1], 'deadline': key[2],
+            'ids': sorted(ids),
+            'distinct_official_link_count': len(links),
+            'source_link_comparison': (
+                'different_official_links_review_separately' if len(links) > 1
+                else 'same_official_link_review' if len(links) == 1
+                else 'official_link_unavailable'
+            ),
+        })
     suspected_duplicates.sort(key=lambda item: (item['organization'], item['title'], item['deadline']))
     quality['suspected_duplicate_groups'] = len(suspected_duplicates)
+    quality['duplicate_groups_with_distinct_official_links'] = sum(
+        item['distinct_official_link_count'] > 1 for item in suspected_duplicates
+    )
     # JSON 보고서는 배포 중 자동 생성되며 공개 페이지에서는 링크하지 않습니다.
     report = {
         'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
