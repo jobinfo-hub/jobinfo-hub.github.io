@@ -52,9 +52,15 @@ def check_url(url):
     return {'status': 'method_not_allowed'}
 
 
-def audit(posts, limit):
+def audit(posts, limit, offset=0):
+    eligible = [post for post in posts if isinstance(post, dict) and post.get('alio')]
+    if not eligible:
+        return []
+    # Rotate through the ALIO feed instead of repeatedly auditing its first entries.
+    start = offset % len(eligible)
+    selected = (eligible[start:] + eligible[:start])[:limit]
     results = []
-    for post in posts:
+    for post in selected:
         if len(results) >= limit:
             break
         if not isinstance(post, dict) or not post.get('alio'):
@@ -90,6 +96,9 @@ def self_test():
     assert rows[2]['host'] is None
     assert all(row['id'] != 'x4' for row in rows)
     assert len(audit([], 20)) == 0
+    with patch(__name__ + '.check_url', return_value={'status': 'responded', 'http_status': 200}):
+        rotated = audit(posts, 1, offset=1)
+    assert rotated[0]['id'] == 'a2'
     print('CareerPick official link audit offline tests: PASS')
 
 
@@ -99,6 +108,7 @@ def main():
     parser.add_argument('--input', default=str(ROOT / 'alio.json'))
     parser.add_argument('--output', default=str(ROOT / 'link-audit-results.json'))
     parser.add_argument('--self-test', action='store_true')
+    parser.add_argument('--rotate-weekly', action='store_true')
     args = parser.parse_args()
     if args.self_test:
         self_test()
@@ -106,11 +116,14 @@ def main():
     if not 1 <= args.limit <= 50:
         parser.error('--limit must be between 1 and 50')
     data = json.loads(Path(args.input).read_text(encoding='utf-8'))
-    results = audit(data.get('posts', []), args.limit)
+    # Weekly audit advances through the feed in batches; manual runs start at the top.
+    offset = (datetime.now(timezone.utc).date().toordinal() // 7) * args.limit if args.rotate_weekly else 0
+    results = audit(data.get('posts', []), args.limit, offset=offset)
     output = {
         'checked_at': datetime.now(timezone.utc).isoformat(),
         'note': 'HTTP responses do not prove the vacancy is active or applications are accepted. Redirects are not followed.',
         'checked_count': len(results),
+        'sample_offset': offset,
         'results': results,
     }
     Path(args.output).write_text(json.dumps(output, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
