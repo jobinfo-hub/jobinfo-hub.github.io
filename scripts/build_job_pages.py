@@ -317,13 +317,21 @@ def render(post, detail):
         else ''
     )
 
+    # 공식 원문 확인과 실제 지원 접수는 서로 다를 수 있습니다.
+    # ALIO가 제공한 링크를 지원서 제출 URL로 오인하지 않도록 안내합니다.
     link = (
-        f'<a class="apply" '
-        f'href="{escape(official, quote=True)}" '
-        f'rel="noopener noreferrer" target="_blank">'
-        f'공식 채용공고 확인 ↗</a>'
-        if official
-        else '<p>공식 지원 링크를 확인 중입니다.</p>'
+        '<section aria-label="공식 채용공고 확인">'
+        '<h2>공식 원문 및 지원 방법 확인</h2>'
+        '<p>지원 자격, 제출서류, 정확한 마감시각과 접수처는 공식 공고문을 기준으로 확인하세요. '
+        '공식 공고 페이지에서 별도의 채용 접수 사이트로 이동해야 할 수 있습니다.</p>'
+        + (
+            f'<a class="apply" href="{escape(official, quote=True)}" '
+            f'rel="noopener noreferrer" target="_blank">'
+            '공식 채용공고 열기 ↗</a>'
+            if official
+            else '<p class="source-note">공식 링크를 확인할 수 없습니다. 채용기관 홈페이지에서 공고를 검색하세요.</p>'
+        )
+        + '</section>'
     )
 
     meta_parts = [org, title]
