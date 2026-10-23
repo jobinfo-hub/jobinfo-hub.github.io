@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-23T02:42:13+00:00",
+  "updated_at": "2026-10-23T02:47:17+00:00",
   "source": "ALIO",
   "summary": {
     "total": 473,
@@ -10,6 +10,30 @@
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0
+  },
+  "detail_field_counts": {
+    "acbgCondNmLst": 473,
+    "aplyQlfcCn": 473,
+    "decimalDay": 473,
+    "disqlfcRsn": 473,
+    "hireTypeNmLst": 473,
+    "instNm": 473,
+    "ncsCdNmLst": 473,
+    "ongoingYn": 473,
+    "pbancBgngYmd": 473,
+    "pbancEndYmd": 473,
+    "prefCn": 473,
+    "recrutNope": 473,
+    "recrutPbancTtl": 473,
+    "recrutPblntSn": 473,
+    "recrutSe": 473,
+    "recrutSeNm": 473,
+    "replmprYn": 473,
+    "scrnprcdrMthdExpln": 473,
+    "srcUrl": 473,
+    "workRgnNmLst": 473,
+    "prefCondCn": 453,
+    "nonatchRsn": 86
   },
   "posts": [
     {
