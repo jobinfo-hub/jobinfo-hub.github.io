@@ -44,7 +44,7 @@ def check_url(url):
             with opener.open(req, timeout=7) as response:
                 return {'status': 'responded', 'http_status': response.status, 'method': method}
         except HTTPError as exc:
-            if method == 'HEAD' and exc.code in (403, 404, 405, 410, 501):
+            if method == 'HEAD' and exc.code in (400, 403, 404, 405, 410, 501):
                 continue
             return {'status': 'http_error_or_redirect', 'http_status': exc.code, 'method': method}
         except (URLError, TimeoutError, OSError, ValueError) as exc:
@@ -134,6 +134,12 @@ def self_test():
     with patch(__name__ + '.public_https', return_value=True), patch(__name__ + '.build_opener', return_value=opener):
         confirmed = check_url('https://example.org/jobs')
     assert confirmed == {'status': 'responded', 'http_status': 200, 'method': 'GET'}
+    assert opener.open.call_count == 2
+    opener.reset_mock()
+    opener.open.side_effect = [HTTPError('https://example.org', 400, 'Bad Request', {}, None), ok_response]
+    with patch(__name__ + '.public_https', return_value=True), patch(__name__ + '.build_opener', return_value=opener):
+        confirmed_400 = check_url('https://example.org/jobs')
+    assert confirmed_400 == {'status': 'responded', 'http_status': 200, 'method': 'GET'}
     assert opener.open.call_count == 2
     assert triage({'status': 'http_error_or_redirect', 'http_status': 400}) == 'review_bad_request_or_access_requirements'
     assert triage({'status': 'http_error_or_redirect', 'http_status': 403}) == 'access_restricted_or_rate_limited'
