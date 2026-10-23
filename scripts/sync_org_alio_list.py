@@ -12,7 +12,7 @@ import re
 
 ROOT = Path(__file__).resolve().parent.parent
 KST = timezone(timedelta(hours=9))
-BLOCK = re.compile(r'\n?<!-- careerpick-alio-list:start -->.*?<!-- careerpick-alio-list:end -->', re.S)
+BLOCK = re.compile(r'(?:<h2 data-careerpick-alio-heading="true">📢 ALIO 수록 모집 공고</h2>)?\n?<!-- careerpick-alio-list:start -->.*?<!-- careerpick-alio-list:end -->', re.S)
 ANCHOR = re.compile(r'(<h2>📢 지금 모집 중</h2><div class="olist">.*?</div>)', re.S)
 
 def main():
@@ -72,7 +72,7 @@ def main():
                 pos = html.find('</main>')
             if pos < 0:
                 continue
-            html = html[:pos] + '<h2>📢 ALIO 수록 모집 공고</h2>' + block + html[pos:]
+            html = html[:pos] + '<h2 data-careerpick-alio-heading="true">📢 ALIO 수록 모집 공고</h2>' + block + html[pos:]
         if html != original:
             page.write_text(html, encoding="utf-8")
             updated_pages += 1
