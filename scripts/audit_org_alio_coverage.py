@@ -33,6 +33,11 @@ def main():
         if job_id.startswith("a") and org and deadline.tzinfo and deadline.astimezone(KST) >= NOW:
             if (ROOT / "jobs" / (job_id + ".html")).is_file():
                 latest[org].add(job_id)
+    available_orgs = {page.stem[4:] for page in ROOT.glob("org-*.html")}
+    unmatched = [(org, len(ids)) for org, ids in latest.items() if org not in available_orgs]
+    print(f"ALIO institutions without matching HTML page: {len(unmatched)}; active job records: {sum(count for _, count in unmatched)}")
+    for org, count in sorted(unmatched, key=lambda item: (-item[1], item[0]))[:30]:
+        print(f"UNMATCHED ALIO INSTITUTION: {org}: {count} active jobs")
     matched = 0
     missing = []
     total = 0
