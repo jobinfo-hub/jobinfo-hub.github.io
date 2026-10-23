@@ -1,6 +1,8 @@
 """Offline checks for exact public Pages content verification."""
 from unittest.mock import patch
 from urllib.error import URLError
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import check_live_org_pages as checker
 
 BLOCK = '<!-- careerpick-alio-list:start --><details data-alio-current="true"><a href="jobs/a306139.html">job</a></details><!-- careerpick-alio-list:end -->'
@@ -20,7 +22,7 @@ def run():
     assert checker.alio_block("<html>" + BLOCK + "</html>") == BLOCK
     assert checker.alio_block("<html>no marker</html>") is None
     good = Response("<html>" + BLOCK + "</html>")
-    with patch.object(checker, "expected_block", return_value=BLOCK), patch.object(checker, "verify_job_detail") as detail:
+    with patch.object(checker, "expected_block", return_value=BLOCK), patch.object(checker, "verify_job_detail") as detail, patch.object(checker, "verify_live_search_files"):
         with patch.object(checker, "urlopen", return_value=good) as fetch:
             checker.main()
             assert fetch.call_count == 1 and detail.call_count == 1
@@ -64,6 +66,24 @@ def run():
             pass
         else:
             raise AssertionError("Duplicate live JobPosting must fail")
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "sitemap.xml").write_bytes(b"<urlset></urlset>")
+        (root / "robots.txt").write_bytes(b"User-agent: *\nAllow: /\n")
+        with patch.object(checker, "urlopen", side_effect=[
+            Response("<urlset></urlset>"), Response("User-agent: *\nAllow: /\n")
+        ]) as fetch:
+            checker.verify_live_search_files(root)
+            assert fetch.call_count == 2
+        with patch.object(checker, "urlopen", side_effect=[
+            Response("<urlset>stale</urlset>"), Response("User-agent: *\nAllow: /\n")
+        ]):
+            try:
+                checker.verify_live_search_files(root)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Stale public sitemap must fail")
     assert checker.JobLinkParser is not None
     print("Public Pages content equality regression PASS: match, retry, outdated list rejection, job detail")
 
