@@ -15,8 +15,7 @@ from pathlib import Path
 OUT = Path(__file__).parent / "alio.json"
 DETAIL = Path(__file__).parent / "alio-detail.json"   # 카드를 눌렀을 때만 불러오는 상세 내용
 KST = timezone(timedelta(hours=9))
-ENDPOINTS = ["https://apis.data.go.kr/1051000/recruitment/list",
-             "http://apis.data.go.kr/1051000/recruitment/list"]
+ENDPOINTS = ["https://apis.data.go.kr/1051000/recruitment/list"]
 PER_PAGE = 100
 MAX_PAGES = 10
 
@@ -76,9 +75,10 @@ def call(key, page, ongoing="Y"):
             if code not in ("200", "00", "0", "INFO-000", "NORMAL_SERVICE"):
                 raise RuntimeError(f"API 오류 {code}: {data.get('resultMsg')}")
             return data
-        except Exception as e:  # https 실패 시 http 로 한 번 더
-            last = e
-    raise RuntimeError(last)
+        except Exception as e:
+            # HTTP errors can embed serviceKey in the request URL; never log it.
+            last = str(e).replace(key, "***").replace(urllib.parse.quote_plus(key), "***")
+    raise RuntimeError(last or "ALIO API request failed")
 
 
 EMP_MAP = [("무기", "무기계약직"), ("정규", "정규직"), ("인턴", "인턴"), ("비정규", "계약직"), ("기간제", "계약직"), ("계약", "계약직")]

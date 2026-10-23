@@ -16,8 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 OUT = ROOT / "qnet.json"
 KST = timezone(timedelta(hours=9))
-ENDPOINTS = ["https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList",
-             "http://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList"]
+ENDPOINTS = ["https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList"]
 # 종목코드 없이 받기가 안 될 때 쓰는 대표 종목 (같은 등급은 시험일정이 같음)
 FALLBACK = [("기사·산업기사", "1320"), ("기능사", "7780"), ("기사·산업기사", "9511")]
 GRADE_ORDER = ["기술사", "기능장", "기사·산업기사", "기사", "산업기사", "기능사"]
@@ -49,8 +48,8 @@ def ask(key, year, gb, page=1, jm=None):
             if isinstance(items, dict):
                 items = [items]
             return [x for x in items if isinstance(x, dict)], body.get("totalCount")
-        except Exception as e:  # https 실패 시 http 로 한 번 더
-            last = str(e).replace(key, "***")
+        except Exception as e:
+            last = str(e).replace(key, "***").replace(urllib.parse.quote_plus(key), "***")
     raise RuntimeError(last)
 
 
