@@ -33,6 +33,8 @@ jobs:
         run: python scripts/build_job_pages.py --self-test
       - name: Regenerate job pages from committed ALIO data
         run: python scripts/build_job_pages.py
+      - name: Repair institution links to existing job pages
+        run: python scripts/fix_org_job_links.py
       - name: Update sitemap from generated job pages
         run: python scripts/build_sitemap.py
       - name: Validate sitemap job URL integrity
