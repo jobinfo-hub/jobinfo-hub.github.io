@@ -121,7 +121,7 @@ def org_page(org, recs, fc, sk, open_now, blog_now, det, now):
         for p in open_now[:8]:
             due = f"접수 마감 {sitegen.due_text(p)}" if p.get("due") else "상시 모집"
             meta = " · ".join(x for x in [f'{p["n"]}명' if p.get("n") else "", " ".join(p.get("emp") or []), due] if x)
-            b.append(f'<a href="./#job={e(p["id"])}"><span class="pill">공식</span>{e(p["title"])}<br><span class="meta">{e(meta)}</span></a>')
+            b.append(f'<a href="./jobs/{e(p["id"])}.html"><span class="pill">공식</span>{e(p["title"])}<br><span class="meta">{e(meta)}</span></a>')
         if len(open_now) > 8:
             b.append(f'<a href="./?q={e(org)}">외 {len(open_now) - 8}건 더 보기 →</a>')
         b.append("</div>")
