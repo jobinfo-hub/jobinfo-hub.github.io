@@ -20,6 +20,7 @@ BASE = 'https://jobinfo-hub.github.io'
 DETAIL_LABELS = {
     'recrutSeNm': '채용 구분',
     'aplyQlfcCn': '지원 자격',
+    'disqlfcRsn': '결격사유',
     'scrnprcdrMthdExpln': '전형 절차',
     'prefCn': '우대사항',
     'prefCondCn': '우대조건',
