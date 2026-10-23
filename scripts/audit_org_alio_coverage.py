@@ -15,6 +15,8 @@ NOW = datetime.now(KST)
 ACTIVE = re.compile(r'<h2>📢 지금 모집 중</h2><div class="olist">(.*?)</div>', re.S)
 LINK = re.compile(r'href="jobs/(a[0-9]+)\.html"')
 
+FULL = re.compile(r'<!-- careerpick-alio-list:start -->(.*?)<!-- careerpick-alio-list:end -->', re.S)
+
 def main():
     data = json.loads((ROOT / "alio.json").read_text(encoding="utf-8"))
     latest = defaultdict(set)
@@ -43,11 +45,14 @@ def main():
         html = page.read_text(encoding="utf-8")
         section = ACTIVE.search(html)
         shown = set(LINK.findall(section.group(1))) if section else set()
+        complete = FULL.search(html)
+        if complete:
+            shown.update(LINK.findall(complete.group(1)))
         absent = expected - shown
         total += len(expected)
         if absent:
             missing.append((org, len(absent), sorted(absent)[:5]))
-    print(f"Institution ALIO coverage (KST {NOW.date()}): {matched} institutions with active ALIO jobs; {total} active jobs in ALIO snapshot; {sum(item[1] for item in missing)} not listed in matching institution active sections; {len(missing)} institutions affected")
+    print(f"Institution ALIO coverage (KST {NOW.date()}): {matched} institutions with active ALIO jobs; {total} active jobs in ALIO snapshot; {sum(item[1] for item in missing)} not listed in institution active or complete ALIO sections; {len(missing)} institutions affected")
     for org, count, ids in sorted(missing, key=lambda item: -item[1])[:15]:
         print(f"ORG COVERAGE GAP: {org}: {count} missing, sample {','.join(ids)}")
     print(f"ALIO snapshot updated: {data.get('updated', 'unknown')}")
