@@ -63,9 +63,34 @@ def audit(posts, limit):
         if not official:
             results.append({'id': post.get('id'), 'status': 'missing'})
             continue
+        try:
+            host = urlsplit(official).hostname
+        except ValueError:
+            host = None
         outcome = check_url(official)
-        results.append({'id': post.get('id'), 'host': urlsplit(official).hostname, **outcome})
+        results.append({'id': post.get('id'), 'host': host, **outcome})
     return results
+
+
+def self_test():
+    """Offline-only audit checks; no network requests or data mutations."""
+    from unittest.mock import patch
+
+    posts = [
+        {'id': 'a1', 'alio': True, 'src': 'https://example.org/jobs'},
+        {'id': 'a2', 'alio': True, 'src': ''},
+        {'id': 'a3', 'alio': True, 'src': 'https://[broken'},
+        {'id': 'x4', 'alio': False, 'src': 'https://example.org'},
+    ]
+    with patch(__name__ + '.check_url', return_value={'status': 'responded', 'http_status': 200}):
+        rows = audit(posts, 3)
+    assert len(rows) == 3
+    assert rows[0]['status'] == 'responded'
+    assert rows[1]['status'] == 'missing'
+    assert rows[2]['host'] is None
+    assert all(row['id'] != 'x4' for row in rows)
+    assert len(audit([], 20)) == 0
+    print('CareerPick official link audit offline tests: PASS')
 
 
 def main():
@@ -73,7 +98,11 @@ def main():
     parser.add_argument('--limit', type=int, default=20)
     parser.add_argument('--input', default=str(ROOT / 'alio.json'))
     parser.add_argument('--output', default=str(ROOT / 'link-audit-results.json'))
+    parser.add_argument('--self-test', action='store_true')
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return
     if not 1 <= args.limit <= 50:
         parser.error('--limit must be between 1 and 50')
     data = json.loads(Path(args.input).read_text(encoding='utf-8'))

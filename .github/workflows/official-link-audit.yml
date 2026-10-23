@@ -24,6 +24,8 @@ jobs:
           python-version: '3.11'
       - name: Compile audit script
         run: python -m py_compile scripts/audit_official_links.py
+      - name: Run offline audit regression checks
+        run: python scripts/audit_official_links.py --self-test
       - name: Run bounded read-only URL audit
         if: github.event_name == 'workflow_dispatch'
         env:
