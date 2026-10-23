@@ -66,6 +66,8 @@ def triage(result):
     if status == 'responded':
         return 'reachable_not_verified'
     if status == 'http_error_or_redirect':
+        if code == 400:
+            return 'review_bad_request_or_access_requirements'
         if code in (404, 410):
             return 'review_missing_page'
         if code in (401, 403, 429):
@@ -133,6 +135,7 @@ def self_test():
         confirmed = check_url('https://example.org/jobs')
     assert confirmed == {'status': 'responded', 'http_status': 200, 'method': 'GET'}
     assert opener.open.call_count == 2
+    assert triage({'status': 'http_error_or_redirect', 'http_status': 400}) == 'review_bad_request_or_access_requirements'
     assert triage({'status': 'http_error_or_redirect', 'http_status': 403}) == 'access_restricted_or_rate_limited'
     assert triage({'status': 'http_error_or_redirect', 'http_status': 302}) == 'review_redirect_without_following'
     assert triage({'status': 'http_error_or_redirect', 'http_status': 503}) == 'retry_server_error'
@@ -151,6 +154,7 @@ def self_test():
 TRIAGE_KO = {
     'reachable_not_verified': '접속 응답 확인(채용 유효성 별도 확인)',
     'review_missing_page': '404/410: 페이지 확인 필요',
+    'review_bad_request_or_access_requirements': '400: 요청 방식/접근 조건 확인 필요',
     'review_missing_link': '공식 링크 누락',
     'review_url_or_dns': '주소 형식 또는 DNS 확인 필요',
     'access_restricted_or_rate_limited': '접근 제한/요청 제한',
