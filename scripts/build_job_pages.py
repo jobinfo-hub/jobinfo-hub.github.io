@@ -154,6 +154,15 @@ def render(post, detail):
         ('접수 마감', f'표시된 마감일은 {date_label(due)}입니다. 실제 마감시각과 접수방법은 공식 공고를 확인하세요.' if due else '공식 채용공고에서 접수기간과 마감시각을 확인하세요.'),
         ('전형 절차', '아래 채용 절차 항목과 공식 공고의 최신 일정을 비교하세요.' if process else '서류·필기·면접 실시 여부와 일정은 공식 공고에서 확인하세요.'),
     ]
+    # 공고별 실제 데이터로 확인 항목을 구성합니다. 확인되지 않은 조건은 추정하지 않습니다.
+    if post.get('region'):
+        check_items.append(('근무 지역', f'표시된 근무지역은 {clean(post.get("region"))}입니다. 실제 배치 장소와 전근 가능성은 공식 공고를 확인하세요.'))
+    if post.get('emp'):
+        check_items.append(('고용 형태', f'표시된 고용형태는 {clean(post.get("emp"))}입니다. 계약기간과 정규직 전환 여부는 공식 공고를 확인하세요.'))
+    if post.get('edu'):
+        check_items.append(('학력 조건', f'표시된 학력조건은 {clean(post.get("edu"))}입니다. 자격증·경력·우대사항은 별도로 확인하세요.'))
+    if not (qualification or process):
+        check_items.append(('상세 자료', '자격·전형 상세정보가 제공되지 않아 공식 공고문과 첨부파일 확인이 필요합니다.'))
     checks = ''.join(
         f'<li><strong>{escape(label)}</strong> — {escape(message)}</li>'
         for label, message in check_items
@@ -197,6 +206,29 @@ def render(post, detail):
         coverage_note = '일부 상세 정보가 제공된 공고입니다. 누락된 항목은 공식 원문에서 확인하세요.'
     else:
         coverage_note = '상세 직무·자격·전형 정보가 부족합니다. 공식 공고문과 첨부파일을 먼저 확인하세요.'
+    # 정보 충실도는 공고별 원본 자료 기준으로 표시합니다.
+    available_facts = [
+        label for label, present in (
+            ('모집인원', bool(post.get('n'))),
+            ('고용형태', bool(post.get('emp'))),
+            ('학력조건', bool(post.get('edu'))),
+            ('근무지역', bool(post.get('region'))),
+            ('접수마감', bool(due)),
+            ('상세 직무 설명', has_substantive_desc),
+            ('지원 자격 상세', bool(qualification)),
+            ('채용 절차 상세', bool(process)),
+        ) if present
+    ]
+    missing_facts = [
+        label for label in ('상세 직무 설명', '지원 자격 상세', '채용 절차 상세')
+        if label not in available_facts
+    ]
+    completeness_html = (
+        '<section aria-label="제공 정보 확인"><h2>제공 정보 확인</h2>'
+        f'<p>현재 확인 가능한 항목: {escape(", ".join(available_facts) or "없음")}</p>'
+        + (f'<p class="source-note">공식 원문에서 추가 확인할 항목: {escape(", ".join(missing_facts))}</p>' if missing_facts else '')
+        + '</section>'
+    )
     coverage_html = (
         '<section aria-label="공고 정보 제공 범위"><h2>공고 정보 제공 범위</h2>'
         f'<p class="source-note">{escape(coverage_note)}</p></section>'
@@ -352,6 +384,7 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 <ul class="checks">{checks}</ul>
 </section>
 {coverage_html}
+{completeness_html}
 {detail_status}
 {link}
 {extra}
