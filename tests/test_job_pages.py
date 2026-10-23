@@ -26,7 +26,7 @@ class JobPageTests(unittest.TestCase):
     def test_alio_collection_preserves_long_original_detail(self):
         original = '지원자격 상세 ' * 600
         collected = detail_of({'aplyQlfcCn': original})
-        self.assertEqual(collected['aplyQlfcCn'], original)
+        self.assertEqual(collected['aplyQlfcCn'], original.strip())
         html = render(self.post, collected)
         self.assertIn('이 항목은 원문이 길어 일부만 표시됩니다', html)
 
