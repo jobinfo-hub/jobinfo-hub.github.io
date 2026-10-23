@@ -6,6 +6,7 @@ on:
       - 'index.html'
       - 'scripts/build_job_pages.py'
       - 'scripts/audit_site.py'
+      - 'scripts/check_api_freshness.py'
       - '.github/workflows/careerpick-quality.yml'
   workflow_dispatch:
 
@@ -22,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Check Python syntax
-        run: python -m py_compile scripts/audit_site.py scripts/build_job_pages.py
+        run: python -m py_compile scripts/audit_site.py scripts/build_job_pages.py scripts/check_api_freshness.py
       - name: Run read-only site audit
         run: python scripts/audit_site.py
       - name: Run static job-page regression checks
