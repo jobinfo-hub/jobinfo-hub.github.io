@@ -533,7 +533,7 @@ section[id],h2[id]{{scroll-margin-top:20px}}
 def duplicate_key(post):
     """Conservative candidate key; never automatically delete ALIO postings."""
     values = tuple(
-        re.sub(r'\\s+', ' ', clean(post.get(field))).strip().casefold()
+        re.sub(r'\s+', ' ', clean(post.get(field))).strip().casefold()
         for field in ('org', 'title', 'due')
     )
     return values if all(values) else None
