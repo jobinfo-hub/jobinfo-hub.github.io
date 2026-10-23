@@ -17,6 +17,13 @@ LINK = re.compile(r'href="jobs/(a[0-9]+)\.html"')
 
 FULL = re.compile(r'<!-- careerpick-alio-list:start -->(.*?)<!-- careerpick-alio-list:end -->', re.S)
 
+def normalized_org_name(name):
+    """For audit suggestions only; never automatically merge different entities."""
+    value = re.sub(r"\\s+", "", name)
+    value = re.sub(r"^\\(재\\)|^\\(주\\)|^㈜", "", value)
+    value = re.sub(r"\\(주\\)$|㈜$", "", value)
+    return value
+
 def main():
     data = json.loads((ROOT / "alio.json").read_text(encoding="utf-8"))
     latest = defaultdict(set)
@@ -36,8 +43,13 @@ def main():
     available_orgs = {page.stem[4:] for page in ROOT.glob("org-*.html")}
     unmatched = [(org, len(ids)) for org, ids in latest.items() if org not in available_orgs]
     print(f"ALIO institutions without matching HTML page: {len(unmatched)}; active job records: {sum(count for _, count in unmatched)}")
+    normalized_pages = defaultdict(list)
+    for existing in available_orgs:
+        normalized_pages[normalized_org_name(existing)].append(existing)
     for org, count in sorted(unmatched, key=lambda item: (-item[1], item[0]))[:30]:
-        print(f"UNMATCHED ALIO INSTITUTION: {org}: {count} active jobs")
+        suggestions = sorted(normalized_pages.get(normalized_org_name(org), []))
+        suffix = f"; possible existing page(s): {', '.join(suggestions)}" if suggestions else "; no normalized page match"
+        print(f"UNMATCHED ALIO INSTITUTION: {org}: {count} active jobs{suffix}")
     matched = 0
     missing = []
     total = 0
