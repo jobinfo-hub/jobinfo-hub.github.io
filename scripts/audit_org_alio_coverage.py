@@ -50,12 +50,18 @@ def main():
         suggestions = sorted(normalized_pages.get(normalized_org_name(org), []))
         suffix = f"; possible existing page(s): {', '.join(suggestions)}" if suggestions else "; no normalized page match"
         print(f"UNMATCHED ALIO INSTITUTION: {org}: {count} active jobs{suffix}")
+    normalized_latest = defaultdict(set)
+    for org, ids in latest.items():
+        normalized_latest[normalized_org_name(org)].update(ids)
+    page_alias_counts = defaultdict(int)
+    for org in available_orgs:
+        page_alias_counts[normalized_org_name(org)] += 1
     matched = 0
     missing = []
     total = 0
     for page in sorted(ROOT.glob("org-*.html")):
         org = page.stem[4:]
-        expected = latest.get(org, set())
+        expected = normalized_latest.get(normalized_org_name(org), set()) if page_alias_counts[normalized_org_name(org)] == 1 else latest.get(org, set())
         if not expected:
             continue
         matched += 1

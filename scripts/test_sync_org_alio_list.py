@@ -37,6 +37,21 @@ def main():
             assert "jobs/a123.html" not in third
             assert 'data-careerpick-alio-heading="true"' not in third
             assert "📝 최근 공고의 지원 자격" in third
+            # An ALIO legal suffix must map to the existing institution page.
+            data["posts"][0]["org"] = "(주)시험기관"
+            data["posts"][0]["due"] = future
+            (root / "alio.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            generator.main()
+            fourth = page.read_text(encoding="utf-8")
+            assert fourth.count("jobs/a123.html") == 1
+            generator.main()
+            assert page.read_text(encoding="utf-8") == fourth
+            # Avoid silently merging if more than one page normalizes to the same name.
+            duplicate = root / "org-(주)시험기관.html"
+            duplicate.write_text(original, encoding="utf-8")
+            generator.main()
+            assert "jobs/a123.html" not in page.read_text(encoding="utf-8")
+            assert "jobs/a123.html" not in duplicate.read_text(encoding="utf-8")
     print("Institution ALIO list regression PASS: idempotent rebuild, expired removal, heading cleanup")
 
 if __name__ == "__main__":
