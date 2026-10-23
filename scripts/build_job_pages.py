@@ -156,17 +156,29 @@ def render(post, detail):
                     f'<p>{escape(val[:1500])}</p></section>'
                 )
 
+    # 공고마다 고유한 확인 가능 정보로 설명을 구성합니다.
+    # 직무 분류처럼 짧은 원본 설명만으로는 채용 내용을 설명하기 어렵습니다.
+    desc = clean(post.get('desc'))
+    summary_parts = [
+        f'{org}의 {title} 채용공고입니다.',
+        f'고용형태: {clean(post.get("emp"))}.' if post.get('emp') else '',
+        f'근무지역: {clean(post.get("region"))}.' if post.get('region') else '',
+        f'모집인원: {clean(post.get("n"))}명.' if post.get('n') else '',
+        f'접수마감: {date_label(due)}.' if due else '',
+    ]
+    if desc and len(desc) >= 25:
+        summary_parts.append(desc[:500])
+    if isinstance(detail, dict):
+        qualification = clean(detail.get('aplyQlfcCn'))
+        if qualification:
+            summary_parts.append('지원자격: ' + qualification[:900])
+    job_description = ' '.join(part for part in summary_parts if part)
+
     schema = {
         '@context': 'https://schema.org',
         '@type': 'JobPosting',
         'title': title,
-        'description': (
-            clean(post.get('desc'))
-            or (
-                f'{org} 채용공고. 지원자격과 세부사항은 '
-                '공식 공고에서 확인하세요.'
-            )
-        ),
+        'description': job_description,
         'hiringOrganization': {
             '@type': 'Organization',
             'name': org,
@@ -249,6 +261,10 @@ dd{{margin:0 0 14px}}
 a{{color:#1f3fbf}}
 .muted{{color:#64748b}}
 .closed{{padding:12px;background:#fff1f2;color:#9f1239;border-radius:8px;font-weight:700}}
+dl{{display:grid;grid-template-columns:minmax(100px,145px) 1fr;gap:8px 12px}}
+dt,dd{{margin:0;padding:8px 0;border-bottom:1px solid #e5e7eb}}
+section p{{white-space:pre-line;overflow-wrap:anywhere}}
+@media(max-width:480px){{dl{{grid-template-columns:1fr;gap:0}}dt{{border:0;padding-bottom:0}}dd{{padding-top:0}}}}
 @media(max-width:760px){{main{{margin:0;border-radius:0;padding:20px}}}}
 </style>
 </head>
@@ -261,6 +277,8 @@ a{{color:#1f3fbf}}
 {notice}
 <h2>모집 요약</h2>
 <dl>{rows}</dl>
+<h2>공고 핵심정보</h2>
+<p>{escape(job_description[:1300])}</p>
 {link}
 {extra}
 <hr>
