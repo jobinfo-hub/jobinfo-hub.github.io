@@ -20,10 +20,10 @@ def run():
     assert checker.alio_block("<html>" + BLOCK + "</html>") == BLOCK
     assert checker.alio_block("<html>no marker</html>") is None
     good = Response("<html>" + BLOCK + "</html>")
-    with patch.object(checker, "expected_block", return_value=BLOCK):
+    with patch.object(checker, "expected_block", return_value=BLOCK), patch.object(checker, "verify_job_detail") as detail:
         with patch.object(checker, "urlopen", return_value=good) as fetch:
             checker.main()
-            assert fetch.call_count == 1
+            assert fetch.call_count == 1 and detail.call_count == 1
         with patch.object(checker, "urlopen", side_effect=[URLError("transient"), good]) as fetch, patch.object(checker.time, "sleep") as sleep:
             checker.main()
             assert fetch.call_count == 2 and sleep.call_count == 1
@@ -35,7 +35,11 @@ def run():
             except SystemExit:
                 pass
             assert fetch.call_count == 8
-    print("Public Pages content equality regression PASS: match, retry, outdated list rejection")
+    with patch.object(checker, "urlopen", return_value=Response("<html><title>Job</title></html>")) as fetch:
+        checker.verify_job_detail(BLOCK)
+        assert fetch.call_count == 1
+    assert checker.JobLinkParser is not None
+    print("Public Pages content equality regression PASS: match, retry, outdated list rejection, job detail")
 
 if __name__ == "__main__":
     run()
