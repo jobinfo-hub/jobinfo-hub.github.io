@@ -36,6 +36,18 @@ def main():
             audit_main()
         assert "1 ambiguous (1 jobs)" in output.getvalue(), output.getvalue()
         assert "1 active jobs in ALIO snapshot" in output.getvalue(), output.getvalue()
+        # Missing listings on a resolvable institution page must fail strict CI.
+        try:
+            with patch("audit_org_alio_coverage.ROOT", root), redirect_stdout(StringIO()):
+                audit_main(strict=True)
+        except SystemExit as exc:
+            assert "coverage failed" in str(exc), exc
+        else:
+            raise AssertionError("Missing mapped institution jobs must fail strict audit")
+        page = root / "org-시험기관.html"
+        page.write_text('<h2>📢 지금 모집 중</h2><div class="olist"><a href="jobs/a123.html">공고</a></div>', encoding="utf-8")
+        with patch("audit_org_alio_coverage.ROOT", root), redirect_stdout(StringIO()):
+            audit_main(strict=True)
     print("ALIO institution name normalization and resolution PASS")
 
 if __name__ == "__main__":
