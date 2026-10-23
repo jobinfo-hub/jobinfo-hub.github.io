@@ -1,0 +1,29 @@
+name: CareerPick quality checks
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'scripts/build_job_pages.py'
+      - 'scripts/audit_site.py'
+      - '.github/workflows/careerpick-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check Python syntax
+        run: python -m py_compile scripts/audit_site.py scripts/build_job_pages.py
+      - name: Run read-only site audit
+        run: python scripts/audit_site.py
+      - name: Run static job-page regression checks
+        run: python scripts/build_job_pages.py --self-test

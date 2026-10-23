@@ -555,7 +555,7 @@ footer .src b{color:var(--ink)}
 
 /* CareerPick discovery refresh: additive only, existing data and automation untouched */
 .cp-discovery{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0 12px}
-.cp-discovery h2{font-size:18px;line-height:1.35;margin:0 0 4px;letter-spacing:-.4px}
+.cp-discovery-kicker{display:inline-block;margin-bottom:12px;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--brand);font-size:12px;font-weight:700;letter-spacing:.02em}\n.cp-discovery h2{font-size:18px;line-height:1.35;margin:0 0 4px;letter-spacing:-.4px}
 .cp-discovery p{font-size:12px;color:var(--muted);margin:0 0 12px}
 .cp-discovery-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .cp-discovery-links a{display:flex;align-items:center;justify-content:center;min-height:44px;text-align:center;text-decoration:none;font-size:12px;font-weight:700;padding:8px 4px;color:var(--brand);border:1px solid var(--line);background:var(--bg);border-radius:10px}
@@ -606,6 +606,7 @@ footer .src b{color:var(--ink)}
   <button type="button" id="cpInternalBack" class="cp-internal-back" hidden aria-label="이전 화면으로 돌아가기">← 이전 화면</button>
 
   <section class="cp-discovery" aria-label="채용정보 빠른 탐색">
+    <div class="cp-discovery-kicker" aria-label="공공 채용정보">공기업 · 공공기관 · 공무직</div>
     <h2>내게 맞는 채용공고, 빠르게 찾기</h2>
     <p>기관명·직무 검색부터 마감 임박 공고와 취업 준비 정보까지 한눈에 확인하세요.</p>
     <div class="cp-discovery-links">
