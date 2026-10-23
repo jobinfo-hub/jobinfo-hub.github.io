@@ -33,6 +33,18 @@ jobs:
       - name: 블로그 RSS 읽어서 글 목록 갱신
         run: python update.py
 
+      - name: ALIO API 인증 설정 확인 (값 비공개)
+        env:
+          ALIO_KEY: ${{ secrets.ALIO_KEY }}
+        shell: bash
+        run: |
+          if [ -z "$ALIO_KEY" ]; then
+            echo '::warning title=ALIO_KEY 미설정::ALIO와 큐넷 API 갱신이 건너뛰어질 수 있습니다. GitHub Actions secrets 설정을 확인하세요.'
+            echo '⚠️ ALIO_KEY가 설정되지 않았습니다. API 갱신이 건너뛰어질 수 있습니다.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'ALIO_KEY 설정 존재 여부 확인 완료 (인증값 미출력).'
+          fi
+
       - name: 잡알리오 공식 공고 가져오기
         env:
           ALIO_KEY: ${{ secrets.ALIO_KEY }}
