@@ -7,6 +7,7 @@ on:
       - 'orgs.py'
       - 'test_alio_partial_fetch.py'
       - 'qnet.py'
+      - 'scripts/test_qnet_pagination.py'
       - 'history.py'
       - 'monitor.py'
       - 'update.py'
@@ -40,7 +41,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: Check Python syntax
-        run: python -m py_compile orgs.py alio.py qnet.py history.py monitor.py update.py sitegen.py scripts/build_sitemap.py scripts/audit_site.py scripts/build_job_pages.py scripts/check_api_freshness.py scripts/test_api_freshness.py scripts/audit_org_links.py scripts/test_audit_org_links.py scripts/test_org_page_links.py scripts/refresh_org_links.py scripts/summarize_api_run.py scripts/test_summarize_api_run.py test_alio_partial_fetch.py
+        run: python -m py_compile scripts/test_qnet_pagination.py orgs.py alio.py qnet.py history.py monitor.py update.py sitegen.py scripts/build_sitemap.py scripts/audit_site.py scripts/build_job_pages.py scripts/check_api_freshness.py scripts/test_api_freshness.py scripts/audit_org_links.py scripts/test_audit_org_links.py scripts/test_org_page_links.py scripts/refresh_org_links.py scripts/summarize_api_run.py scripts/test_summarize_api_run.py test_alio_partial_fetch.py
+      - name: Test QNet pagination protection
+        run: python scripts/test_qnet_pagination.py
       - name: Test ALIO partial fetch protection
         run: python test_alio_partial_fetch.py
       - name: Test API run classification

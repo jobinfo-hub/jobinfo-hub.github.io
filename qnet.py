@@ -72,10 +72,17 @@ def grade_of(desc, fallback=""):
     return fallback or re.sub(r"\(.*?\)|\d{4}년도?|제?\s*\d+\s*회|국가(?:기술|전문)?자격", "", d).strip(" -·") or "기타"
 
 
+class IncompleteQnetResponse(RuntimeError):
+    """An API page limit would discard reported QNet schedule records."""
+
+
+
 def collect(key, year, gb):
-    rows, page = [], 1
+    rows, page, reported_total = [], 1, None
     while page <= 6:
         items, total = ask(key, year, gb, page)
+        if total is not None and reported_total is None:
+            reported_total = total
         rows += items
         try:
             if len(items) < 50 or (total and len(rows) >= int(total)):
@@ -83,6 +90,19 @@ def collect(key, year, gb):
         except (TypeError, ValueError):
             break
         page += 1
+    # Reject incomplete pagination rather than replacing a complete daily cache.
+    try:
+        expected = int(reported_total) if reported_total is not None else None
+    except (TypeError, ValueError):
+        expected = None
+    if expected is not None and expected > len(rows):
+        raise IncompleteQnetResponse(
+            f"큐넷 {year} {gb} 수집 불완전: {len(rows)} / {expected}건"
+        )
+    if expected is None and page > 6 and len(items) == 50:
+        raise IncompleteQnetResponse(
+            f"큐넷 {year} {gb} 페이지 한도 도달: 수집 {len(rows)}건"
+        )
     return rows
 
 
@@ -131,6 +151,8 @@ def fetch(key, now):
             if got and year == now.year:
                 print("큐넷 응답 필드:", ", ".join(sorted(got[0].keys())))
                 print("큐넷 일정 설명 예:", " | ".join(sorted({str(x.get("description", ""))[:30] for x in got})[:8]))
+        except IncompleteQnetResponse:
+            raise  # Never replace a complete snapshot with a truncated schedule.
         except Exception as e:
             print(f"큐넷 {year} 국가기술자격 요청 실패:", e)
         if got:
@@ -148,6 +170,8 @@ def fetch(key, now):
             sp = collect(key, year, "S")
             if len(sp) <= 300:
                 rows += [to_row(it, year, "S") for it in sp]
+        except IncompleteQnetResponse:
+            raise
         except Exception as e:
             print(f"큐넷 {year} 국가전문자격 요청 실패(무시):", e)
     return merge(rows)
