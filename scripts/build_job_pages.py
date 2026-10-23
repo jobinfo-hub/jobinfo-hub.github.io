@@ -442,6 +442,8 @@ def main():
         'thin_data': 0,
     }
 
+    # 자동 품질 보고서: 검색 노출이나 채용공고 생성 여부는 변경하지 않습니다.
+    quality_rows = []
     # 1. 잡알리오 채용공고 상세페이지 생성
     for post in posts:
         if not isinstance(post, dict) or not post.get('alio'):
@@ -470,6 +472,28 @@ def main():
         quality['thin_data'] += int(
             not has_qualification and not has_process and not has_description
         )
+
+        missing = [
+            name for name, present in (
+                ('지원자격 상세', has_qualification),
+                ('채용절차 상세', has_process),
+                ('실질 직무설명', has_description),
+                ('학력조건', bool(post.get('edu'))),
+                ('접수마감', bool(post.get('due'))),
+                ('공식링크', has_official),
+            ) if not present
+        ]
+        quality_rows.append({
+            'id': pid,
+            'title': clean(post.get('title')),
+            'organization': clean(post.get('org')),
+            'missing': missing,
+            'detail_fields': {
+                'qualification': has_qualification,
+                'process': has_process,
+                'substantive_description': has_description,
+            },
+        })
 
         target = OUT / f'{pid}.html'
         html = render(post, job_detail)
@@ -507,6 +531,20 @@ def main():
             available_js,
             encoding='utf-8'
         )
+
+    # JSON 보고서는 배포 중 자동 생성되며 공개 페이지에서는 링크하지 않습니다.
+    report = {
+        'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'source': 'ALIO',
+        'summary': quality,
+        'posts': quality_rows,
+    }
+    report_path = ROOT / 'job-quality-report.json'
+    report_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + '\n',
+        encoding='utf-8',
+    )
+    print(f'채용공고 품질 보고서: {report_path.name}')
 
     # 읽기 전용 진단: 기존 생성·게시·색인 동작은 변경하지 않습니다.
     print('채용공고 원본 데이터 품질 진단:', json.dumps(quality, ensure_ascii=False))
