@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: careerpick-threads-publisher
@@ -103,6 +104,38 @@ jobs:
         run: |
           git fetch origin main
           git restore --source=origin/main -- threads_posted.json
+
+      - name: Trigger Pages deployment for newly committed image
+        if: env.THREADS_ENABLED == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # GITHUB_TOKEN pushes do not trigger the usual push workflows.
+          # Explicitly dispatch Pages after the image has been committed.
+          python - <<'PY'
+          import json, os, urllib.request
+          from pathlib import Path
+          records = json.loads(Path('threads_posted.json').read_text(encoding='utf-8')).get('records', [])
+          pending = [r for r in records if r.get('run_id') == os.environ['GITHUB_RUN_ID'] and r.get('status') == 'pending']
+          if len(pending) != 1 or not pending[0].get('image_url'):
+              print('No pending image to deploy')
+          else:
+              repo = os.environ['GITHUB_REPOSITORY']
+              url = f'https://api.github.com/repos/{repo}/actions/workflows/deploy.yml/dispatches'
+              request = urllib.request.Request(
+                  url, data=json.dumps({'ref': 'main'}).encode(),
+                  method='POST', headers={
+                      'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                      'Accept': 'application/vnd.github+json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'Content-Type': 'application/json'
+                  }
+              )
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  if response.status != 204:
+                      raise RuntimeError(f'Pages deployment dispatch returned {response.status}')
+              print('Requested Pages deployment for pending image')
+          PY
 
       - name: Allow Pages deployment to serve new image
         if: env.THREADS_ENABLED == 'true'
