@@ -1,38 +1,38 @@
 {
-  "updated_at": "2026-10-23T06:21:31+00:00",
+  "updated_at": "2026-10-23T07:33:39+00:00",
   "source": "ALIO",
   "summary": {
-    "total": 485,
-    "with_category_only_description": 485,
-    "with_qualification": 485,
-    "with_process": 485,
-    "with_both": 485,
+    "total": 486,
+    "with_category_only_description": 486,
+    "with_qualification": 486,
+    "with_process": 486,
+    "with_both": 486,
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0
   },
   "detail_field_counts": {
-    "acbgCondNmLst": 485,
-    "aplyQlfcCn": 485,
-    "decimalDay": 485,
-    "disqlfcRsn": 485,
-    "hireTypeNmLst": 485,
-    "instNm": 485,
-    "ncsCdNmLst": 485,
-    "ongoingYn": 485,
-    "pbancBgngYmd": 485,
-    "pbancEndYmd": 485,
-    "prefCn": 485,
-    "recrutNope": 485,
-    "recrutPbancTtl": 485,
-    "recrutPblntSn": 485,
-    "recrutSe": 485,
-    "recrutSeNm": 485,
-    "replmprYn": 485,
-    "scrnprcdrMthdExpln": 485,
-    "srcUrl": 485,
-    "workRgnNmLst": 485,
-    "prefCondCn": 465,
+    "acbgCondNmLst": 486,
+    "aplyQlfcCn": 486,
+    "decimalDay": 486,
+    "disqlfcRsn": 486,
+    "hireTypeNmLst": 486,
+    "instNm": 486,
+    "ncsCdNmLst": 486,
+    "ongoingYn": 486,
+    "pbancBgngYmd": 486,
+    "pbancEndYmd": 486,
+    "prefCn": 486,
+    "recrutNope": 486,
+    "recrutPbancTtl": 486,
+    "recrutPblntSn": 486,
+    "recrutSe": 486,
+    "recrutSeNm": 486,
+    "replmprYn": 486,
+    "scrnprcdrMthdExpln": 486,
+    "srcUrl": 486,
+    "workRgnNmLst": 486,
+    "prefCondCn": 466,
     "nonatchRsn": 88
   },
   "posts": [
@@ -3859,6 +3859,19 @@
       }
     },
     {
+      "id": "a306306",
+      "title": "국방기술품질원 2026년 하반기 정기채용(임용후보자(정규직, 무기사업직))",
+      "organization": "국방기술품질원",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
       "id": "a306273",
       "title": "2027년 상반기 체험형 청년인턴 채용 공고",
       "organization": "울산항만공사",
@@ -3901,19 +3914,6 @@
       "id": "a306263",
       "title": "2026년 태권도원 체험관[얍] 운영 기간제근로자(보조인력) 채용",
       "organization": "태권도진흥재단",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a306262",
-      "title": "국방기술품질원 2026년 하반기 정기채용(임용후보자(정규직, 무기사업직))",
-      "organization": "국방기술품질원",
       "missing": [
         "실질 직무설명"
       ],
@@ -4727,6 +4727,19 @@
       "missing": [
         "실질 직무설명",
         "학력조건"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306305",
+      "title": "지역관광기업지원센터 구축 및 운영 사업 기간제 근로자 채용 공고",
+      "organization": "한국관광공사",
+      "missing": [
+        "실질 직무설명"
       ],
       "detail_fields": {
         "qualification": true,

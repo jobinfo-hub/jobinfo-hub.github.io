@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-23T15:21:10+09:00",
+ "updated": "2026-10-23T16:33:20+09:00",
  "posts": [
   {
    "id": "a306139",
@@ -5056,7 +5056,7 @@
    "cat": "공공기관 공식 공고",
    "title": "한전KPS(주)남제주사업소 복합ST&HRSG 계획예방정비공사 단기노무원 채용 공고",
    "org": "한전KPS(주)",
-   "desc": "기계 · 환경.에너지.안전",
+   "desc": "기계 · 전기.전자 · 환경.에너지.안전",
    "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306302",
    "pub": "2026-10-23T00:00:00+09:00",
    "due": "2026-11-02T23:59:00+09:00",
@@ -5068,7 +5068,7 @@
     "학력무관"
    ],
    "region": "제주",
-   "text": "비정규직 학력무관 제주 기계 환경.에너지.안전",
+   "text": "비정규직 학력무관 제주 기계 전기.전자 환경.에너지.안전",
    "n": "14",
    "src": "https://www.kps.co.kr/"
   },
@@ -6583,6 +6583,30 @@
    "src": "https://cnuhinsa.recruiter.co.kr"
   },
   {
+   "id": "a306306",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "국방기술품질원 2026년 하반기 정기채용(임용후보자(정규직, 무기사업직))",
+   "org": "국방기술품질원",
+   "desc": "연구",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306306",
+   "pub": "2026-10-22T00:00:00+09:00",
+   "due": "2026-11-05T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "무기계약직",
+    "정규직"
+   ],
+   "edu": [
+    "고졸 가능"
+   ],
+   "region": "전국",
+   "text": "정규직 무기계약직 고졸 대졸(2~3년) 대졸(4년) 석사 부산 대전 전남광주 경남 연구",
+   "n": "11",
+   "src": "https://dtaq.re.kr/ko/career/notice.jsp"
+  },
+  {
    "id": "a306273",
    "type": "j",
    "alio": true,
@@ -6675,30 +6699,6 @@
    "text": "비정규직 학력무관 전북 이용.숙박.여행.오락.스포츠",
    "n": "1",
    "src": "https://www.tpf.or.kr/tpf/contents/recruitment.do?&schM=view&page=1&viewCount=10&id=7207&schBdcode=&schGroupCode="
-  },
-  {
-   "id": "a306262",
-   "type": "j",
-   "alio": true,
-   "cat": "공공기관 공식 공고",
-   "title": "국방기술품질원 2026년 하반기 정기채용(임용후보자(정규직, 무기사업직))",
-   "org": "국방기술품질원",
-   "desc": "연구",
-   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306262",
-   "pub": "2026-10-22T00:00:00+09:00",
-   "due": "2026-11-05T23:59:00+09:00",
-   "dueHasTime": false,
-   "emp": [
-    "무기계약직",
-    "정규직"
-   ],
-   "edu": [
-    "고졸 가능"
-   ],
-   "region": "전국",
-   "text": "정규직 무기계약직 고졸 대졸(2~3년) 대졸(4년) 석사 부산 대전 전남광주 경남 연구",
-   "n": "11",
-   "src": "https://dtaq.re.kr/ko/career/notice.jsp"
   },
   {
    "id": "a306259",
@@ -8075,6 +8075,29 @@
    "text": "비정규직 대졸(4년) 충남 교육.자연.사회과학",
    "n": "1",
    "src": "https://www.koreatech.ac.kr/notice/view.es?mid=a10604040000&board_id=150&post_seq=855&prefix_id="
+  },
+  {
+   "id": "a306305",
+   "type": "j",
+   "alio": true,
+   "cat": "공공기관 공식 공고",
+   "title": "지역관광기업지원센터 구축 및 운영 사업 기간제 근로자 채용 공고",
+   "org": "한국관광공사",
+   "desc": "경영.회계.사무",
+   "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306305",
+   "pub": "2026-10-23T00:00:00+09:00",
+   "due": "2026-11-09T23:59:00+09:00",
+   "dueHasTime": false,
+   "emp": [
+    "계약직"
+   ],
+   "edu": [
+    "학력무관"
+   ],
+   "region": "서울",
+   "text": "비정규직 학력무관 서울 경영.회계.사무",
+   "n": "1",
+   "src": "https://knto.or.kr/recruitInfo"
   },
   {
    "id": "a306209",
