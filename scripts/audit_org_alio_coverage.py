@@ -1,6 +1,6 @@
 """Audit whether institution active listings reflect current ALIO data.
 
-Read-only. An ALIO snapshot and institution HTML can be generated separately;
+Read-only coverage check. An ALIO snapshot and institution HTML can be generated separately;
 report coverage rather than silently editing institution statistics.
 """
 from collections import defaultdict
