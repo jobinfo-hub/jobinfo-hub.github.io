@@ -148,6 +148,10 @@ def render(post, detail):
         safe_url(post.get('src'))
         or safe_url(post.get('url'))
     )
+    # 기관 원문이 일시적으로 열리지 않을 때 ALIO 원본을 대체 확인 경로로 제공합니다.
+    alio_reference = safe_url(post.get('url'))
+    if alio_reference == official:
+        alio_reference = ''
     # 허용 가능한 HTTPS 링크라는 뜻이지, 링크 응답이나 접수 가능성을 실시간 검증한 것은 아닙니다.
 
     fields = [
@@ -423,6 +427,13 @@ def render(post, detail):
             '공식 채용공고 열기 ↗</a>'
             if official
             else '<p class="source-note">공식 링크를 확인할 수 없습니다. 채용기관 홈페이지에서 공고를 검색하세요.</p>'
+        )
+        + (
+            '<p class="source-note">기관 공고 페이지가 열리지 않으면 아래 ALIO 원본에서도 공고를 확인하세요. '
+            '접수 가능 여부와 최종 제출처는 기관 공식 안내를 기준으로 판단해야 합니다.</p>'
+            f'<a href="{escape(alio_reference, quote=True)}" rel="noopener noreferrer" '
+            'target="_blank">ALIO 원본에서 공고 확인 ↗</a>'
+            if alio_reference else ''
         )
         + '</section>'
     )
@@ -747,6 +758,16 @@ def self_test():
     assert duplicate_key({'org': 'A', 'title': '공고', 'due': '2099-01-01'}) != duplicate_key(
         {'org': 'A', 'title': '공고', 'due': '2099-01-02'}
     )
+    # 기관 공고와 ALIO 링크가 다를 때만 보조 경로를 표시합니다.
+    sample['src'] = 'https://agency.example.org/recruit/123'
+    sample['url'] = 'https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=123'
+    fallback_html = render(sample, {})
+    assert 'ALIO 원본에서 공고 확인' in fallback_html
+    assert 'https://agency.example.org/recruit/123' in fallback_html
+    sample['url'] = sample['src']
+    assert 'ALIO 원본에서 공고 확인' not in render(sample, {})
+    sample['url'] = 'javascript:alert(1)'
+    assert 'ALIO 원본에서 공고 확인' not in render(sample, {})
     # 공식 URL이 없거나 안전하지 않으면 지원 버튼을 만들지 않습니다.
     sample['src'] = 'https://192.168.1.2/private'
     sample['url'] = 'javascript:alert(1)'
