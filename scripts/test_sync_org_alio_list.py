@@ -37,6 +37,12 @@ def main():
             assert "jobs/a123.html" not in third
             assert 'data-careerpick-alio-heading="true"' not in third
             assert "📝 최근 공고의 지원 자격" in third
+            legacy = '<h2>📢 ALIO 수록 모집 공고</h2>\n<!-- careerpick-alio-list:start --><div>old</div><!-- careerpick-alio-list:end -->'
+            page.write_text(original.replace('<h2>📝', legacy + '<h2>📝'), encoding="utf-8")
+            generator.main()
+            migrated = page.read_text(encoding="utf-8")
+            assert "📢 ALIO 수록 모집 공고" not in migrated
+            assert "careerpick-alio-list:start" not in migrated
             # An ALIO legal suffix must map to the existing institution page.
             data["posts"][0]["org"] = "(주)시험기관"
             data["posts"][0]["due"] = future

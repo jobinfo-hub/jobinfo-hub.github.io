@@ -14,7 +14,7 @@ from audit_org_alio_coverage import normalized_org_name
 
 ROOT = Path(__file__).resolve().parent.parent
 KST = timezone(timedelta(hours=9))
-BLOCK = re.compile(r'(?:<h2 data-careerpick-alio-heading="true">📢 ALIO 수록 모집 공고</h2>)?\n?<!-- careerpick-alio-list:start -->.*?<!-- careerpick-alio-list:end -->', re.S)
+BLOCK = re.compile(r'(?:<h2(?: data-careerpick-alio-heading="true")?>📢 ALIO 수록 모집 공고</h2>)?\n?<!-- careerpick-alio-list:start -->.*?<!-- careerpick-alio-list:end -->', re.S)
 ANCHOR = re.compile(r'(<h2>📢 지금 모집 중</h2><div class="olist">.*?</div>)', re.S)
 
 def main():
