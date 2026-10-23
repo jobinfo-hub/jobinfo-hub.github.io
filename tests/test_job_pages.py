@@ -92,6 +92,18 @@ class JobPageTests(unittest.TestCase):
         html = render(self.post, {'scrnprcdrMthdExpln': '서류심사 → 전공 필기시험 → 면접'})
         self.assertNotIn('NCS 4주 학습 계획', html)
 
+    def test_ncs_assessment_in_document_screening_not_written_exam(self):
+        html = render(self.post, {'scrnprcdrMthdExpln': '1. 서류전형\\n- 평가: 직업기초능력(40%)\\n2. 면접전형\\n- 평가: 직업기초역량(40%)'})
+        self.assertNotIn('NCS 4주 학습 계획', html)
+
+    def test_ncs_exam_on_next_line_is_detected(self):
+        html = render(self.post, {'scrnprcdrMthdExpln': '2차 : 필기전형\\n- 직무공통능력검사(NCS - 의사소통능력, 문제해결능력)\\n3차 : 면접전형'})
+        self.assertIn('NCS 4주 학습 계획', html)
+
+    def test_ncs_assessment_in_written_exam_section(self):
+        html = render(self.post, {'scrnprcdrMthdExpln': '다. 필기전형\\n - NCS직업 기초능력\\n - 인성검사\\n라. 면접전형'})
+        self.assertIn('NCS 4주 학습 계획', html)
+
     def test_long_ncs_classification_is_not_presented_as_job_duties(self):
         post = dict(
             self.post,
