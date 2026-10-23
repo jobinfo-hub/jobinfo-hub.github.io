@@ -40,10 +40,15 @@ jobs:
           else
             python scripts/audit_official_links.py --limit "$SAMPLE_SIZE"
           fi
+      - name: Show Korean audit summary
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        run: cat link-audit-summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload diagnostic report
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         uses: actions/upload-artifact@v4
         with:
           name: careerpick-official-link-audit
-          path: link-audit-results.json
+          path: |
+            link-audit-results.json
+            link-audit-summary.md
           retention-days: 7

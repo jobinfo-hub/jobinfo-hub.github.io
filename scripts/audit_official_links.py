@@ -130,7 +130,47 @@ def self_test():
     with patch(__name__ + '.check_url', return_value={'status': 'responded', 'http_status': 200}):
         rotated = audit(posts, 1, offset=1)
     assert rotated[0]['id'] == 'a2'
+    summary_text = markdown_summary({'checked_count': 2, 'triage_summary': {'review_missing_page': 1, 'retry_later': 1}})
+    assert '404/410' in summary_text and '네트워크 오류' in summary_text
+    assert '점검 수: 2건' in summary_text
     print('CareerPick official link audit offline tests: PASS')
+
+
+
+TRIAGE_KO = {
+    'reachable_not_verified': '접속 응답 확인(채용 유효성 별도 확인)',
+    'review_missing_page': '404/410: 페이지 확인 필요',
+    'review_missing_link': '공식 링크 누락',
+    'review_url_or_dns': '주소 형식 또는 DNS 확인 필요',
+    'access_restricted_or_rate_limited': '접근 제한/요청 제한',
+    'review_redirect_without_following': '이동 주소 확인 필요',
+    'retry_server_error': '서버 오류: 나중에 재점검',
+    'retry_later': '네트워크 오류: 나중에 재점검',
+    'review_http_response': 'HTTP 응답 수동 검토',
+    'review_unknown': '기타 수동 검토',
+}
+
+
+def markdown_summary(report):
+    """Safe human-readable summary without untrusted titles or URLs."""
+    lines = [
+        '## 커리어픽 공식 채용 링크 점검',
+        '',
+        f"점검 수: {report['checked_count']}건",
+        '',
+        '| 분류 | 건수 |',
+        '| --- | ---: |',
+    ]
+    for key, count in sorted(report['triage_summary'].items()):
+        lines.append(f"| {TRIAGE_KO.get(key, '기타')} | {count} |")
+    lines.extend([
+        '',
+        'HTTP 응답만으로 채용 진행 여부를 확정하지 않습니다.',
+        '접근 제한(403 등)과 일시적인 서버 오류는 링크 삭제 근거가 아닙니다.',
+        '개별 공고 ID 및 오류 내용은 업로드된 JSON 보고서를 확인하세요.',
+        '',
+    ])
+    return '\n'.join(lines)
 
 
 def main():
@@ -138,6 +178,7 @@ def main():
     parser.add_argument('--limit', type=int, default=20)
     parser.add_argument('--input', default=str(ROOT / 'alio.json'))
     parser.add_argument('--output', default=str(ROOT / 'link-audit-results.json'))
+    parser.add_argument('--markdown-output', default=str(ROOT / 'link-audit-summary.md'))
     parser.add_argument('--self-test', action='store_true')
     parser.add_argument('--rotate-weekly', action='store_true')
     args = parser.parse_args()
@@ -163,6 +204,7 @@ def main():
         'results': results,
     }
     Path(args.output).write_text(json.dumps(output, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    Path(args.markdown_output).write_text(markdown_summary(output), encoding='utf-8')
     print(f"Audited {len(results)} official URLs; results: {args.output}")
 
 
