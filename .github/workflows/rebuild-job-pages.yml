@@ -11,6 +11,7 @@ on:
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/audit_org_alio_coverage.py'
       - 'scripts/sync_org_alio_list.py'
+      - 'scripts/check_live_org_pages.py'
       - 'scripts/mark_expired_org_jobs.py'
       - 'scripts/test_mark_expired_org_jobs.py'
       - '.github/workflows/rebuild-job-pages.yml'
@@ -23,6 +24,7 @@ on:
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/audit_org_alio_coverage.py'
       - 'scripts/sync_org_alio_list.py'
+      - 'scripts/check_live_org_pages.py'
       - 'scripts/mark_expired_org_jobs.py'
       - 'scripts/test_mark_expired_org_jobs.py'
       - '.github/workflows/rebuild-job-pages.yml'
@@ -149,3 +151,6 @@ jobs:
           path: '.'
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify public institution ALIO list after deployment
+        run: python scripts/check_live_org_pages.py
