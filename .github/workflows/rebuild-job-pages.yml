@@ -8,6 +8,7 @@ on:
       - 'scripts/build_job_pages.py'
       - 'scripts/fix_org_job_links.py'
       - 'scripts/annotate_org_source_window.py'
+      - 'scripts/audit_org_deadlines.py'
       - '.github/workflows/rebuild-job-pages.yml'
   push:
     branches: [main]
@@ -15,6 +16,7 @@ on:
       - 'scripts/build_job_pages.py'
       - 'scripts/fix_org_job_links.py'
       - 'scripts/annotate_org_source_window.py'
+      - 'scripts/audit_org_deadlines.py'
       - '.github/workflows/rebuild-job-pages.yml'
 jobs:
   rebuild:
@@ -41,6 +43,8 @@ jobs:
         run: python scripts/fix_org_job_links.py
       - name: Explain institution ALIO source date ranges
         run: python scripts/annotate_org_source_window.py
+      - name: Audit institution recruitment deadlines
+        run: python scripts/audit_org_deadlines.py
       - name: Update sitemap from generated job pages
         run: python scripts/build_sitemap.py
       - name: Validate sitemap job URL integrity
