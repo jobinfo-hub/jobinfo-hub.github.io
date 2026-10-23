@@ -11,6 +11,7 @@ on:
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/audit_org_alio_coverage.py'
       - 'scripts/sync_org_alio_list.py'
+      - 'scripts/test_sync_org_alio_list.py'
       - 'scripts/check_live_org_pages.py'
       - 'scripts/test_check_live_org_pages.py'
       - 'scripts/mark_expired_org_jobs.py'
@@ -25,6 +26,7 @@ on:
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/audit_org_alio_coverage.py'
       - 'scripts/sync_org_alio_list.py'
+      - 'scripts/test_sync_org_alio_list.py'
       - 'scripts/check_live_org_pages.py'
       - 'scripts/test_check_live_org_pages.py'
       - 'scripts/mark_expired_org_jobs.py'
@@ -49,6 +51,8 @@ jobs:
           python-version: '3.11'
       - name: Test live Pages smoke-check behavior offline
         run: python scripts/test_check_live_org_pages.py
+      - name: Test institution ALIO listing refresh offline
+        run: python scripts/test_sync_org_alio_list.py
       - name: Run offline generator regression checks
         run: python scripts/build_job_pages.py --self-test
       - name: Regenerate job pages from committed ALIO data
