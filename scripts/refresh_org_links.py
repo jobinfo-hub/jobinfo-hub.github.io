@@ -6,8 +6,11 @@ The normal ALIO collector already regenerates institution pages on success.
 """
 import json
 import re
+import sys
 from datetime import datetime
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import history
 import orgs
 
