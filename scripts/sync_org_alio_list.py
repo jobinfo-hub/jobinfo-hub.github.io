@@ -42,10 +42,11 @@ def main():
     page_aliases = defaultdict(list)
     for page in pages:
         page_aliases[normalized_org_name(page.stem.removeprefix("org-"))].append(page.stem.removeprefix("org-"))
+    exact_pages = {page.stem.removeprefix('org-') for page in pages}
     mapped = defaultdict(list)
     ambiguous = []
     for org, posts in grouped.items():
-        candidates = page_aliases.get(normalized_org_name(org), [])
+        candidates = [org] if org in exact_pages else page_aliases.get(normalized_org_name(org), [])
         if len(candidates) == 1:
             mapped[candidates[0]].extend(posts)
         elif len(candidates) > 1:
