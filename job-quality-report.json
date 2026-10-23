@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-23T13:52:40+00:00",
+  "updated_at": "2026-10-23T13:55:40+00:00",
   "source": "ALIO",
   "summary": {
     "total": 492,
@@ -10,7 +10,8 @@
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0,
-    "suspected_duplicate_groups": 12
+    "suspected_duplicate_groups": 12,
+    "duplicate_groups_with_distinct_official_links": 10
   },
   "detail_field_counts": {
     "acbgCondNmLst": 492,
@@ -7531,7 +7532,9 @@
       "ids": [
         "a298710",
         "a299406"
-      ]
+      ],
+      "distinct_official_link_count": 1,
+      "source_link_comparison": "same_official_link_review"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7540,7 +7543,9 @@
       "ids": [
         "a294597",
         "a294627"
-      ]
+      ],
+      "distinct_official_link_count": 2,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7551,7 +7556,9 @@
         "a294626",
         "a297600",
         "a299470"
-      ]
+      ],
+      "distinct_official_link_count": 4,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7561,7 +7568,9 @@
         "a291989",
         "a294625",
         "a299471"
-      ]
+      ],
+      "distinct_official_link_count": 3,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7574,7 +7583,9 @@
         "a298427",
         "a303321",
         "a305304"
-      ]
+      ],
+      "distinct_official_link_count": 6,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7593,7 +7604,9 @@
         "a303058",
         "a304874",
         "a305301"
-      ]
+      ],
+      "distinct_official_link_count": 12,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7602,7 +7615,9 @@
       "ids": [
         "a295395",
         "a296837"
-      ]
+      ],
+      "distinct_official_link_count": 1,
+      "source_link_comparison": "same_official_link_review"
     },
     {
       "organization": "경상국립대학교병원",
@@ -7611,7 +7626,9 @@
       "ids": [
         "a292472",
         "a306275"
-      ]
+      ],
+      "distinct_official_link_count": 2,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "한국원자력의학원",
@@ -7620,7 +7637,9 @@
       "ids": [
         "a296476",
         "a298386"
-      ]
+      ],
+      "distinct_official_link_count": 2,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "한국원자력의학원",
@@ -7629,7 +7648,9 @@
       "ids": [
         "a294643",
         "a304455"
-      ]
+      ],
+      "distinct_official_link_count": 2,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "한국원자력의학원",
@@ -7639,7 +7660,9 @@
         "a293321",
         "a296751",
         "a304271"
-      ]
+      ],
+      "distinct_official_link_count": 3,
+      "source_link_comparison": "different_official_links_review_separately"
     },
     {
       "organization": "한국원자력의학원",
@@ -7648,7 +7671,9 @@
       "ids": [
         "a299586",
         "a301558"
-      ]
+      ],
+      "distinct_official_link_count": 2,
+      "source_link_comparison": "different_official_links_review_separately"
     }
   ]
 }
