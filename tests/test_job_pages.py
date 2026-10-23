@@ -25,11 +25,16 @@ class JobPageTests(unittest.TestCase):
     def test_detail_content_and_official_link(self):
         html = render(self.post, {
             'aplyQlfcCn': '관련 자격증 필수',
-            'recrutPrgsCn': '서류 심사 후 면접',
+            'scrnprcdrMthdExpln': '서류 심사 후 면접',
+            'prefCn': '국가유공자 우대',
+            'prefCondCn': '관련 경력 우대',
         })
         self.assertIn('지원 전 핵심 확인사항', html)
         self.assertIn('관련 자격증 필수', html)
         self.assertIn('서류 심사 후 면접', html)
+        self.assertIn('<h2>전형 절차</h2>', html)
+        self.assertIn('국가유공자 우대', html)
+        self.assertIn('관련 경력 우대', html)
         self.assertIn('https://example.org/jobs/123', html)
         self.assertIn('관련 취업 준비 자료', html)
         self.assertNotIn('<h2>지원 전 체크리스트</h2>', html)
