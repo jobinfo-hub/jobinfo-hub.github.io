@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Offline regression for incomplete QNet pagination."""
 from datetime import datetime, timezone
+from pathlib import Path
 from unittest.mock import patch
+import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import qnet
 
 
