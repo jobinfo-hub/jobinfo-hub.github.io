@@ -4,11 +4,16 @@ on:
     paths:
       - '.github/workflows/public-job-page-smoke.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows: ['CareerPick rebuild static job pages']
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '13 3 * * *'
 jobs:
   check-public-pages:
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: read
     steps:
