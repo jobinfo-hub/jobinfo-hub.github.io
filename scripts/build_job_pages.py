@@ -420,7 +420,9 @@ def render(post, detail):
         '<section id="job-official" aria-label="공식 채용공고 확인">'
         '<h2>공식 원문 및 지원 방법 확인</h2>'
         '<p>지원 자격, 제출서류, 정확한 마감시각과 접수처는 공식 공고문을 기준으로 확인하세요. '
-        '공식 공고 페이지에서 별도의 채용 접수 사이트로 이동해야 할 수 있습니다.</p>'
+        '공식 공고 페이지에서 별도의 채용 접수 사이트로 이동해야 할 수 있습니다. '
+        '링크 접속 오류(예: HTTP 400)가 발생하면 기관 채용 홈페이지에서 공고 제목으로 검색하거나, '
+        '아래 ALIO 원본 링크를 이용하세요. 이 페이지는 링크의 실시간 접속 상태를 보증하지 않습니다.</p>'
         + (
             f'<a class="apply" href="{escape(official, quote=True)}" '
             f'rel="noopener noreferrer" target="_blank">'
@@ -763,6 +765,8 @@ def self_test():
     sample['url'] = 'https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=123'
     fallback_html = render(sample, {})
     assert 'ALIO 원본에서 공고 확인' in fallback_html
+    assert 'HTTP 400' in fallback_html
+    assert '실시간 접속 상태를 보증하지 않습니다' in fallback_html
     assert 'https://agency.example.org/recruit/123' in fallback_html
     sample['url'] = sample['src']
     assert 'ALIO 원본에서 공고 확인' not in render(sample, {})
