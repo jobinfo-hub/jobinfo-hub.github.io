@@ -4,6 +4,7 @@
 Run from the repository root: python scripts/build_job_pages.py
 """
 
+import ipaddress
 import json
 import re
 from datetime import date, datetime, timezone
@@ -44,8 +45,14 @@ def safe_url(value):
         return ''
     if parsed.scheme != 'https' or not host or parsed.username or parsed.password or port not in (None, 443):
         return ''
-    if host in ('localhost', '127.0.0.1', '0.0.0.0', '::1') or host.endswith(('.local', '.internal')):
+    if host in ('localhost', '0.0.0.0') or host.endswith(('.local', '.internal', '.localhost')):
         return ''
+    try:
+        # 사설·루프백·예약된 IP로 유도하는 공고 링크는 제공하지 않습니다.
+        if not ipaddress.ip_address(host).is_global:
+            return ''
+    except ValueError:
+        pass  # 정상적인 도메인 이름
     return value
 
 
