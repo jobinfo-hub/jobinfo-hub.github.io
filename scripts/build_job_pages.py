@@ -20,7 +20,9 @@ BASE = 'https://jobinfo-hub.github.io'
 DETAIL_LABELS = {
     'recrutSeNm': '채용 구분',
     'aplyQlfcCn': '지원 자격',
-    'recrutPrgsCn': '채용 절차',
+    'scrnprcdrMthdExpln': '전형 절차',
+    'prefCn': '우대사항',
+    'prefCondCn': '우대조건',
 }
 
 
@@ -148,7 +150,7 @@ def render(post, detail):
     # 표시하는 내용은 ALIO 원본 필드에 존재하는 사실만 사용합니다.
     detail = detail if isinstance(detail, dict) else {}
     qualification = clean(detail.get('aplyQlfcCn'))
-    process = clean(detail.get('recrutPrgsCn'))
+    process = clean(detail.get('scrnprcdrMthdExpln'))
     check_items = [
         ('지원 자격', '공고에 기재된 지원 자격을 확인하세요.' if qualification else '상세 자격조건은 공식 채용공고에서 확인하세요.'),
         ('접수 마감', f'표시된 마감일은 {date_label(due)}입니다. 실제 마감시각과 접수방법은 공식 공고를 확인하세요.' if due else '공식 채용공고에서 접수기간과 마감시각을 확인하세요.'),
@@ -462,7 +464,7 @@ def main():
             if clean(value):
                 detail_field_counts[field] = detail_field_counts.get(field, 0) + 1
         has_qualification = bool(clean(job_detail.get('aplyQlfcCn')))
-        has_process = bool(clean(job_detail.get('recrutPrgsCn')))
+        has_process = bool(clean(job_detail.get('scrnprcdrMthdExpln')))
         raw_desc = clean(post.get('desc'))
         category_only = bool(raw_desc) and len(raw_desc) < 80 and (' · ' in raw_desc or 'ㆍ' in raw_desc) and not any(mark in raw_desc for mark in ('합니다', '담당', '수행', '업무내용'))
         has_description = len(raw_desc) >= 25 and not category_only
