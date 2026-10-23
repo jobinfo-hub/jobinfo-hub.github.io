@@ -165,12 +165,41 @@ def render(post, detail):
         else '<p class="source-note">이 공고는 상세 자격·전형 데이터가 제공되지 않았습니다. '
         '아래 공식 채용공고에서 첨부파일과 최신 안내를 확인하세요.</p>'
     )
+    # 공고에 확인된 정보와 직무 특성에 맞는 가이드를 우선 안내합니다.
+    guide_items = [
+        ('/guides/application-checklist.html', '지원 전 7가지 확인사항'),
+    ]
+    context = ' '.join((title, clean(post.get('desc')), qualification, process))
+    if any(word in context for word in ('NCS', '필기', '직업기초', '공기업', '공공기관')):
+        guide_items.append(('/guides/ncs-study-plan.html', 'NCS 4주 학습 계획'))
+    if any(word in context for word in ('자기소개서', '자소서', '서류전형', '입사지원서', '경험기술')):
+        guide_items.append(('/guides/self-introduction-star.html', 'STAR 자기소개서 작성법'))
     guide_links = (
         '<nav class="guide-links" aria-label="관련 취업 준비 가이드">'
-        '<a href="/guides/application-checklist.html">지원 전 7가지 확인사항</a>'
-        '<a href="/guides/ncs-study-plan.html">NCS 4주 학습 계획</a>'
-        '<a href="/guides/self-introduction-star.html">STAR 자기소개서 작성법</a>'
-        '</nav>'
+        + ''.join(
+            f'<a href="{escape(url, quote=True)}">{escape(label)}</a>'
+            for url, label in guide_items
+        )
+        + '</nav>'
+    )
+    # 자료가 없는 공고에 사실처럼 보이는 직무 설명을 생성하지 않습니다.
+    raw_desc_for_quality = clean(post.get('desc'))
+    category_only_for_quality = (
+        bool(raw_desc_for_quality)
+        and len(raw_desc_for_quality) < 80
+        and (' · ' in raw_desc_for_quality or 'ㆍ' in raw_desc_for_quality)
+        and not any(mark in raw_desc_for_quality for mark in ('합니다', '담당', '수행', '업무내용'))
+    )
+    has_substantive_desc = len(raw_desc_for_quality) >= 25 and not category_only_for_quality
+    if qualification and process:
+        coverage_note = '지원 자격과 채용 절차 정보가 제공된 공고입니다.'
+    elif qualification or process or has_substantive_desc:
+        coverage_note = '일부 상세 정보가 제공된 공고입니다. 누락된 항목은 공식 원문에서 확인하세요.'
+    else:
+        coverage_note = '상세 직무·자격·전형 정보가 부족합니다. 공식 공고문과 첨부파일을 먼저 확인하세요.'
+    coverage_html = (
+        '<section aria-label="공고 정보 제공 범위"><h2>공고 정보 제공 범위</h2>'
+        f'<p class="source-note">{escape(coverage_note)}</p></section>'
     )
 
     extra = ''
@@ -322,6 +351,7 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 <h2>지원 전 핵심 확인사항</h2>
 <ul class="checks">{checks}</ul>
 </section>
+{coverage_html}
 {detail_status}
 {link}
 {extra}
