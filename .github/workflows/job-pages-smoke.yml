@@ -1,5 +1,10 @@
 name: CareerPick job page smoke test
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/job-pages-smoke.yml'
   pull_request:
     paths:
       - 'scripts/build_job_pages.py'
