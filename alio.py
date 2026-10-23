@@ -171,8 +171,9 @@ def main():
         try:
             data = call(key, page)
         except Exception as e:
-            print("잡알리오 요청 실패:", e)
-            break
+            print("잡알리오 요청 실패:", type(e).__name__)
+            print("잡알리오 수집 중단: 일부 페이지만 수집되어 기존 데이터를 유지합니다.")
+            return None
         rows = data.get("result") or []
         if isinstance(rows, dict):
             rows = [rows]
