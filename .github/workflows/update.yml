@@ -48,7 +48,14 @@ jobs:
       - name: 잡알리오 공식 공고 가져오기
         env:
           ALIO_KEY: ${{ secrets.ALIO_KEY }}
-        run: python alio.py
+        run: |
+          python alio.py 2>&1 | tee /tmp/careerpick-api-run.log
+          exit ${PIPESTATUS[0]}
+
+      - name: API 호출 결과 분류 및 실행 요약
+        if: always()
+        shell: bash
+        run: python scripts/summarize_api_run.py /tmp/careerpick-api-run.log >> "$GITHUB_STEP_SUMMARY"
 
       - name: 기관 공식 채용공고 자동 모니터링
         run: python monitor.py
