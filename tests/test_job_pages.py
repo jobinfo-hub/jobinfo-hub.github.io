@@ -30,6 +30,11 @@ class JobPageTests(unittest.TestCase):
         html = render(self.post, collected)
         self.assertIn('이 항목은 원문이 길어 일부만 표시됩니다', html)
 
+    def test_correction_notice_guide_is_linked(self):
+        html = render(self.post, {})
+        self.assertIn('/guides/recruitment-corrections-guide.html', html)
+        self.assertIn('정정공고·마감 변경 대응법', html)
+
     def test_mobile_layout_and_keyboard_navigation(self):
         html = render(self.post, {})
         self.assertIn('class="skip-link" href="#job-summary"', html)

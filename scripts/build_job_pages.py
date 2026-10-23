@@ -182,6 +182,7 @@ def render(post, detail):
         ('/guides/application-checklist.html', '지원 전 7가지 확인사항'),
         ('/guides/qualification-preference-guide.html', '지원자격·우대조건 해석법'),
         ('/guides/after-application-checklist.html', '지원서 제출 후 확인사항'),
+        ('/guides/recruitment-corrections-guide.html', '정정공고·마감 변경 대응법'),
     ]
     # 직무 분류나 기관 유형만으로 NCS 필기시험 실시를 추정하지 않습니다.
     context = ' '.join((title, clean(post.get('desc')), qualification, process))
