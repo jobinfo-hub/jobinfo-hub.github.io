@@ -12,12 +12,16 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "JobPosting", "title": "기간제근로자(대체인력)채용공고 (인천본부)", "description": "한국전력공사의 기간제근로자(대체인력)채용공고 (인천본부) 채용공고입니다. 고용형태: 계약직. 근무지역: 인천. 모집인원: 5명. 접수마감: 2026-10-26 23:59. 지원자격: □ 학력 : 제한없음\r\n□ 연령 : 제한없음\r\n□ 병역 : 병역법 제76조에서 정한 병역의무 불이행 사실이 없는자\r\n□ 지원자격\r\n○ 사무 : 제한없음(단, 서류심사 시 제출한 관련 자격을 평가요소로 활용)\r\n○ 배전담당(가)\r\n- 색맹이 아닌 자\r\n- 필수1 : 가공배전전공 이상 또는 지중배전전공 이상\r\n- 필수2 : 전기기능사 이상 또는 전기공사산업기사 이상\r\n- 필수3 : 자동차 운전면허 1종 대형\r\n- 필수4 : 기중기운전기능사 또는 이동식크레인 및 고소작업대 조종자격 교육 이수\r\n* 고용노동부 [유해 위험기관의 취업 제한에 관한 규칙] 에서 인정한 교육 인정기관\r\n(한국전기공사협회, 한국비계기술원, 한국전기인력개발협회 등)\r\n○ NDIS 데이터관리원 : 아래 자격증 중 1개 이상 보유\r\n- 산업기사 이상 : 측량 및 지형공간정보, 지적, 정보처리, 전기, 전기공사\r\n- 기능사 : 측량, 지적, 지도제작, 정보처리, 전자캐드, 전기\r\n○ 운전원 : 자동차 운전면허 1종 대형\r\n□ 기타 : \"근무시작일\" 부터 근무 가능한 자\r\n\r\n※ 상세내용 채용공고문 참조 전형 절차: □ 1차 서류전형\r\n○ 평가기준 : \r\n[사무] 공통 자격증(30점)\r\n[배전담당(가)] 기술 자격증(40점)\r\n[NDIS] 기술 자격증(56점)\r\n[운전원] 공통 자격증(30점) + 운전경력(60점)\r\n○ 선발배수 : 7배수(동점자 발생 시 전원 합격처리)\r\n□ 2차 면접전형\r\n○ 평가기준 : 면접 점수(배점 100점)\r\n○ 선발배수 : 1배수(동점자 발생 시 ①취업지원대상자, ②자격증 가점 순으로 우선선발)\r\n※ 지원자가 1차전형 선발배수 인원을 초과하지 않을 경우 1차 서류전형 생략 가능\r\n※ 근무시작일 +15일까지 근무 포기자 발생 시 예비합격자 추가합격 처리\r\n□ 접수기간 : ‘26.10.12.(월) 16:00 - ‘26.10.26.(월) 16:00까지\r\n□ 접수방법 : 채용홈페이지 접수(http://recruit.kepco.co.kr/sangsi)\r\n○ 중복지원 불가(지원분야 中 택 1)\r\n○ (사무)자기소개서 하단에 희망사업소 1,2순위 기재 (1순위만 기재 가능)\r\n ", "hiringOrganization": {"@type": "Organization", "name": "한국전력공사"}, "url": "https://jobinfo-hub.github.io/jobs/a305913.html", "datePosted": "2026-10-12T00:00:00+09:00", "validThrough": "2026-10-26T23:59:00+09:00", "jobLocation": {"@type": "Place", "address": {"@type": "PostalAddress", "addressCountry": "KR", "addressRegion": "인천"}}, "employmentType": "TEMPORARY"}</script>
 <style>
 body{margin:0;background:#f5f7fb;color:#14213d;font:16px/1.7 system-ui,'Malgun Gothic',sans-serif}
-main{max-width:720px;margin:35px auto;padding:24px;background:white;border-radius:18px}
+main{max-width:720px;margin:35px auto;padding:24px;background:white;border-radius:18px;box-sizing:border-box}
 h1{font-size:1.6rem;line-height:1.4}
 dt{font-weight:700;color:#475569}
 dd{margin:0 0 14px}
 .apply{display:inline-block;background:#1f3fbf;color:white;padding:12px 20px;border-radius:9px;text-decoration:none}
-a{color:#1f3fbf}
+a{color:#1f3fbf;text-underline-offset:3px}
+a:focus-visible{outline:3px solid #f59e0b;outline-offset:3px;border-radius:3px}
+.skip-link{position:absolute;left:12px;top:-100px;background:#fff;color:#14213d;padding:10px 14px;z-index:10}
+.skip-link:focus{top:10px}
+
 .muted{color:#64748b}
 .closed{padding:12px;background:#fff1f2;color:#9f1239;border-radius:8px;font-weight:700}
 dl{display:grid;grid-template-columns:minmax(100px,145px) 1fr;gap:8px 12px}
@@ -34,17 +38,18 @@ section h2{margin-bottom:10px;line-height:1.45}
 .guide-links a{padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;text-decoration:none}
 .apply{margin:12px 0}
 @media(max-width:480px){dl{grid-template-columns:1fr;gap:0}dt{border:0;padding-bottom:0}dd{padding-top:0}}
-@media(max-width:760px){main{margin:0;border-radius:0;padding:20px}}
+@media(max-width:760px){main{margin:0;border-radius:0;padding:20px}h1{font-size:1.4rem}section h2{font-size:1.2rem}.apply{display:block;text-align:center;overflow-wrap:anywhere}.guide-links a{flex:1 1 auto;text-align:center}}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#job-summary">본문으로 바로가기</a>
 <main>
 <nav><a href="/">← 커리어픽 전체 채용공고</a></nav>
 <p class="muted">공공기관 채용정보</p>
 <h1>기간제근로자(대체인력)채용공고 (인천본부)</h1>
 <p>한국전력공사</p>
 
-<h2>모집 요약</h2>
+<h2 id="job-summary">모집 요약</h2>
 <dl><dt>기관명</dt><dd>한국전력공사</dd>
 <dt>모집인원</dt><dd>5명</dd>
 <dt>고용형태</dt><dd>계약직</dd>

@@ -1,38 +1,38 @@
 {
-  "updated_at": "2026-10-23T04:30:12+00:00",
+  "updated_at": "2026-10-23T05:19:54+00:00",
   "source": "ALIO",
   "summary": {
-    "total": 473,
-    "with_category_only_description": 473,
-    "with_qualification": 473,
-    "with_process": 473,
-    "with_both": 473,
+    "total": 478,
+    "with_category_only_description": 478,
+    "with_qualification": 478,
+    "with_process": 478,
+    "with_both": 478,
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0
   },
   "detail_field_counts": {
-    "acbgCondNmLst": 473,
-    "aplyQlfcCn": 473,
-    "decimalDay": 473,
-    "disqlfcRsn": 473,
-    "hireTypeNmLst": 473,
-    "instNm": 473,
-    "ncsCdNmLst": 473,
-    "ongoingYn": 473,
-    "pbancBgngYmd": 473,
-    "pbancEndYmd": 473,
-    "prefCn": 473,
-    "recrutNope": 473,
-    "recrutPbancTtl": 473,
-    "recrutPblntSn": 473,
-    "recrutSe": 473,
-    "recrutSeNm": 473,
-    "replmprYn": 473,
-    "scrnprcdrMthdExpln": 473,
-    "srcUrl": 473,
-    "workRgnNmLst": 473,
-    "prefCondCn": 453,
+    "acbgCondNmLst": 478,
+    "aplyQlfcCn": 478,
+    "decimalDay": 478,
+    "disqlfcRsn": 478,
+    "hireTypeNmLst": 478,
+    "instNm": 478,
+    "ncsCdNmLst": 478,
+    "ongoingYn": 478,
+    "pbancBgngYmd": 478,
+    "pbancEndYmd": 478,
+    "prefCn": 478,
+    "recrutNope": 478,
+    "recrutPbancTtl": 478,
+    "recrutPblntSn": 478,
+    "recrutSe": 478,
+    "recrutSeNm": 478,
+    "replmprYn": 478,
+    "scrnprcdrMthdExpln": 478,
+    "srcUrl": 478,
+    "workRgnNmLst": 478,
+    "prefCondCn": 458,
     "nonatchRsn": 86
   },
   "posts": [
@@ -2415,6 +2415,19 @@
       }
     },
     {
+      "id": "a306293",
+      "title": "[인천병원] 2026년도 하반기 청년(체험형)인턴 장애전형 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
       "id": "a306271",
       "title": "제주대학교병원 2027년도 신규간호사 모집공고",
       "organization": "제주대학교병원",
@@ -2944,6 +2957,58 @@
       "id": "a306070",
       "title": "[전북혈액원] 비정규직 초단시간 근로자(임상병리사) 채용공고(3차)",
       "organization": "대한적십자사",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306296",
+      "title": "[인천병원] 의료직(간호사) 6급 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306295",
+      "title": "[순천병원] 의료직(산업위생사) 6급 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306292",
+      "title": "[인천병원] 별정직 의사(재활의학과) 채용 공고",
+      "organization": "근로복지공단",
+      "missing": [
+        "실질 직무설명"
+      ],
+      "detail_fields": {
+        "qualification": true,
+        "process": true,
+        "substantive_description": false
+      }
+    },
+    {
+      "id": "a306291",
+      "title": "[인천병원] 별정직 의사(내과 또는 가정의학과) 채용 공고",
+      "organization": "근로복지공단",
       "missing": [
         "실질 직무설명"
       ],
