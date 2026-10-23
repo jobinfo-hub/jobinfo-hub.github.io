@@ -63,6 +63,30 @@ jobs:
           pages = list(Path("jobs").glob("a[0-9]*.html"))
           assert pages, "생성된 채용공고 상세페이지가 없습니다."
 
+          # 모든 ALIO 상세페이지가 최신 정보 확인 안내를 포함하는지 검증합니다.
+          required = (
+              '/guides/recruitment-corrections-guide.html',
+              '실제 담당업무는 어디서 확인하나요?',
+          )
+          import json
+          import re
+          posts = json.loads(Path("alio.json").read_text(encoding="utf-8")).get("posts", [])
+          active_ids = {
+              str(post.get("id", "")).strip()
+              for post in posts
+              if isinstance(post, dict) and post.get("alio")
+              and re.fullmatch(r"a[0-9]+", str(post.get("id", "")).strip())
+          }
+          assert active_ids, "검증할 현재 ALIO 공고가 없습니다."
+          for pid in active_ids:
+              page = Path("jobs") / f"{pid}.html"
+              assert page.exists(), f"현재 공고 상세페이지 누락: {page}"
+              html = page.read_text(encoding="utf-8")
+              for marker in required:
+                  assert marker in html, (
+                      f"{page}: 필수 안내 누락: {marker}"
+                  )
+
           root = ET.parse("sitemap.xml").getroot()
           ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
