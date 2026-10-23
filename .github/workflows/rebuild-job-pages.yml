@@ -7,11 +7,14 @@ on:
     paths:
       - 'scripts/build_job_pages.py'
       - 'scripts/fix_org_job_links.py'
+      - 'scripts/annotate_org_source_window.py'
       - '.github/workflows/rebuild-job-pages.yml'
   push:
     branches: [main]
     paths:
       - 'scripts/build_job_pages.py'
+      - 'scripts/fix_org_job_links.py'
+      - 'scripts/annotate_org_source_window.py'
       - '.github/workflows/rebuild-job-pages.yml'
 jobs:
   rebuild:
