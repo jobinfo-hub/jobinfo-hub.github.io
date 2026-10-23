@@ -126,9 +126,9 @@ jobs:
           echo '' >> "$GITHUB_STEP_SUMMARY"
           echo '아래 검사는 로컬 JSON 스냅샷 기준이며 실제 API 호출 성공을 보증하지 않습니다.' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo '\`\`\`text' >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
           python scripts/check_api_freshness.py >> "$GITHUB_STEP_SUMMARY" 2>&1 || true
-          echo '\`\`\`' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: 데이터 최신성 경고 표시
         if: steps.api_freshness.outcome == 'failure'
