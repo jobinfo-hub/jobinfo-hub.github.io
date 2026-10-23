@@ -55,7 +55,7 @@ jobs:
           sample = next(p for p in posts if p.get('alio') and re.fullmatch(r'a[0-9]+', str(p.get('id',''))))
           rendered = module.render(sample, {})
           assert '<html lang="ko">' in rendered
-          assert '공공기관 채용 지원 전 확인할 7가지' in rendered
+          assert '관련 취업 준비 자료' in rendered, 'Missing editorial resources section'
           assert '/guides/application-checklist.html' in rendered
           assert '공식 채용공고 확인' in rendered
           class Parser(HTMLParser): pass
