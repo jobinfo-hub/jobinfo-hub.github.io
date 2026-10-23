@@ -53,7 +53,7 @@ def verify_job_detail(block):
         html = response.read().decode("utf-8")
         if response.status != 200 or "<html" not in html.lower() or "</html>" not in html.lower():
             raise RuntimeError(f"Public job detail page missing or invalid: {url}")
-    canonical = re.search(r'<link\\s+rel="canonical"\\s+href="([^"]+)"', html)
+    canonical = re.search(r'<link\s+rel="canonical"\\s+href="([^"]+)"', html)
     if not canonical or canonical.group(1) != url:
         raise RuntimeError(f"Public job detail canonical mismatch: {url}")
     print(f"Live job detail PASS: {url}")
