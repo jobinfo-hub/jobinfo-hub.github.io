@@ -10,6 +10,7 @@ on:
       - 'scripts/annotate_org_source_window.py'
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/audit_org_alio_coverage.py'
+      - 'scripts/sync_org_alio_list.py'
       - 'scripts/mark_expired_org_jobs.py'
       - 'scripts/test_mark_expired_org_jobs.py'
       - '.github/workflows/rebuild-job-pages.yml'
@@ -21,6 +22,7 @@ on:
       - 'scripts/annotate_org_source_window.py'
       - 'scripts/audit_org_deadlines.py'
       - 'scripts/audit_org_alio_coverage.py'
+      - 'scripts/sync_org_alio_list.py'
       - 'scripts/mark_expired_org_jobs.py'
       - 'scripts/test_mark_expired_org_jobs.py'
       - '.github/workflows/rebuild-job-pages.yml'
@@ -45,6 +47,8 @@ jobs:
         run: python scripts/build_job_pages.py --self-test
       - name: Regenerate job pages from committed ALIO data
         run: python scripts/build_job_pages.py
+      - name: Refresh complete institution ALIO listings
+        run: python scripts/sync_org_alio_list.py
       - name: Repair institution links to existing job pages
         run: python scripts/fix_org_job_links.py
       - name: Explain institution ALIO source date ranges
