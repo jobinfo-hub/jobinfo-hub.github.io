@@ -35,6 +35,17 @@ class JobPageTests(unittest.TestCase):
         self.assertNotIn('<h2>지원 전 체크리스트</h2>', html)
         self.assertNotIn('<h2>공고 핵심정보</h2>', html)
 
+    def test_repeated_alio_title_not_rendered_as_detail(self):
+        html = render(self.post, {
+            'recrutPblntTtl': '채용 공고 테스트',
+            'recrutSeNm': '신입',
+            'aplyQlfcCn': '자격증 필수',
+        })
+        self.assertEqual(html.count('<h1>채용 공고 테스트</h1>'), 1)
+        self.assertNotIn('<h2>채용공고 제목</h2>', html)
+        self.assertIn('<h2>채용 구분</h2>', html)
+        self.assertIn('<h2>지원 자격</h2>', html)
+
     def test_multiline_details_preserved(self):
         html = render(self.post, {
             'aplyQlfcCn': '1. 필수 조건\\n2. 우대 조건',
