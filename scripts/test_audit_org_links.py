@@ -27,6 +27,9 @@ def main():
     assert len(run_case('<a href="./#%6aob=a123">공고</a>')) == 1
     assert len(run_case('<a href="./jobs/a123.html">공고</a>')) == 1
     assert not run_case('<a href="./jobs/a123.html">공고</a>', ("jobs/a123.html",))
+    assert len(run_case('<a href="./?job=a123">공고</a>')) == 1
+    assert len(run_case('<a href="./?tab=jobs&job=a123">공고</a>')) == 1
+    assert not run_case('<a href="./?tab=jobs">목록</a>')
     print("Organization link audit offline tests: PASS")
 
 
