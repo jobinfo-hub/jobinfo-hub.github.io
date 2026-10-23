@@ -6,6 +6,8 @@ on:
   pull_request:
     paths:
       - 'scripts/build_job_pages.py'
+      - 'scripts/audit_generated_job_schema.py'
+      - 'scripts/test_audit_generated_job_schema.py'
       - 'scripts/fix_org_job_links.py'
       - 'scripts/annotate_org_source_window.py'
       - 'scripts/audit_org_deadlines.py'
@@ -22,6 +24,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/build_job_pages.py'
+      - 'scripts/audit_generated_job_schema.py'
+      - 'scripts/test_audit_generated_job_schema.py'
       - 'scripts/fix_org_job_links.py'
       - 'scripts/annotate_org_source_window.py'
       - 'scripts/audit_org_deadlines.py'
@@ -59,8 +63,12 @@ jobs:
         run: python scripts/test_sync_org_alio_list.py
       - name: Run offline generator regression checks
         run: python scripts/build_job_pages.py --self-test
+      - name: Test generated JobPosting audit offline
+        run: python scripts/test_audit_generated_job_schema.py
       - name: Regenerate job pages from committed ALIO data
         run: python scripts/build_job_pages.py
+      - name: Audit all generated JobPosting metadata
+        run: python scripts/audit_generated_job_schema.py
       - name: Refresh complete institution ALIO listings
         run: python scripts/sync_org_alio_list.py
       - name: Repair institution links to existing job pages
