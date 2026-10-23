@@ -552,6 +552,16 @@ footer .src b{color:var(--ink)}
 .actions .standalone-job-link{color:var(--brand);font-weight:700}
 .card.row .standalone-job-link{flex:none;font-size:11.5px;font-weight:700;color:var(--brand);text-decoration:none;padding:8px 6px;white-space:nowrap}
 @media(max-width:440px){.actions .standalone-job-link{flex-basis:100%;border-top:1px solid var(--line);border-left:0}.card.row .standalone-job-link{font-size:10px;padding:6px 3px}}
+
+/* CareerPick discovery refresh: additive only, existing data and automation untouched */
+.cp-discovery{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0 12px}
+.cp-discovery h2{font-size:18px;line-height:1.35;margin:0 0 4px;letter-spacing:-.4px}
+.cp-discovery p{font-size:12px;color:var(--muted);margin:0 0 12px}
+.cp-discovery-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cp-discovery-links a{display:flex;align-items:center;justify-content:center;min-height:44px;text-align:center;text-decoration:none;font-size:12px;font-weight:700;padding:8px 4px;color:var(--brand);border:1px solid var(--line);background:var(--bg);border-radius:10px}
+.cp-discovery-links a:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.cp-discovery-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px;font-size:11px;color:var(--muted)}
+@media(max-width:390px){.cp-discovery{padding:12px}.cp-discovery-links{gap:5px}.cp-discovery-links a{font-size:11px}}
 </style>
 <script src="/jobs/available.js" defer></script>
 </head>
@@ -592,6 +602,20 @@ footer .src b{color:var(--ink)}
   </div>
 
   <button type="button" id="cpInternalBack" class="cp-internal-back" hidden aria-label="이전 화면으로 돌아가기">← 이전 화면</button>
+
+  <section class="cp-discovery" aria-label="채용정보 빠른 탐색">
+    <h2>내게 맞는 채용공고, 빠르게 찾기</h2>
+    <p>기관명·직무 검색부터 마감 임박 공고와 취업 준비 정보까지 한눈에 확인하세요.</p>
+    <div class="cp-discovery-links">
+      <a href="#q" onclick="document.getElementById('q').focus();return false">🔎 공고 검색</a>
+      <a href="deadline-week.html">⏰ 이번 주 마감</a>
+      <a href="orgs.html">🏢 기관별 공고</a>
+      <a href="intern.html">🎓 인턴 채용</a>
+      <a href="highschool.html">📘 고졸 가능</a>
+      <a href="prep.html">📝 취업 준비</a>
+    </div>
+    <div class="cp-discovery-foot"><span>✓ 공고 내용은 반드시 원문 확인</span><span>✓ 지원 조건·마감 시각은 기관별로 다를 수 있음</span></div>
+  </section>
   <div class="searchbar">
     <label class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
