@@ -182,8 +182,13 @@ def render(post, detail):
         ('/guides/qualification-preference-guide.html', '지원자격·우대조건 해석법'),
         ('/guides/after-application-checklist.html', '지원서 제출 후 확인사항'),
     ]
+    # 직무 분류나 기관 유형만으로 NCS 필기시험 실시를 추정하지 않습니다.
     context = ' '.join((title, clean(post.get('desc')), qualification, process))
-    if any(word in context for word in ('NCS', '필기', '직업기초', '공기업', '공공기관')):
+    ncs_exam_confirmed = bool(
+        re.search(r'(?:NCS|직업기초(?:능력)?)\s*(?:기반\s*)?(?:필기|시험|평가|검사)', process, re.I)
+        or re.search(r'(?:필기|시험|평가|검사)\s*(?:전형|시험)?\s*[:：-]?\s*(?:NCS|직업기초(?:능력)?)', process, re.I)
+    )
+    if ncs_exam_confirmed:
         guide_items.append(('/guides/ncs-study-plan.html', 'NCS 4주 학습 계획'))
     if any(word in context for word in ('자기소개서', '자소서', '서류전형', '입사지원서', '경험기술')):
         guide_items.append(('/guides/self-introduction-star.html', 'STAR 자기소개서 작성법'))
