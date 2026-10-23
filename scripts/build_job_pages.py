@@ -262,9 +262,19 @@ def render(post, detail):
         for key, label in DETAIL_LABELS.items():
             val = detail.get(key)
             if isinstance(val, str) and val.strip():
+                # 긴 ALIO 원문을 임의로 1,500자에서 끊지 않습니다.
+                # 화면에는 최대 6,000자를 제공하고 초과 시 누락을 명시합니다.
+                visible = val[:6000]
+                truncated = len(val) > len(visible)
                 extra += (
                     f'<section><h2>{escape(label)}</h2>'
-                    f'<div class="detail-text">{escape(val[:1500])}</div></section>'
+                    f'<div class="detail-text">{escape(visible)}</div>'
+                    + (
+                        '<p class="source-note">이 항목은 원문이 길어 일부만 표시됩니다. '
+                        '전체 내용은 반드시 공식 채용공고에서 확인하세요.</p>'
+                        if truncated else ''
+                    )
+                    + '</section>'
                 )
 
     # 공고마다 고유한 확인 가능 정보로 설명을 구성합니다.
