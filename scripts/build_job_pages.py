@@ -36,7 +36,10 @@ def clean(value):
 
 def safe_url(value):
     value = clean(value)
-    parsed = urlparse(value)
+    try:
+        parsed = urlparse(value)
+    except ValueError:
+        return ''
     # URL은 공식 링크 후보만 허용합니다. 자격증명·비표준 포트·내부 주소는 배제합니다.
     try:
         host = (parsed.hostname or '').lower().rstrip('.')
@@ -710,6 +713,7 @@ def self_test():
         'javascript:alert(1)', 'https://localhost/private',
         'https://192.168.1.1/private', 'https://example.com:bad/path',
         'https://user:pass@example.com/',
+        'https://[broken-ipv6/private',
     ):
         assert not safe_url(unsafe), f'위험 URL 허용: {unsafe}'
     assert safe_url('https://job.alio.go.kr/example')
