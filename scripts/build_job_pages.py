@@ -530,6 +530,15 @@ section[id],h2[id]{{scroll-margin-top:20px}}
 </html>'''
 
 
+def duplicate_key(post):
+    """Conservative candidate key; never automatically delete ALIO postings."""
+    values = tuple(
+        re.sub(r'\s+', ' ', clean(post.get(field))).strip().casefold()
+        for field in ('org', 'title', 'due')
+    )
+    return values if all(values) else None
+
+
 def main():
     if not DATA.exists():
         raise SystemExit('alio.json 파일이 없습니다.')
@@ -618,9 +627,9 @@ def main():
         ]
         # 같은 기관·제목·마감일은 중복 가능성만 진단합니다.
         # 동일 제목의 서로 다른 직무일 수 있어 게시물을 자동 삭제하지 않습니다.
-        duplicate_key = tuple(re.sub(r'\\s+', ' ', clean(post.get(field))).casefold() for field in ('org', 'title', 'due'))
-        if all(duplicate_key):
-            duplicate_groups.setdefault(duplicate_key, set()).add(pid)
+        candidate_key = duplicate_key(post)
+        if candidate_key:
+            duplicate_groups.setdefault(candidate_key, set()).add(pid)
         quality_rows.append({
             'id': pid,
             'title': clean(post.get('title')),
@@ -731,6 +740,13 @@ def self_test():
     ):
         assert not safe_url(unsafe), f'위험 URL 허용: {unsafe}'
     assert safe_url('https://job.alio.go.kr/example')
+    assert duplicate_key({'org': ' A 기관 ', 'title': '채용  공고', 'due': '2099-01-01'}) == duplicate_key(
+        {'org': 'a 기관', 'title': '채용 공고', 'due': '2099-01-01'}
+    )
+    assert duplicate_key({'org': 'A', 'title': '공고', 'due': ''}) is None
+    assert duplicate_key({'org': 'A', 'title': '공고', 'due': '2099-01-01'}) != duplicate_key(
+        {'org': 'A', 'title': '공고', 'due': '2099-01-02'}
+    )
     # 공식 URL이 없거나 안전하지 않으면 지원 버튼을 만들지 않습니다.
     sample['src'] = 'https://192.168.1.2/private'
     sample['url'] = 'javascript:alert(1)'
