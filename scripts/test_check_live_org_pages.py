@@ -35,9 +35,16 @@ def run():
             except SystemExit:
                 pass
             assert fetch.call_count == 8
-    with patch.object(checker, "urlopen", return_value=Response("<html><title>Job</title></html>")) as fetch:
+    with patch.object(checker, "urlopen", return_value=Response("<html><head><link rel=\"canonical\" href=\"https://jobinfo-hub.github.io/jobs/a306139.html\"></head><body>Job</body></html>")) as fetch:
         checker.verify_job_detail(BLOCK)
         assert fetch.call_count == 1
+    with patch.object(checker, "urlopen", return_value=Response("<html><title>Wrong page</title></html>")):
+        try:
+            checker.verify_job_detail(BLOCK)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("Wrong canonical must fail")
     assert checker.JobLinkParser is not None
     print("Public Pages content equality regression PASS: match, retry, outdated list rejection, job detail")
 
