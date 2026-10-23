@@ -21,6 +21,7 @@ def main():
 <url><loc>https://jobinfo-hub.github.io/</loc></url>
 <url><loc>https://jobinfo-hub.github.io/jobs/a999.html</loc></url>
 <url><loc>https://jobinfo-hub.github.io/jobs/a100.html</loc></url>
+<url><loc>https://jobinfo-hub.github.io/guides/removed.html</loc></url>
 </urlset>""", encoding="utf-8")
         with patch.object(generator, "ROOT", root), patch.object(generator, "SITEMAP", site), patch.object(generator, "JOBS", jobs):
             generator.main()
@@ -34,12 +35,15 @@ def main():
             assert "https://jobinfo-hub.github.io/jobs/a100.html" in found
             assert "https://jobinfo-hub.github.io/jobs/a200.html" in found
             assert "https://jobinfo-hub.github.io/guides/" in found
+            assert "https://jobinfo-hub.github.io/guides/removed.html" not in found
             assert len(found) == len(set(found))
             generator.main()
             assert urls() == found
+            (root / "guides" / "index.html").unlink()
             (jobs / "a100.html").unlink()
             generator.main()
             assert "https://jobinfo-hub.github.io/jobs/a100.html" not in urls()
+            assert "https://jobinfo-hub.github.io/guides/" not in urls()
     print("Sitemap generator regression PASS: preserve, add, prune, idempotence")
 
 if __name__ == "__main__":
