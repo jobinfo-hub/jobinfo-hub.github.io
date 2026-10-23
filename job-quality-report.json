@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-10-23T14:25:58+00:00",
+  "updated_at": "2026-10-23T15:24:07+00:00",
   "source": "ALIO",
   "summary": {
-    "total": 492,
-    "with_category_only_description": 492,
-    "with_qualification": 492,
-    "with_process": 492,
-    "with_both": 492,
+    "total": 469,
+    "with_category_only_description": 469,
+    "with_qualification": 469,
+    "with_process": 469,
+    "with_both": 469,
     "with_description": 0,
     "without_official_link": 0,
     "thin_data": 0,
@@ -14,382 +14,30 @@
     "duplicate_groups_with_distinct_official_links": 10
   },
   "detail_field_counts": {
-    "acbgCondNmLst": 492,
-    "aplyQlfcCn": 492,
-    "decimalDay": 492,
-    "disqlfcRsn": 492,
-    "hireTypeNmLst": 492,
-    "instNm": 492,
-    "ncsCdNmLst": 492,
-    "ongoingYn": 492,
-    "pbancBgngYmd": 492,
-    "pbancEndYmd": 492,
-    "prefCn": 492,
-    "recrutNope": 492,
-    "recrutPbancTtl": 492,
-    "recrutPblntSn": 492,
-    "recrutSe": 492,
-    "recrutSeNm": 492,
-    "replmprYn": 492,
-    "scrnprcdrMthdExpln": 492,
-    "srcUrl": 492,
-    "workRgnNmLst": 492,
-    "prefCondCn": 472,
-    "nonatchRsn": 89
+    "acbgCondNmLst": 469,
+    "aplyQlfcCn": 469,
+    "decimalDay": 469,
+    "disqlfcRsn": 469,
+    "hireTypeNmLst": 469,
+    "instNm": 469,
+    "ncsCdNmLst": 469,
+    "ongoingYn": 469,
+    "pbancBgngYmd": 469,
+    "pbancEndYmd": 469,
+    "prefCn": 469,
+    "recrutNope": 469,
+    "recrutPbancTtl": 469,
+    "recrutPblntSn": 469,
+    "recrutSe": 469,
+    "recrutSeNm": 469,
+    "replmprYn": 469,
+    "scrnprcdrMthdExpln": 469,
+    "srcUrl": 469,
+    "workRgnNmLst": 469,
+    "prefCondCn": 449,
+    "nonatchRsn": 81
   },
   "posts": [
-    {
-      "id": "a306139",
-      "title": "[월출산] 월출산국립공원사무소 한시인력(산불감시) 직원 채용 공고",
-      "organization": "국립공원공단",
-      "official_link_host": "www.knps.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a306101",
-      "title": "[인천병원] 기간제(사무원) 채용 공고",
-      "organization": "근로복지공단",
-      "official_link_host": "www.comwel.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a306098",
-      "title": "한국문화관광연구원 위촉직원 채용 공고 [2026-40]",
-      "organization": "한국문화관광연구원",
-      "official_link_host": "www.kcti.re.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a306071",
-      "title": "[국립공원연구원] 국립공원연구원 기간제[제한경쟁(취업지원대상자), 한시인력, 사무행정] 직원 채용",
-      "organization": "국립공원공단",
-      "official_link_host": "www.knps.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305961",
-      "title": "[월출산] 월출산국립공원사무소 한시인력(국립공원지킴이) 모집 재공고",
-      "organization": "국립공원공단",
-      "official_link_host": "www.knps.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305943",
-      "title": "[태안] 2026년 태안해안 기간제(한시인력_탐방로보수) 직원 채용 재공고",
-      "organization": "국립공원공단",
-      "official_link_host": "www.knps.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305929",
-      "title": "계약직 연구원(모자의료지원팀, 인력양성정책팀) 채용 재공고",
-      "organization": "국립중앙의료원",
-      "official_link_host": "nmc.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305926",
-      "title": "계약직 연구원-휴직대체(공공의료교육팀) 채용 재공고",
-      "organization": "국립중앙의료원",
-      "official_link_host": "nmc.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305925",
-      "title": "계약직 간호사-코디네이터(외상센터) 채용 재공고",
-      "organization": "국립중앙의료원",
-      "official_link_host": "nmc.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305920",
-      "title": "[부산보훈병원] 정규직(방사선사, 전산, 간호조무사) 긴급채용공고",
-      "organization": "한국보훈복지의료공단",
-      "official_link_host": "www.bohun.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305908",
-      "title": "임시직(장애) 채용공고[261012]",
-      "organization": "국립암센터",
-      "official_link_host": "ncc.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305906",
-      "title": "임시직 채용공고[261012]",
-      "organization": "국립암센터",
-      "official_link_host": "ncc.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305861",
-      "title": "[보훈원]업무지원직(경비)직원 채용",
-      "organization": "한국보훈복지의료공단",
-      "official_link_host": "www.bohun.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305853",
-      "title": "한국보건사회연구원 무기계약직직 신규채용(7차) 연구원",
-      "organization": "한국보건사회연구원",
-      "official_link_host": "kihasa.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305847",
-      "title": "대외경제정책연구원(KIEP) 임시직 연구원급 채용공고 (북미유럽팀)",
-      "organization": "대외경제정책연구원",
-      "official_link_host": "kiep.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305846",
-      "title": "[한국환경연구원] 2026년 제4차 인력채용(부연구위원) 공고",
-      "organization": "한국환경연구원",
-      "official_link_host": "kei.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305845",
-      "title": "[한국수자원공사] 양주수도지사 특수직(수탁운영_지방상수도 시설운영) 채용 공고",
-      "organization": "한국수자원공사",
-      "official_link_host": "k-water.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305826",
-      "title": "[전주보훈요양원] 사회복지직 5급(간호사) 채용",
-      "organization": "한국보훈복지의료공단",
-      "official_link_host": "www.bohun.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305823",
-      "title": "기간제근로자(대체인력) 채용공고[대구본부]",
-      "organization": "한국전력공사",
-      "official_link_host": "job.alio.go.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305812",
-      "title": "2027학년도 상반기 전임교원 채용공고",
-      "organization": "한국기술교육대학교",
-      "official_link_host": "www.koreatech.ac.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명",
-        "학력조건"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305771",
-      "title": "제2026-4회 중이온가속기연구소 별정직 직원 채용 공고(육아휴직 대체인력)",
-      "organization": "기초과학연구원",
-      "official_link_host": "ibs.recruiter.co.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305666",
-      "title": "한국토지주택공사 인천지역본부 기간제근로자(보상일반역, 보상전문역) 채용공고",
-      "organization": "한국토지주택공사",
-      "official_link_host": "www.lh.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
-    {
-      "id": "a305636",
-      "title": "한국토지주택공사 대전충남지역본부 기간제근로자(보상일반역, 보상전문역) 채용공고",
-      "organization": "한국토지주택공사",
-      "official_link_host": "www.lh.or.kr",
-      "official_link_status": "url_format_ok_not_live_checked",
-      "missing": [
-        "실질 직무설명"
-      ],
-      "detail_fields": {
-        "qualification": true,
-        "process": true,
-        "substantive_description": false
-      }
-    },
     {
       "id": "a306151",
       "title": "우체국물류지원단 대구지사 안동,포항사업소 기간제(운전직) 채용 공고",
