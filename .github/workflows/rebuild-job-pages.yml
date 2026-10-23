@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '43 1 * * *'
+  pull_request:
+    paths:
+      - 'scripts/build_job_pages.py'
+      - '.github/workflows/rebuild-job-pages.yml'
   push:
     branches: [main]
     paths:
@@ -51,6 +55,7 @@ jobs:
               print('Verified ALIO fallback in', p['id'])
           PY
       - name: Commit generated HTML only when changed
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
