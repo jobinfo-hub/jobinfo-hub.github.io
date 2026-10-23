@@ -181,7 +181,7 @@ def render(post, detail):
             if isinstance(val, str) and val.strip():
                 extra += (
                     f'<section><h2>{escape(label)}</h2>'
-                    f'<p>{escape(val[:1500])}</p></section>'
+                    f'<div class="detail-text">{escape(val[:1500])}</div></section>'
                 )
 
     # 공고마다 고유한 확인 가능 정보로 설명을 구성합니다.
@@ -290,6 +290,10 @@ a{{color:#1f3fbf}}
 dl{{display:grid;grid-template-columns:minmax(100px,145px) 1fr;gap:8px 12px}}
 dt,dd{{margin:0;padding:8px 0;border-bottom:1px solid #e5e7eb}}
 section p{{white-space:pre-line;overflow-wrap:anywhere}}
+.detail-text{{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.85;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}}
+section{{margin-top:24px}}
+section h2{{margin-bottom:10px;line-height:1.45}}
+@media(max-width:480px){{.detail-text{{padding:12px;font-size:0.96rem}}}}
 .checks{{padding-left:22px}}
 .checks li{{margin:10px 0}}
 .source-note{{background:#f1f5f9;padding:12px 14px;border-radius:9px;color:#334155}}
