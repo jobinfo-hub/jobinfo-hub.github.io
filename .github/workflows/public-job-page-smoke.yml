@@ -54,8 +54,12 @@ jobs:
               raise SystemExit('No generated candidate HTML found')
           from urllib.parse import quote
           url = 'https://jobinfo-hub.github.io/jobs/' + quote(str(target['id']), safe='') + '.html'
+          # GitHub Pages publication may lag behind the generator commit.
+          if __import__('os').environ.get('GITHUB_EVENT_NAME') == 'workflow_run':
+              print('Waiting 90 seconds for Pages publication')
+              time.sleep(90)
           last_error = None
-          for attempt in range(3):
+          for attempt in range(5):
               try:
                   with urlopen(Request(url, headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
                       html = response.read(300000).decode('utf-8', errors='replace')
@@ -65,8 +69,9 @@ jobs:
                   break
               except (URLError, HTTPError, TimeoutError, RuntimeError) as exc:
                   last_error = exc
-                  if attempt < 2:
-                      time.sleep(15)
+                  print(f'Attempt {attempt + 1}/5 failed: {type(exc).__name__}: {exc}')
+                  if attempt < 4:
+                      time.sleep(30)
           else:
               raise SystemExit(f'Public deployment check failed for {url}: {last_error}')
           PY
