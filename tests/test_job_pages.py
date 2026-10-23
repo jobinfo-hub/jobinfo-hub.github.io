@@ -5,6 +5,7 @@ Run: python -m unittest discover -s tests -p 'test_job_pages.py'
 import unittest
 
 from scripts.build_job_pages import render
+from alio import detail_of
 
 
 class JobPageTests(unittest.TestCase):
@@ -21,6 +22,13 @@ class JobPageTests(unittest.TestCase):
             'desc': '실제 담당 업무와 필요한 역량을 안내하는 테스트용 채용공고입니다.',
             'src': 'https://example.org/jobs/123',
         }
+
+    def test_alio_collection_preserves_long_original_detail(self):
+        original = '지원자격 상세 ' * 600
+        collected = detail_of({'aplyQlfcCn': original})
+        self.assertEqual(collected['aplyQlfcCn'], original)
+        html = render(self.post, collected)
+        self.assertIn('이 항목은 원문이 길어 일부만 표시됩니다', html)
 
     def test_mobile_layout_and_keyboard_navigation(self):
         html = render(self.post, {})
