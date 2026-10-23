@@ -1,5 +1,8 @@
 name: CareerPick public job page smoke
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/public-job-page-smoke.yml'
   workflow_dispatch:
   schedule:
     - cron: '13 3 * * *'
@@ -13,7 +16,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Validate public smoke check inputs on PR
+        if: github.event_name == 'pull_request'
+        run: |
+          python scripts/build_job_pages.py --self-test
+          python - <<'PY'
+          from pathlib import Path
+          assert Path('jobs/a306139.html').exists()
+          print('Public smoke workflow PR validation: PASS')
+          PY
       - name: Check published job HTML and fallback link
+        if: github.event_name != 'pull_request'
         env:
           PYTHONUNBUFFERED: '1'
         run: |
