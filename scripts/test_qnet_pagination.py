@@ -31,6 +31,21 @@ def test_truncated():
     assert calls == [1, 2, 3, 4, 5, 6]
 
 
+def test_first_page_total_is_retained():
+    def fake_ask(key, year, gb, page):
+        if page == 1:
+            return ([{"implSeq": "1"}] * 50, 80)
+        return ([{"implSeq": "2"}], None)
+
+    with patch.object(qnet, "ask", side_effect=fake_ask):
+        try:
+            qnet.collect("offline-key", 2026, "T")
+        except qnet.IncompleteQnetResponse:
+            pass
+        else:
+            raise AssertionError("First page totalCount must remain authoritative")
+
+
 def test_fetch_does_not_silently_fallback():
     with patch.object(qnet, "collect", side_effect=qnet.IncompleteQnetResponse("partial")):
         try:
@@ -44,5 +59,6 @@ def test_fetch_does_not_silently_fallback():
 if __name__ == "__main__":
     test_complete()
     test_truncated()
+    test_first_page_total_is_retained()
     test_fetch_does_not_silently_fallback()
     print("QNet pagination protection: PASS")
