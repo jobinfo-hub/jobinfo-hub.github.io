@@ -179,6 +179,8 @@ def render(post, detail):
     # 공고에 확인된 정보와 직무 특성에 맞는 가이드를 우선 안내합니다.
     guide_items = [
         ('/guides/application-checklist.html', '지원 전 7가지 확인사항'),
+        ('/guides/qualification-preference-guide.html', '지원자격·우대조건 해석법'),
+        ('/guides/after-application-checklist.html', '지원서 제출 후 확인사항'),
     ]
     context = ' '.join((title, clean(post.get('desc')), qualification, process))
     if any(word in context for word in ('NCS', '필기', '직업기초', '공기업', '공공기관')):
