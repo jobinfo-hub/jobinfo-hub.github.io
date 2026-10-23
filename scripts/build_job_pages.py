@@ -309,12 +309,10 @@ def render(post, detail):
         + ''.join(f'<a href="#{escape(anchor, quote=True)}">{escape(label)}</a>' for anchor, label in toc_items)
         + '</div></nav>'
     )
-    source_stamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
-    # 공고 원문 자체의 갱신일이 아닌 정적 페이지 생성 시각입니다.
+    # 생성 시각을 삽입하면 매 실행마다 모든 HTML이 변경되므로 출처만 표시합니다.
     source_html = (
-        '<p class="source-meta">자료 출처: ALIO 제공 데이터 · 페이지 생성: '
-        + escape(source_stamp)
-        + ' · 최신 변경사항은 공식 공고에서 확인</p>'
+        '<p class="source-meta">자료 출처: ALIO 제공 데이터 · '
+        '최신 수정·접수 정보는 반드시 공식 채용공고에서 확인하세요.</p>'
     )
 
     # 공고마다 고유한 확인 가능 정보로 설명을 구성합니다.
