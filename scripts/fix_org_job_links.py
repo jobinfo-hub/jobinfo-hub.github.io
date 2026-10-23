@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PATTERN = re.compile(r'href="\./#job=(a[0-9]+)"')
 
 
-DIRECT = re.compile(r'href="jobs/(a[0-9]+)\\.html"')
+DIRECT = re.compile(r'href="jobs/(a[0-9]+)\.html"')
 
 
 def main():
