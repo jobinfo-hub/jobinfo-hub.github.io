@@ -153,6 +153,9 @@ def candidates(posts, history, today):
             'days': days,
             'regular': regular(job),
             'count': count,
+            'employment': ' · '.join(map(str, job.get('emp', []))) if isinstance(job.get('emp'), list) else str(job.get('emp') or '공고 확인'),
+            'location': str(job.get('location') or job.get('region') or '공고 확인'),
+            'start': str(job.get('start') or job.get('start_date') or ''),
             'priority': priority
         })
 
@@ -338,6 +341,42 @@ def verify_account(token, expected_id=None):
     return actual_id
 
 
+
+def compose_reply(job):
+    count = f"{job['count']}명" if job.get('count') is not None else '공고 확인'
+    start = job.get('start', '').strip()
+    period = (start + ' ~ ' if start else '마감 ') + job['due']
+    return (
+        f"🏢 기관명: {job['org']}\n\n"
+        f"📌 고용형태: {job.get('employment') or '공고 확인'}\n\n"
+        f"👥 채용인원: {count}\n\n"
+        f"📍 근무지: {job.get('location') or '공고 확인'}\n\n"
+        f"📅 접수기간: {period}\n\n"
+        "🔗 자세한 채용공고: 커리어픽 프로필링크"
+    )[:500]
+
+
+def create_media(token, params):
+    container = api('POST', '/me/threads', token, params)
+    creation_id = container.get('id')
+    if not creation_id:
+        raise RuntimeError('Threads container ID missing')
+    published = api('POST', '/me/threads_publish', token, {'creation_id': creation_id})
+    post_id = published.get('id')
+    if not post_id:
+        raise RuntimeError('Threads publish ID missing')
+    return str(post_id)
+
+
+def image_ready(url):
+    try:
+        req = urllib.request.Request(url, method='HEAD')
+        with urllib.request.urlopen(req, timeout=12) as response:
+            return response.status == 200 and response.headers.get('Content-Type', '').startswith('image/')
+    except (urllib.error.URLError, TimeoutError):
+        return False
+
+
 def publish_post(record, history):
     if os.getenv(
         'THREADS_ENABLED', 'false'
@@ -364,64 +403,40 @@ def publish_post(record, history):
 
     print('')
     print('=== Threads Publishing ===')
-    print('Creating text post container...')
+    if not record.get('threads_post_id'):
+        image_url = record.get('image_url', '')
+        if image_url and image_ready(image_url):
+            print('Publishing image post')
+            params = {'media_type': 'IMAGE', 'image_url': image_url, 'text': record['text']}
+        else:
+            print('Image unavailable; retaining existing text publishing fallback')
+            params = {'media_type': 'TEXT', 'text': record['text']}
+        post_id = create_media(token, params)
+        record['status'] = 'published'
+        record['threads_post_id'] = post_id
+        record['published_at'] = datetime.now(KST).isoformat()
+        if record['job_id'] not in history['posted_ids']:
+            history['posted_ids'].append(record['job_id'])
+        save(history)
+        print('Published Threads post ID:', post_id)
 
-    # Step 1: Create a Threads text container.
-    # A successful response must contain a creation ID.
-    container = api(
-        'POST',
-        '/me/threads',
-        token,
-        {
+    if record.get('reply_post_id'):
+        return
+    try:
+        reply_id = create_media(token, {
             'media_type': 'TEXT',
-            'text': record['text']
-        }
-    )
-
-    creation_id = container.get('id')
-
-    if not creation_id:
-        raise RuntimeError(
-            'Container creation did not return an ID'
-        )
-
-    print('Container created successfully')
-
-    # Step 2: Publish the created container.
-    print('Publishing Threads container...')
-
-    published = api(
-        'POST',
-        '/me/threads_publish',
-        token,
-        {
-            'creation_id': creation_id
-        }
-    )
-
-    post_id = published.get('id')
-
-    if not post_id:
-        raise RuntimeError(
-            'Publish did not return a post ID'
-        )
-
-    record['status'] = 'published'
-    record['threads_post_id'] = str(post_id)
-    record['published_at'] = datetime.now(
-        KST
-    ).isoformat()
-
-    if record['job_id'] not in history['posted_ids']:
-        history['posted_ids'].append(
-            record['job_id']
-        )
-
-    save(history)
-
-    print('')
-    print('=== Publish Success ===')
-    print('Published Threads post ID:', post_id)
+            'text': record.get('reply_text', '🔗 자세한 채용공고: 커리어픽 프로필링크'),
+            'reply_to_id': record['threads_post_id']
+        })
+        record['reply_post_id'] = reply_id
+        record['reply_published_at'] = datetime.now(KST).isoformat()
+        save(history)
+        print('Published reply ID:', reply_id)
+    except RuntimeError as exc:
+        print('Reply publish failed; original post remains recorded:', str(exc))
+        # Keep post ID for manual reconciliation; never publish the original again.
+        record['reply_status'] = 'needs_review'
+        save(history)
 
 
 def main():
@@ -493,8 +508,9 @@ def main():
             record
             for record in history['records']
             if (
-                record.get('status') == 'pending'
+                record.get('status') in ('pending', 'published')
                 and record.get('run_id') == run_id
+                and not record.get('reply_post_id')
             )
         ]
 
@@ -588,7 +604,10 @@ def main():
         'created_at': datetime.now(
             KST
         ).isoformat(),
-        'text': compose(job)
+        'text': compose(job),
+        'reply_text': compose_reply(job),
+        'image_url': 'https://jobinfo-hub.github.io/threads-images/' + urllib.parse.quote(re.sub(r'[^A-Za-z0-9_-]', '_', job['id'])[:70] + '.jpg'),
+        'image_job': job
     })
 
     save(history)
