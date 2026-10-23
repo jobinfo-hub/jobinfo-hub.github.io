@@ -713,6 +713,21 @@ def self_test():
     ):
         assert not safe_url(unsafe), f'위험 URL 허용: {unsafe}'
     assert safe_url('https://job.alio.go.kr/example')
+    # 공식 URL이 없거나 안전하지 않으면 지원 버튼을 만들지 않습니다.
+    sample['src'] = 'https://192.168.1.2/private'
+    sample['url'] = 'javascript:alert(1)'
+    unsafe_html = render(sample, {})
+    assert '공식 링크를 확인할 수 없습니다' in unsafe_html
+    assert 'href="javascript:' not in unsafe_html
+    assert 'href="https://192.168.1.2' not in unsafe_html
+    # 마감 공고에는 접수 종료 안내를 제공하고 JobPosting 스키마를 제외합니다.
+    sample['src'] = 'https://job.alio.go.kr/example'
+    sample['due'] = '2020-01-01'
+    closed_html = render(sample, {})
+    assert '접수 마감된 공고입니다' in closed_html
+    assert '"@type": "JobPosting"' not in closed_html
+    # 동일한 입력은 동일한 HTML을 생성해야 합니다.
+    assert render(sample, {}) == closed_html
     print('CareerPick job-page regression checks: PASS')
 
 
