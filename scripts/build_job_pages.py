@@ -19,7 +19,6 @@ BASE = 'https://jobinfo-hub.github.io'
 
 DETAIL_LABELS = {
     'recrutSeNm': '채용 구분',
-    'recrutPblntTtl': '채용공고 제목',
     'aplyQlfcCn': '지원 자격',
     'recrutPrgsCn': '채용 절차',
 }
