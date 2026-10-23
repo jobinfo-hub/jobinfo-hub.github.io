@@ -1,6 +1,7 @@
 """Verify that the public Pages institution ALIO block matches this deployment."""
 import sys
 import re
+import json
 import time
 from pathlib import Path
 from html.parser import HTMLParser
@@ -56,6 +57,19 @@ def verify_job_detail(block):
     canonical = re.search(r'<link\s+rel="canonical"\s+href="([^"]+)"', html)
     if not canonical or canonical.group(1) != url:
         raise RuntimeError(f"Public job detail canonical mismatch: {url}")
+    # Public JSON-LD must agree with the actual URL. Expired jobs can omit it.
+    job_schemas = []
+    for raw in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S):
+        try:
+            parsed = json.loads(raw)
+        except ValueError as exc:
+            raise RuntimeError(f"Invalid public JSON-LD: {url}") from exc
+        if isinstance(parsed, dict) and parsed.get("@type") == "JobPosting":
+            job_schemas.append(parsed)
+    if len(job_schemas) > 1:
+        raise RuntimeError(f"Duplicate public JobPosting schema: {url}")
+    if job_schemas and job_schemas[0].get("url") != url:
+        raise RuntimeError(f"Public JobPosting URL mismatch: {url}")
     print(f"Live job detail PASS: {url}")
 
 def main():
