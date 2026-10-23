@@ -28,6 +28,15 @@ def main():
             assert "***" in message, "ALIO redaction marker missing"
         else:
             raise AssertionError("Mocked ALIO request should fail")
+    with patch.object(qnet.urllib.request, "urlopen", side_effect=RuntimeError(url)):
+        try:
+            qnet.ask(key, 2026, "T")
+        except RuntimeError as exc:
+            message = str(exc)
+            assert key not in message, "QNet raw key leaked in error"
+            assert quote_plus(key) not in message, "QNet URL-encoded key leaked in error"
+        else:
+            raise AssertionError("Mocked QNet request should fail")
     print("API HTTPS and credential redaction: PASS")
 
 
