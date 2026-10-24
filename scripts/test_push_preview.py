@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timedelta, timezone
-from scripts.push_preview import candidates, event_deduplicate, matched_job_tags, matching_preference_tags
+from scripts.push_preview import candidates, event_deduplicate, matched_job_tags, matching_preference_tags, preview_profile_matches
 
 KST = timezone(timedelta(hours=9))
 
@@ -14,6 +14,14 @@ class PushPreviewTests(unittest.TestCase):
         self.assertFalse(matching_preference_tags(job, {"region":["부산"], "emp":["정규직"]}))
         self.assertFalse(matching_preference_tags(job, {"region":["서울"], "emp":["인턴"]}))
         self.assertFalse(matching_preference_tags(job, {"kw":"의사 간호사"}))
+
+    def test_real_alio_category_does_not_imply_job_specialty(self):
+        job={"title":"행정 지원", "org":"공공기관", "cat":"공공기관 공식 공고",
+             "desc":"사무.행정", "region":"서울", "emp":["계약직"], "edu":["학력무관"]}
+        self.assertTrue(matching_preference_tags(job, {"kw":"사무"}))
+        self.assertFalse(matching_preference_tags(job, {"cat":["간호"]}))
+        self.assertEqual(len(preview_profile_matches([dict(job,event_id="new:a1")],{"kw":"사무"})),1)
+        self.assertEqual(preview_profile_matches([dict(job,event_id="new:a1")],{"kw":"간호"}),[])
 
     def test_unknown_region_not_over_targeted(self):
         self.assertFalse(matching_preference_tags({"region":""}, {"region":["서울"]}))
