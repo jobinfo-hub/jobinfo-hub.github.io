@@ -2,6 +2,7 @@
 Usage: python scripts/generate_naver_drafts.py
 No Naver login, publishing, or automatic factual claims.
 """
+import csv
 import json
 import re
 from datetime import datetime, timezone, timedelta
@@ -142,6 +143,18 @@ def main():
         if old.name not in current:
             old.unlink()
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    # Spreadsheet-friendly index for selecting which draft to publish manually.
+    with (OUT / "review-index.csv").open("w", encoding="utf-8-sig", newline="") as fp:
+        writer = csv.writer(fp)
+        writer.writerow(["ID", "제목", "검수상태", "마감여부", "마감일확인", "Markdown", "Word", "썸네일"])
+        for item in manifest:
+            pid = item["id"]
+            writer.writerow([
+                pid, item["title"], item["status"],
+                "마감" if item["expired"] else "확인필요" if not item["deadline_known"] else "원문확인",
+                "확인" if item["deadline_known"] else "미확인",
+                f"{pid}.md", f"{pid}.docx", f"{pid}-thumbnail.png",
+            ])
     print(f"Generated all {len(manifest)} ALIO review-only drafts in {OUT}")
 
 if __name__ == "__main__":
