@@ -2444,7 +2444,7 @@ async function cpInitPush(){
         try {
           await sdk.init({
             appId: window.CP_ONESIGNAL_APP_ID,
-            serviceWorkerPath: "OneSignalSDKWorker.js",
+            serviceWorkerPath: "onesignal/OneSignalSDKWorker.js",
             serviceWorkerParam: {scope: "/onesignal/"}
           });
         } catch(e){
@@ -2618,11 +2618,11 @@ function savedAlert(){
 
 // ── 카톡 오픈채팅 안내 ──
 (function(){
-  let off = false; try { off = localStorage.getItem("kakaoOff") === "1"; } catch(e) {}
-  if(off) return;
+  // The old Kakao dismissal must not suppress the new alert entry point.
+  // Always show the alert entry on each fresh page visit.
   $("kakaoBar").hidden = false;
   $("addHint").hidden = true;   // 안내 줄은 한 번에 하나만
-  const hide = () => { $("kakaoBar").hidden = true; try { localStorage.setItem("kakaoOff","1"); } catch(e) {} };
+  const hide = () => { $("kakaoBar").hidden = true;  };
   $("kakaoX").onclick = hide;
   $("kakaoGo").addEventListener("click", () => openPrefs());
 })();
