@@ -37,6 +37,10 @@ jobs:
           from pathlib import Path
           m=json.loads(Path('naver-drafts/manifest.json').read_text(encoding='utf-8'))
           assert len(m)==len({x['id'] for x in m})
+          import csv
+          with Path('naver-drafts/review-index.csv').open(encoding='utf-8-sig', newline='') as fp:
+              index=list(csv.DictReader(fp))
+          assert len(index)==len(m)
           for item in m:
               i=item['id']
               assert Path(f'naver-review-packs/{i}.docx').is_file()
