@@ -85,6 +85,7 @@ def make_docx(draft, png, target):
 def main():
     manifest = json.loads((DRAFTS / "manifest.json").read_text(encoding="utf-8"))
     OUT.mkdir(parents=True, exist_ok=True)
+    current = set()
     for item in manifest:
         pid = item["id"]
         if not re.fullmatch(r"[a-zA-Z0-9_-]+", pid):
