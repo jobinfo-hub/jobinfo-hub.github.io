@@ -17,6 +17,8 @@ def record_accepted_target(state, job_id, subscription_id, status, payload, *, t
         raise ValueError("Notification target must match exactly one subscription")
     if not isinstance(subscription_id, str) or not subscription_id.strip():
         raise ValueError("Invalid subscription ID")
+    if not isinstance(job_id, str) or not job_id.strip():
+        raise ValueError("Invalid job ID")
     if not api_accepted(status, payload) or payload["recipients"] != 1:
         raise ValueError("OneSignal did not accept exactly one targeted recipient")
     return mark_delivered(state, job_id, subscription_id)
