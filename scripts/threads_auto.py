@@ -174,62 +174,11 @@ def candidates(posts, history, today):
 
 
 def compose(job):
-    title = re.sub(
-        r'\s+', ' ', job['title']
-    ).strip()
-
-    org = re.sub(
-        r'\s+', ' ', job['org']
-    ).strip()
-
-    if title.startswith('[' + org + ']'):
-        title = title[len(org) + 2:].strip()
-
-    head = (
-        f'📢 공공기관 채용정보\n\n'
-        f'🏢 {org}\n\n'
-        f'📌 {title}'
-    )
-
-    tail = (
-        f"\n\n👥 모집인원: {job['count']}명"
-        if job['count'] is not None
-        else '\n\n👥 모집인원: 공고 확인'
-    )
-
-    tail += (
-        f"\n\n📅 마감: {job['due']} (D-{job['days']})"
-        f"\n\n🔎 자세한 내용은 프로필 링크를 확인하세요."
-        f"\n\n#커리어픽 #공공기관채용"
-    )
-
-    max_chars = 490
-
-    if len(head + tail) > max_chars:
-        available = max_chars - len(tail) - len(
-            f'📢 공공기관 채용정보\n\n🏢 {org}\n📌 '
-        )
-
-        if available < 2:
-            raise ValueError(
-                'Organization and closing message are too long'
-            )
-
-        title = title[:available - 1].rstrip() + '…'
-
-        head = (
-            f'📢 공공기관 채용정보\n\n'
-            f'🏢 {org}\n\n'
-            f'📌 {title}'
-        )
-
-    result = head + tail
-
+    """Keep the primary image post short; details stay in the reply."""
+    org = re.sub(r'\s+', ' ', str(job['org'])).strip()
+    result = f'📢 공공기관 채용정보\n\n🏢 {org}'
     if len(result) > 500:
-        raise ValueError(
-            'Post exceeds 500 characters'
-        )
-
+        raise ValueError('Organization name exceeds Threads post limit')
     return result
 
 
