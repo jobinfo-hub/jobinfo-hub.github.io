@@ -26,6 +26,12 @@ class TargetedPlanTests(unittest.TestCase):
     def test_malformed_job_is_skipped(self):
         self.assertEqual(plan_notifications([None, "bad"], []), [])
 
+    def test_blank_identifiers_and_titles_are_skipped(self):
+        subs = [{"subscription_id": "a", "opted_in": True, "tags": TAGS}]
+        jobs = [{"id": " ", "title": "행정직", "region": "서울"},
+                {"id": "a102", "title": "  ", "region": "서울"}]
+        self.assertEqual(plan_notifications(jobs, subs), [])
+
     def test_missing_ids_are_skipped(self):
         self.assertEqual(plan_notifications([{"title": "no id"}],
                           [{"subscription_id": "a", "opted_in": True, "tags": TAGS}]), [])
