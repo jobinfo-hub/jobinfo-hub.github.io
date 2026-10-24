@@ -6,11 +6,13 @@ def plan_notifications(jobs, subscribers):
     result = []
     seen = set()
     subscribers = list(subscribers)
+    if not isinstance(jobs, list):
+        jobs = list(jobs)
     for job in jobs:
         if not isinstance(job, dict):
             continue
-        job_id = str(job.get("id") or "")
-        if not job_id or not job.get("title"):
+        job_id = str(job.get("id") or "").strip()
+        if not job_id or not str(job.get("title") or "").strip():
             continue
         for sub in subscribers:
             if not isinstance(sub, dict) or sub.get("opted_in") is not True:
