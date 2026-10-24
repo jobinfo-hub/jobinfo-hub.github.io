@@ -26,6 +26,17 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(manifest), 1)
             self.assertFalse((out / "stale.md").exists())
 
+    def test_unknown_deadline_excluded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            job = {"id": "a300", "alio": True, "title": "미확인 마감", "org": "기관",
+                   "url": "https://example.org/job"}
+            (root / "alio.json").write_text(json.dumps({"posts": [job]}, ensure_ascii=False), encoding="utf-8")
+            with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
+                generator.main()
+            result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(result, [])
+
     def test_generation_does_not_publish(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
