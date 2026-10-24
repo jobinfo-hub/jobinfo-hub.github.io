@@ -21,7 +21,9 @@ def main():
     subscription = os.environ.get("CP_TEST_SUBSCRIPTION_ID", "").strip()
     if not key or not subscription:
         sys.exit("Missing CP_ONESIGNAL_REST_API_KEY or CP_TEST_SUBSCRIPTION_ID.")
-    if not subscription.count("-") == 4 or len(subscription) != 36:\n        sys.exit("Test subscription must be a UUID; refusing ambiguous targeting.")\n    if len(subscription) > 128 or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for c in subscription):
+    if subscription.count("-") != 4 or len(subscription) != 36:
+        sys.exit("Test subscription must be a UUID; refusing ambiguous targeting.")
+    if len(subscription) > 128 or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for c in subscription):
         sys.exit("Invalid test subscription ID.")
     payload = {
         "app_id": APP_ID,
