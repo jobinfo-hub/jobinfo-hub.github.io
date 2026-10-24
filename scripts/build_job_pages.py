@@ -718,10 +718,11 @@ def main():
         item['distinct_official_link_count'] > 1 for item in suspected_duplicates
     )
     # Source-field coverage helps distinguish a missing API field from a rendering defect.
+    # Track the presence of an explicit description field, without treating
+    # NCS category labels as a substantive account of actual duties.
     quality['substantive_description_source_available'] = sum(
-        int(bool(clean(details.get(row['id'], {}).get(field))))
+        bool(clean(details.get(row['id'], {}).get('jobDscrptn')))
         for row in quality_rows
-        for field in ('jobDscrptn',)
         if isinstance(details.get(row['id']), dict)
     )
     quality['missing_substantive_description'] = sum(
