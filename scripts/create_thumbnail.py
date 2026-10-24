@@ -79,6 +79,13 @@ def generate(job):
     identifier = re.sub(r"[^A-Za-z0-9_-]", "_", str(job.get("id", "job")))[:70]
     path = OUT / (identifier + ".jpg")
     im.save(path, "JPEG", quality=92, optimize=True)
+    if path.stat().st_size < 10_000:
+        raise RuntimeError("Generated image is unexpectedly small")
+    with Image.open(path) as check:
+        check.verify()
+    with Image.open(path) as check:
+        if check.format != "JPEG" or check.size != (1080, 1080):
+            raise RuntimeError("Generated image format or dimensions invalid")
     return path
 
 if __name__ == "__main__":
