@@ -1476,11 +1476,8 @@ function cpSavePreferenceSettings(){
     PREFS=next;
     if(live)live.textContent="✓ 맞춤 조건 저장 성공 · 진단 v2";
     if(button){button.textContent="✓ 저장 완료";button.disabled=false;}
-    try{
-      if(cpPushSdkReady && window.OneSignal && window.OneSignal.User && typeof window.OneSignal.User.addTags==="function"){
-        Promise.resolve(window.OneSignal.User.addTags(cpPushTags())).catch(()=>{});
-      }
-    }catch(_){}
+    // Save locally first; sync to OneSignal independently without blocking the UI.
+    cpSyncPushPreferences().catch(()=>{});
     setTimeout(()=>{
       try{
         closeSheet();
@@ -2475,15 +2472,37 @@ function cpPushStatus(){
   return "ready";
 }
 function cpPushTags(){
-  const p = PREFS;
-  return {
-    cp_region: (p.region || []).slice(0,5).join("|").slice(0,200),
-    cp_employment: (p.emp || []).slice(0,5).join("|").slice(0,200),
-    cp_education: (p.edu || []).slice(0,5).join("|").slice(0,200),
-    cp_category: (p.cat || []).slice(0,5).join("|").slice(0,200),
-    cp_keywords: String(p.kw || "").slice(0,200),
-    cp_preferences_set: hasPrefs() ? "yes" : "no"
+  const p=PREFS;
+  const tags={
+    cp_region:(p.region||[]).slice(0,5).join("|").slice(0,200),
+    cp_employment:(p.emp||[]).slice(0,5).join("|").slice(0,200),
+    cp_education:(p.edu||[]).slice(0,5).join("|").slice(0,200),
+    cp_category:(p.cat||[]).slice(0,5).join("|").slice(0,200),
+    cp_keywords:String(p.kw||"").slice(0,200),
+    cp_preferences_set:hasPrefs()?"yes":"no",
+    cp_schema:"2"
   };
+  // Each selection gets a separate indexed tag for future exact-match filters.
+  // Empty slots are explicitly cleared on update to avoid stale targeting.
+  for(const [name,values] of Object.entries({
+    region:p.region||[],employment:p.emp||[],education:p.edu||[],category:p.cat||[]
+  })){
+    for(let i=0;i<5;i++){
+      tags["cp2_"+name+"_"+(i+1)]=String(values[i]||"").slice(0,100);
+    }
+  }
+  return tags;
+}
+async function cpSyncPushPreferences(){
+  if(cpPushStatus()!=="ready")return;
+  try{
+    await cpInitPush();
+    if(window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags==="function"){
+      await cpPushWithTimeout(OneSignal.User.addTags(cpPushTags()),12000,"관심 조건 동기화");
+    }
+  }catch(e){
+    console.warn("Push preference sync deferred",e);
+  }
 }
 function cpPushWithTimeout(promise, ms, label){
   return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>setTimeout(()=>reject(Error(label+" 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.")),ms))]);
