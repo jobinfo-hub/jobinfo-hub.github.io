@@ -171,6 +171,30 @@
       "published_at": "2026-10-24T09:43:35.154240+09:00",
       "reply_post_id": "18118469819052447",
       "reply_published_at": "2026-10-24T09:43:42.685727+09:00"
+    },
+    {
+      "job_id": "a306193",
+      "reserved_date": "2026-10-24",
+      "status": "pending",
+      "run_id": "40064330588",
+      "created_at": "2026-10-24T13:56:53.900835+09:00",
+      "text": "📢 공공기관 채용정보\n\n🏢 한국예술인복지재단",
+      "reply_text": "🏢 기관명: 한국예술인복지재단\n\n📌 고용형태: 정규직 · 계약직\n\n👥 채용인원: 16명\n\n📍 근무지: 서울\n\n📅 접수기간: 마감 2026-11-05\n\n🔗 자세한 채용공고: 커리어픽 프로필링크",
+      "image_url": "https://jobinfo-hub.github.io/threads-images/a306193.jpg",
+      "image_job": {
+        "id": "a306193",
+        "org": "한국예술인복지재단",
+        "title": "한국예술인복지재단 2027년 제1차 직원 채용 공고(정규직, 계약직)",
+        "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306193",
+        "due": "2026-11-05",
+        "days": 12,
+        "regular": true,
+        "count": 16,
+        "employment": "정규직 · 계약직",
+        "location": "서울",
+        "start": "",
+        "priority": 1
+      }
     }
   ]
 }
