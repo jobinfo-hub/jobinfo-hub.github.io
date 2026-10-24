@@ -2,6 +2,9 @@
 
 현재 상태: **전체 ALIO 공고 검수 초안 생성 단계**. 하루 11건 제한 없이 마감·미확인 공고도 경고와 함께 포함합니다. 네이버 로그인·임시저장·발행을 수행하지 않습니다.
 
+## 실행 주기
+운영 브랜치에 병합하면 매일 오전 9시 20분(KST) GitHub Actions에서 전체 공고 검수용 초안·Word·썸네일·CSV를 생성하여 14일 동안 Artifacts에 보관합니다. GitHub 예약 실행은 지연될 수 있으며, 실제 네이버 블로그에 게시하거나 임시저장하지 않습니다. 개발 브랜치 상태에서는 예약 실행이 활성화되지 않습니다.
+
 ## 수동 시험
 GitHub Actions > Prepare Naver blog drafts (manual) > Run workflow 에서 이 개발 브랜치를 선택합니다.
 완료 후 Artifacts의 `naver-blog-review-drafts`를 내려받습니다.
