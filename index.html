@@ -1476,8 +1476,16 @@ function cpSavePreferenceSettings(){
     PREFS=next;
     if(live)live.textContent="✓ 맞춤 조건 저장 성공 · 진단 v2";
     if(button){button.textContent="✓ 저장 완료";button.disabled=false;}
-    // Save locally first; sync to OneSignal independently without blocking the UI.
-    cpSyncPushPreferences().catch(()=>{});
+    // Local save is complete; remote OneSignal sync has a separate status.
+    const pushStatus=document.getElementById("cpPushMessage");
+    if(pushStatus)pushStatus.textContent="관심 조건은 이 기기에 저장되었습니다. 알림 서버 동기화 확인 중…";
+    cpSyncPushPreferences().then(ok=>{
+      if(pushStatus)pushStatus.textContent=ok
+        ?"관심 조건을 OneSignal에 전송했습니다. 서버의 태그 저장 여부는 별도 확인이 필요합니다."
+        :"관심 조건은 이 기기에만 저장되었습니다. 알림 서버 동기화는 확인되지 않았습니다.";
+    }).catch(()=>{
+      if(pushStatus)pushStatus.textContent="관심 조건은 이 기기에만 저장되었습니다. 알림 서버 동기화 실패.";
+    });
     setTimeout(()=>{
       try{
         closeSheet();
@@ -2495,15 +2503,17 @@ function cpPushTags(){
   return tags;
 }
 async function cpSyncPushPreferences(){
-  if(cpPushStatus()!=="ready")return;
+  if(cpPushStatus()!=="ready")return false;
   try{
     await cpInitPush();
     if(window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags==="function"){
       await cpPushWithTimeout(OneSignal.User.addTags(cpPushTags()),12000,"관심 조건 동기화");
+      return true;
     }
   }catch(e){
     console.warn("Push preference sync deferred",e);
   }
+  return false;
 }
 function cpPushWithTimeout(promise, ms, label){
   return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>setTimeout(()=>reject(Error(label+" 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.")),ms))]);
