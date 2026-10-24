@@ -17,6 +17,20 @@ def tokens(value):
         return [str(v).strip().casefold() for v in value if str(v).strip()]
     return [str(value).strip().casefold()] if value is not None and str(value).strip() else []
 
+def region_tokens(value):
+    """Split ALIO multi-region strings without substring-based false matches."""
+    if isinstance(value, list):
+        parts = value
+    elif isinstance(value, str):
+        parts = [value]
+    else:
+        return []
+    output = []
+    for part in parts:
+        output.extend(token.strip().casefold() for token in
+                      re.split(r"[,，、;/|·\\n]+", str(part)) if token.strip())
+    return output
+
 def selected(tags, prefix):
     return [str(tags.get(prefix + str(i), "")).strip().casefold()
             for i in range(1, 6) if str(tags.get(prefix + str(i), "")).strip()]
@@ -31,7 +45,8 @@ def matches(job, tags):
         return False
     for _, (job_key, prefix) in DIMENSIONS.items():
         wants = selected(tags, prefix)
-        if wants and not set(wants).intersection(tokens(job.get(job_key))):
+        actual = region_tokens(job.get(job_key)) if job_key == "region" else tokens(job.get(job_key))
+        if wants and not set(wants).intersection(actual):
             return False
     keywords = [s.strip().casefold() for s in re.split(r"[,，\s]+", str(tags.get("cp_keywords", ""))) if s.strip()]
     if keywords:
