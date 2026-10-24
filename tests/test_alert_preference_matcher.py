@@ -9,6 +9,10 @@ class PreferenceMatcherTests(unittest.TestCase):
     def test_no_preferences_no_target(self):
         self.assertFalse(matches(JOB, {}))
         self.assertFalse(matches(JOB, {"cp_preferences_set": "no", "cp_schema": "2"}))
+    def test_stale_yes_flag_without_filters_does_not_target_everyone(self):
+        self.assertFalse(matches(JOB, {"cp_preferences_set": "yes", "cp_schema": "2"}))
+        self.assertFalse(matches(JOB, {"cp_preferences_set": "yes", "cp_schema": "2", "cp_keywords": "   "}))
+
     def test_region_match(self):
         tags = {"cp_preferences_set": "yes", "cp_schema": "2", "cp2_region_1": "서울"}
         self.assertTrue(matches(JOB, tags))
