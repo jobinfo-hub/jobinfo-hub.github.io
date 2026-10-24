@@ -163,6 +163,19 @@ jobs:
                       raise SystemExit('Public recruitment image unavailable; skip Threads publish')
           PY
 
+      - name: Validate image readiness guard
+        if: env.THREADS_ENABLED == 'true'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/threads_auto.yml').read_text(encoding='utf-8')
+          assert "ready = False" in workflow
+          assert "ready = True" in workflow
+          assert "if not ready:" in workflow
+          assert "raise SystemExit('Public recruitment image unavailable; skip Threads publish')" in workflow
+          print('Threads image readiness guard present')
+          PY
+
       - name: Publish one Threads post
         if: env.THREADS_ENABLED == 'true'
         run: python scripts/threads_auto.py publish
