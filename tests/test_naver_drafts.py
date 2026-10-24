@@ -98,6 +98,20 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(rows), 25)
             self.assertEqual(rows[0]["검수상태"], "needs_review")
 
+    def test_thumbnail_status_labels(self):
+        from scripts.build_naver_review_packs import image_for
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as tmp:
+            draft = "# 채용 테스트\n- 모집기관: 기관"
+            expired = Path(tmp) / "expired.png"
+            unknown = Path(tmp) / "unknown.png"
+            image_for(draft, expired, expired=True)
+            image_for(draft, unknown, deadline_known=False)
+            with Image.open(expired) as img:
+                self.assertEqual(img.size, (1080, 1080))
+            with Image.open(unknown) as img:
+                self.assertEqual(img.size, (1080, 1080))
+
     def test_generation_does_not_publish(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
