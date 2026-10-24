@@ -2,6 +2,9 @@
 name: CareerPick Threads Diagnose
 
 on:
+  schedule:
+    # Daily at 08:20 KST (23:20 UTC), before the first 09:00 KST post.
+    - cron: '20 23 * * *'
   workflow_dispatch:
 
 permissions:
