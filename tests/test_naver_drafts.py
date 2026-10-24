@@ -53,7 +53,7 @@ class DraftTests(unittest.TestCase):
             text = (root / "naver-drafts" / "a400.md").read_text(encoding="utf-8")
             self.assertIn("마감 시각은 원문 확인 필요", text)
 
-    def test_unknown_deadline_excluded(self):
+    def test_unknown_deadline_included_with_warning(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             job = {"id": "a300", "alio": True, "title": "미확인 마감", "org": "기관",
@@ -62,7 +62,21 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(result, [])
+            self.assertEqual(len(result), 1)\n            self.assertFalse(result[0]["deadline_known"])
+
+    def test_generates_all_more_than_eleven(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            jobs = [
+                {"id":f"all{i}","alio":True,"title":f"공고 {i}","org":"기관",
+                 "url":f"https://example.org/{i}","due":"2099-01-01"}
+                for i in range(25)
+            ]
+            (root / "alio.json").write_text(json.dumps({"posts":jobs}, ensure_ascii=False), encoding="utf-8")
+            with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
+                generator.main()
+            result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(result), 25)
 
     def test_generation_does_not_publish(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -74,7 +88,7 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             manifest = json.loads((root/"naver-drafts"/"manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(manifest),1)
+            self.assertEqual(len(manifest),2)\n            self.assertTrue(next(x for x in manifest if x["id"]=="a101")["expired"])
             self.assertEqual(manifest[0]["status"],"needs_review")
             self.assertIn("공식 공고", (root/"naver-drafts"/"a100.md").read_text(encoding="utf-8"))
 
