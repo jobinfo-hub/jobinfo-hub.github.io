@@ -1475,7 +1475,8 @@ function cpSavePreferenceSettings(){
       if(live)live.textContent="⚠️ 조건 저장에 실패했습니다. 브라우저의 사이트 데이터 저장 허용 여부를 확인해 주세요.";
       return;
     }
-    if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); }
+    // Push tag sync is optional and must never prevent saving local preferences.
+    try { if(cpPushSdkReady && window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags === "function") Promise.resolve(OneSignal.User.addTags(cpPushTags())).catch(()=>{}); } catch(e) { console.warn("Push tag sync skipped",e); }
     // Confirm immediately before any optional page rerender can fail.
     const live=$("prefLive");
     if(live)live.textContent="✓ 맞춤 조건 저장 완료! 다시 열어도 유지됩니다.";
