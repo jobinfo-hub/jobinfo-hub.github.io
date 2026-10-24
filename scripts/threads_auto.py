@@ -190,11 +190,16 @@ def validate_candidate(job, today):
 
 
 def compose(job):
-    """Keep the primary image post short; details stay in the reply."""
+    """Show verified recruitment highlights in the main post."""
     org = re.sub(r'\s+', ' ', str(job['org'])).strip()
-    result = f'📢 공공기관 채용정보\n\n🏢 {org}'
+    count = job.get('count')
+    employment = str(job.get('employment') or '').strip()
+    hiring = (employment + ' ' if employment != '공고 확인' else '') + (str(count) + '명 모집' if count is not None else '채용')
+    due = parse_date(job.get('due'))
+    deadline = str(due.month) + '월 ' + str(due.day) + '일 마감' if due else '마감일 공고 확인'
+    result = '📢 공공기관 채용정보\n\n🏢 ' + org + '\n\n👥 ' + hiring + '\n\n📅 ' + deadline + '\n\n💬 지원자격·접수정보는 답글 확인'
     if len(result) > 500:
-        raise ValueError('Organization name exceeds Threads post limit')
+        raise ValueError('Threads post exceeds 500 characters')
     return result
 
 
@@ -309,17 +314,28 @@ def verify_account(token, expected_id=None):
 
 
 def compose_reply(job):
-    count = f"{job['count']}명" if job.get('count') is not None else '공고 확인'
-    start = job.get('start', '').strip()
-    period = (start + ' ~ ' if start else '마감 ') + job['due']
-    return (
-        f"🏢 기관명: {job['org']}\n\n"
-        f"📌 고용형태: {job.get('employment') or '공고 확인'}\n\n"
-        f"👥 채용인원: {count}\n\n"
-        f"📍 근무지: {job.get('location') or '공고 확인'}\n\n"
-        f"📅 접수기간: {period}\n\n"
-        "🔗 자세한 채용공고: 커리어픽 프로필링크"
-    )[:500]
+    """Verified recruitment details with an intact profile CTA."""
+    count = str(job['count']) + '명' if job.get('count') is not None else '공고 확인'
+    start = str(job.get('start') or '').strip()
+    period = (start + ' ~ ' if start else '마감 ') + str(job['due'])
+    lines = [
+        '🏢 기관명: ' + str(job['org']),
+        '📌 고용형태: ' + str(job.get('employment') or '공고 확인'),
+        '👥 채용인원: ' + count,
+        '📍 근무지: ' + str(job.get('location') or '공고 확인'),
+        '📅 접수기간: ' + period,
+    ]
+    qualification = str(job.get('qualification') or '').strip()
+    if qualification:
+        lines.append('📋 지원자격: ' + ' '.join(qualification.split()))
+    cta = '🔗 상세 자격·접수방법 확인 → 프로필 링크의 커리어픽'
+    result = '\n\n'.join(lines + [cta])
+    if len(result) > 500 and qualification:
+        lines.pop()
+        result = '\n\n'.join(lines + [cta])
+    if len(result) > 500:
+        raise ValueError('Threads reply exceeds 500 characters')
+    return result
 
 
 def create_media(token, params):

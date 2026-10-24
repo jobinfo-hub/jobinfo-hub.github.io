@@ -27,10 +27,15 @@ class ThreadsCandidateTests(unittest.TestCase):
 
     def test_primary_and_reply(self):
         selected = candidates([self.job], {'posted_ids': [], 'records': []}, self.today)[0]
-        self.assertEqual(compose(selected), '📢 공공기관 채용정보' + chr(10) * 2 + '🏢 테스트기관')
+        self.assertIn('🏢 테스트기관', compose(selected))
+        self.assertIn('정규직 16명 모집', compose(selected))
+        self.assertIn('11월 5일 마감', compose(selected))
+        self.assertIn('답글 확인', compose(selected))
+        self.assertLessEqual(len(compose(selected)), 500)
         reply = compose_reply(selected)
         self.assertIn('16명', reply)
-        self.assertIn('커리어픽 프로필링크', reply)
+        self.assertIn('프로필 링크의 커리어픽', reply)
+        self.assertNotIn('지원자격:', reply)
         self.assertLessEqual(len(reply), 500)
 
 if __name__ == '__main__':
