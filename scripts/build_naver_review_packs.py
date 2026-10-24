@@ -36,7 +36,7 @@ def wrap(draw, value, f, width):
             lines[-1] += " " + chunk
     return lines
 
-def image_for(draft, target):
+def image_for(draft, target, expired=False, deadline_known=True):
     heading = draft.splitlines()[0].lstrip("# ").strip()
     org = ""
     for line in draft.splitlines():
@@ -48,7 +48,8 @@ def image_for(draft, target):
     draw.rounded_rectangle((58, 58, 1022, 1022), radius=40, fill="white", outline="#d8e0ed", width=3)
     draw.rounded_rectangle((100, 105, 440, 175), radius=22, fill="#173b73")
     draw.text((125, 117), "CAREERPICK", font=font(37), fill="white")
-    draw.text((108, 240), "채용공고 핵심정리", font=font(54), fill="#173b73")
+    status = "마감 공고 · 기록용" if expired else "마감일 확인 필요" if not deadline_known else "채용공고 핵심정리"
+    draw.text((108, 240), status, font=font(54), fill="#173b73")
     y = 355
     for line in wrap(draw, heading, font(56), 850)[:6]:
         draw.text((108, y), line, font=font(56), fill="#152438")
@@ -57,7 +58,8 @@ def image_for(draft, target):
     for line in wrap(draw, org, font(36), 840)[:2]:
         draw.text((108, 863), line, font=font(36), fill="#35516c")
         break
-    draw.text((108, 955), "공식 공고 확인 후 지원하세요", font=font(28), fill="#607389")
+    footer = "마감된 공고입니다 · 현재 지원 불가" if expired else "현재 모집 여부를 원문에서 확인하세요"
+    draw.text((108, 955), footer, font=font(28), fill="#607389")
     img.save(target)
 
 def make_docx(draft, png, target):
@@ -93,7 +95,7 @@ def main():
         draft = (DRAFTS / item["file"]).read_text(encoding="utf-8")
         current.update({f"{pid}-thumbnail.png", f"{pid}.docx"})
         png = OUT / f"{pid}-thumbnail.png"
-        image_for(draft, png)
+        image_for(draft, png, expired=item.get("expired", False), deadline_known=item.get("deadline_known", True))
         make_docx(draft, png, OUT / f"{pid}.docx")
     for old in OUT.iterdir():
         if old.is_file() and old.suffix.lower() in (".docx", ".png") and old.name not in current:
