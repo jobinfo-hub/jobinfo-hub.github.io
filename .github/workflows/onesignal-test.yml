@@ -1,0 +1,25 @@
+name: CareerPick OneSignal targeted test
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_test:
+        description: 'Type SEND_TEST to send one push to the configured test subscription'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    if: ${{ inputs.confirm_test == 'SEND_TEST' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send to test subscription only
+        env:
+          CP_SEND_TEST_PUSH: '1'
+          CP_ONESIGNAL_REST_API_KEY: ${{ secrets.CP_ONESIGNAL_REST_API_KEY }}
+          CP_TEST_SUBSCRIPTION_ID: ${{ secrets.CP_TEST_SUBSCRIPTION_ID }}
+        run: python3 scripts/test_onesignal_push.py
