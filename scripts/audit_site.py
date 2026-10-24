@@ -73,7 +73,8 @@ def check():
                 for loc in locs
             )
             checks["Sitemap paths exist locally"] = all(
-                (ROOT / unquote(urlsplit(loc).path).lstrip("/")).is_file()
+                ((ROOT / unquote(urlsplit(loc).path).lstrip("/")).is_file()
+                 or (ROOT / unquote(urlsplit(loc).path).lstrip("/") / "index.html").is_file())
                 if urlsplit(loc).path not in ("", "/") else INDEX.is_file()
                 for loc in locs
             )
