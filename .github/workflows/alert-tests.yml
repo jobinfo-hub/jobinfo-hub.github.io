@@ -35,6 +35,9 @@ jobs:
       - name: Run offline targeted alert smoke test
         if: success()
         run: python3 -m scripts.smoke_targeted_alerts
+      - name: Verify schema-v4 delivery pipeline without sending
+        if: success()
+        run: python3 -m scripts.smoke_alert_delivery_v4
       - name: Attach test failure details
         if: failure()
         shell: bash
