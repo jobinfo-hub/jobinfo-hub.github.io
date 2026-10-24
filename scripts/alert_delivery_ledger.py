@@ -4,6 +4,8 @@ Detection is not delivery. Never mark a notification sent from a dry run.
 """
 import json
 import hashlib
+import os
+import tempfile
 from pathlib import Path
 
 def delivery_key(job_id, subscription_id, kind="new_job"):
@@ -24,3 +26,20 @@ def mark_delivered(state, job_id, subscription_id, kind="new_job"):
 def load(path):
     p = Path(path)
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"delivered": []}
+
+def save(path, state):
+    """Atomically persist a delivery snapshot; caller must save it privately."""
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temp_name = tempfile.mkstemp(prefix=".delivery-", dir=str(p.parent))
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            json.dump(state, stream, ensure_ascii=False, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(temp_name, 0o600)
+        os.replace(temp_name, p)
+    finally:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
