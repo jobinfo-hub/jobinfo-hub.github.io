@@ -530,6 +530,20 @@ def main():
         print('Pending reservations:', sum(
             r.get('status') == 'pending' for r in history['records']
         ))
+        # Make the scheduled diagnostic result actionable in GitHub's run summary.
+        if os.getenv('GITHUB_STEP_SUMMARY'):
+            summary_path = Path(os.environ['GITHUB_STEP_SUMMARY'])
+            published_count = sum(r.get('status') == 'published' for r in history['records'])
+            pending_count = len(pending_records)
+            with summary_path.open('a', encoding='utf-8') as summary:
+                summary.write('## CareerPick Threads diagnostic\\n\\n'.replace('\\n', '\n'))
+                summary.write(f'- Pending reservations: **{pending_count}**\\n'.replace('\\n', '\n'))
+                summary.write(f'- Published records: **{published_count}**\\n'.replace('\\n', '\n'))
+                summary.write(f'- Published posts without recorded reply: **{len(missing_replies)}**\\n'.replace('\\n', '\n'))
+                if pending_count:
+                    summary.write('- **Action needed:** inspect remote match results in the job log before reconciling.\\n'.replace('\\n', '\n'))
+                if missing_replies:
+                    summary.write('- **Review:** legacy missing replies are not automatically reposted.\\n'.replace('\\n', '\n'))
         print('Published records:', sum(
             r.get('status') == 'published' for r in history['records']
         ))
