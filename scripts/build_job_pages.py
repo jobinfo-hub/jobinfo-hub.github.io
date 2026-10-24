@@ -134,7 +134,7 @@ def is_closed(due):
         return False
 
 
-def render(post, detail):
+def render(post, detail, related_posts=()):
     title = clean(post.get('title'))
     org = clean(post.get('org'))
     pid = clean(post.get('id'))
@@ -245,6 +245,29 @@ def render(post, detail):
             for url, label in guide_items
         )
         + '</nav>'
+    )
+    # 같은 기관의 다른 ALIO 공고만 연결하며 모집분야가 같다고 추정하지 않습니다.
+    related_items = []
+    for other in related_posts:
+        other_id = clean(other.get('id'))
+        if other_id == pid or not re.fullmatch(r'a[0-9]+', other_id):
+            continue
+        other_title = clean(other.get('title'))
+        if not other_title:
+            continue
+        related_items.append(
+            f'<li><a href="/jobs/{escape(other_id, quote=True)}.html">'
+            f'{escape(other_title)}</a>'
+            f' <span class="muted">· 마감 {escape(date_label(other.get("due")))}</span></li>'
+        )
+        if len(related_items) >= 4:
+            break
+    related_html = (
+        '<section aria-label="같은 기관의 다른 채용공고">'
+        '<h2>같은 기관의 다른 채용공고</h2>'
+        '<p class="source-note">같은 기관에서 게시한 별도 공고입니다. 모집분야와 지원 조건은 각 공고에서 확인하세요.</p>'
+        '<ul class="related-jobs">' + ''.join(related_items) + '</ul></section>'
+        if related_items else ''
     )
     # 자료가 없는 공고에 사실처럼 보이는 직무 설명을 생성하지 않습니다.
     # ALIO desc는 alio.py에서 ncsCdNmLst로 생성된 직무 분류입니다.
@@ -484,6 +507,7 @@ section h2{{margin-bottom:10px;line-height:1.45}}
 @media(max-width:480px){{.detail-text{{padding:12px;font-size:0.96rem}}}}
 .checks{{padding-left:22px}}
 .checks li{{margin:10px 0}}
+.related-jobs li{{margin:9px 0;overflow-wrap:anywhere}}
 .source-note{{background:#f1f5f9;padding:12px 14px;border-radius:9px;color:#334155}}
 .guide-links{{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}}
 .guide-links a{{padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;text-decoration:none}}
@@ -533,6 +557,7 @@ section[id],h2[id]{{scroll-margin-top:20px}}
 <h2>관련 취업 준비 자료</h2>
 {guide_links}
 </section>
+{related_html}
 <a href="/">다른 채용공고 찾아보기</a>
 <footer aria-label="사이트 안내">
 <p class="muted">커리어픽은 공식 채용공고를 안내하는 정보 서비스이며, 채용기관을 대신해 지원서를 접수하지 않습니다.</p>
@@ -595,6 +620,19 @@ def main():
     duplicate_groups = {}
     official_by_id = {}
     detail_field_counts = {}
+    # 원본 데이터에 존재하는 동일 기관 공고만 연결합니다.
+    # 정렬 기준은 마감일·ID로 고정해 반복 빌드 결과를 안정적으로 유지합니다.
+    by_org = {}
+    for item in posts:
+        if not isinstance(item, dict) or not item.get('alio'):
+            continue
+        item_id = clean(item.get('id'))
+        item_org = clean(item.get('org'))
+        if re.fullmatch(r'a[0-9]+', item_id) and item_org and clean(item.get('title')):
+            by_org.setdefault(item_org, []).append(item)
+    for group in by_org.values():
+        group.sort(key=lambda item: (clean(item.get('due')), clean(item.get('id'))))
+
     # 1. 잡알리오 채용공고 상세페이지 생성
     for post in posts:
         if not isinstance(post, dict) or not post.get('alio'):
@@ -660,7 +698,7 @@ def main():
         })
 
         target = OUT / f'{pid}.html'
-        html = render(post, job_detail)
+        html = render(post, job_detail, by_org.get(clean(post.get('org')), ()))
 
         if (
             not target.exists()
@@ -811,6 +849,18 @@ def self_test():
     assert duplicate_key({'org': 'A', 'title': '공고', 'due': '2099-01-01'}) != duplicate_key(
         {'org': 'A', 'title': '공고', 'due': '2099-01-02'}
     )
+    # 관련 공고는 실제 동일 기관 목록만 연결하고 자기 자신은 제외합니다.
+    related = [
+        {'id': 'a12345', 'title': '현재 공고', 'due': '2099-10-28'},
+        {'id': 'a12346', 'title': '<b>다른 공고</b>', 'due': '2099-11-01'},
+        {'id': 'invalid', 'title': '잘못된 ID'},
+    ]
+    related_html = render(sample, {}, related)
+    assert '/jobs/a12346.html' in related_html
+    assert '&lt;b&gt;다른 공고&lt;/b&gt;' in related_html
+    assert 'href="/jobs/a12345.html"' not in related_html
+    assert 'href="/jobs/invalid.html"' not in related_html
+    assert '같은 기관의 다른 채용공고' not in render(sample, {})
     # 기관 공고와 ALIO 링크가 다를 때만 보조 경로를 표시합니다.
     sample['src'] = 'https://agency.example.org/recruit/123'
     sample['url'] = 'https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=123'
