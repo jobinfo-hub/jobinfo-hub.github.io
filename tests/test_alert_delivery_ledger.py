@@ -11,6 +11,8 @@ class DeliveryLedgerTests(unittest.TestCase):
         updated = mark_delivered(initial, "job1", "sub1")
         self.assertFalse(delivered(initial, "job1", "sub1"))
         self.assertTrue(delivered(updated, "job1", "sub1"))
+        self.assertEqual(updated["delivered"], [delivery_key("job1", "sub1")])
+        self.assertNotIn("sub1", str(updated))
         self.assertFalse(delivered(updated, "job1", "sub2"))
         self.assertEqual(updated, mark_delivered(updated, "job1", "sub1"))
 
