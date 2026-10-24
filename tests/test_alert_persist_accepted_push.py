@@ -16,6 +16,17 @@ class PersistAcceptedPushTests(unittest.TestCase):
             self.assertFalse(record_and_save_accepted(path, "job1", "sub1", 200,
                              {"id": "notification-1", "recipients": 1}, **kwargs))
 
+    def test_duplicate_with_invalid_response_still_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            record_and_save_accepted(path, "job1", "sub1", 200,
+                                     {"id": "ok", "recipients": 1},
+                                     targeted_subscription_ids=["sub1"])
+            with self.assertRaises(ValueError):
+                record_and_save_accepted(path, "job1", "sub1", 400,
+                                         {"errors": ["invalid"]},
+                                         targeted_subscription_ids=["sub1"])
+
     def test_rejection_does_not_create_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
