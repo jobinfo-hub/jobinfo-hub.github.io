@@ -1,4 +1,5 @@
 """Regression checks for conservative Naver draft generator."""
+import csv
 import json
 import tempfile
 import unittest
@@ -92,6 +93,10 @@ class DraftTests(unittest.TestCase):
                 generator.main()
             result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(len(result), 25)
+            with (root / "naver-drafts" / "review-index.csv").open(encoding="utf-8-sig", newline="") as fp:
+                rows = list(csv.DictReader(fp))
+            self.assertEqual(len(rows), 25)
+            self.assertEqual(rows[0]["검수상태"], "needs_review")
 
     def test_generation_does_not_publish(self):
         with tempfile.TemporaryDirectory() as tmp:
