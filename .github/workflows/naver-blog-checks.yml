@@ -44,3 +44,12 @@ jobs:
               assert item['status']=='needs_review'
           print('Verified',len(m),'draft packs')
           PY
+
+      - name: Upload sample review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: naver-sample-review-package
+          path: |
+            naver-drafts/
+            naver-review-packs/
+          retention-days: 14
