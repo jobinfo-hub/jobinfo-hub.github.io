@@ -17,6 +17,8 @@ on:
       - 'index.html'
       - 'scripts/build_job_pages.py'
       - 'scripts/threads_auto.py'
+      - 'scripts/create_thumbnail.py'
+      - 'tests/test_threads_candidate.py'
       - 'scripts/audit_site.py'
       - 'scripts/check_api_freshness.py'
       - 'scripts/test_api_freshness.py'
@@ -63,6 +65,8 @@ jobs:
           PY
       - name: Check Python syntax
         run: python -m py_compile scripts/test_api_transport.py scripts/test_qnet_pagination.py orgs.py alio.py qnet.py history.py monitor.py update.py sitegen.py scripts/build_sitemap.py scripts/audit_site.py scripts/build_job_pages.py scripts/check_api_freshness.py scripts/test_api_freshness.py scripts/audit_org_links.py scripts/test_audit_org_links.py scripts/test_org_page_links.py scripts/refresh_org_links.py scripts/summarize_api_run.py scripts/test_summarize_api_run.py test_alio_partial_fetch.py
+      - name: Test Threads candidate eligibility and formatting
+        run: python -m unittest discover -s tests -p 'test_threads_candidate.py' -v
       - name: Test API HTTPS and credential redaction
         run: python scripts/test_api_transport.py
       - name: Test QNet pagination protection
