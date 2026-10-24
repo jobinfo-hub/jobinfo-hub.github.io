@@ -2383,8 +2383,273 @@ document.addEventListener("click", e => {
   else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
   else if(t.id === "cpPushUnsubscribe"){ cpUnsubscribePush(); }
   else if(t.id === "prefSave"){
-    PREFS = DRAFT; savePrefs(); if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch$("cpAlwaysAlert").addEventListener("click", () => openPrefs());
+    PREFS = DRAFT; savePrefs(); if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); } closeSheet();
+    state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
+  }
+  else if(t.dataset.cpdeadline){ state.deadline=t.dataset.cpdeadline; refresh(); }
+  else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
+  else if(t.id === "reset" || t.id === "empty-reset"){ Object.assign(state,{q:"",cat:null,region:"",status:"all",sort:"due",onlyNew:false,deadline:"all"}); $("q").value=""; refresh(); }
+});
+$("q").addEventListener("input", e => { state.q = e.target.value; renderFilters(); render(); });
+$("tabs").addEventListener("scroll", fadeHint, {passive:true});
+window.addEventListener("resize", fadeHint);
 
+
+// ── 홈 화면 추가(즐겨찾기) ──
+// 브라우저 보안 정책상 즐겨찾기를 자동으로 만들 수는 없어서, 지원되는 곳은 설치 창을 띄우고 나머지는 방법을 안내함
+const UA = navigator.userAgent;
+const IS_STANDALONE = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const IS_IOS = /iPhone|iPad|iPod/.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const IS_ANDROID = /Android/.test(UA);
+const INAPP = /KAKAOTALK|Instagram|Barcelona|Threads|FBAN|FBAV|NAVER\(inapp|Line\/|everytimeApp|DaumApps/i.test(UA);
+let installEvt = null;
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(() => {}); }
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; });
+window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("addHint").hidden = true; });
+
+function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); $("sheetBody").scrollTop = 0; }
+function closeSheet(){ $("sheet").classList.remove("open"); }
+
+/* Web push is opt-in. Public OneSignal App ID is set in push-config.js;
+   private REST API keys must never be exposed in client-side code. */
+let cpPushSdkReady = false;
+let cpPushInitPromise = null;
+function cpPushStatus(){
+  const id = window.CP_ONESIGNAL_APP_ID;
+  if(!id || !/^[0-9a-f-]{36}$/i.test(id)) return "setup";
+  if(!("Notification" in window) || !("serviceWorker" in navigator)) return "unsupported";
+  return "ready";
+}
+function cpPushTags(){
+  const p = PREFS;
+  return {
+    cp_region: (p.region || []).slice(0,5).join("|").slice(0,200),
+    cp_employment: (p.emp || []).slice(0,5).join("|").slice(0,200),
+    cp_education: (p.edu || []).slice(0,5).join("|").slice(0,200),
+    cp_category: (p.cat || []).slice(0,5).join("|").slice(0,200),
+    cp_keywords: String(p.kw || "").slice(0,200),
+    cp_preferences_set: hasPrefs() ? "yes" : "no"
+  };
+}
+function cpPushWithTimeout(promise, ms, label){
+  return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>setTimeout(()=>reject(Error(label+" 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.")),ms))]);
+}
+async function cpInitPush(){
+  if(cpPushSdkReady) return;
+  if(cpPushInitPromise) return cpPushInitPromise;
+  if(cpPushStatus() !== "ready") throw Error("웹푸시 설정이 완료되지 않았습니다.");
+  cpPushInitPromise = cpPushWithTimeout(new Promise((resolve,reject)=>{
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(sdk){
+      try {
+        try {
+          await sdk.init({
+            appId: window.CP_ONESIGNAL_APP_ID,
+            serviceWorkerPath: "onesignal/OneSignalSDKWorker.js",
+            serviceWorkerParam: {scope: "/onesignal/"}
+          });
+        } catch(e){
+          if(!/already initialized/i.test(String(e && e.message || e))) throw e;
+        }
+        if(!sdk.User || !sdk.User.PushSubscription) throw Error("웹푸시 SDK가 준비되지 않았습니다.");
+        cpPushSdkReady=true;
+        resolve();
+      } catch(e){reject(e);}
+    });
+    if(!document.querySelector('script[data-cp-onesignal]')){
+      const script=document.createElement("script");
+      script.src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+      script.async=true;script.dataset.cpOnesignal="1";
+      script.onerror=()=>reject(Error("푸시 SDK를 불러오지 못했습니다."));
+      document.head.appendChild(script);
+    }
+  }),15000,"SDK 연결");
+  try { await cpPushInitPromise; }
+  catch(e){cpPushInitPromise=null;throw e;}
+}
+async function cpSubscribePush(){
+  const btn=$("cpPushSubscribe"), status=$("cpPushMessage");
+  if(btn){btn.disabled=true;btn.textContent="⏳ 연결 확인 중…";}
+  if(status)status.textContent="OneSignal 연결과 브라우저 권한을 확인하고 있습니다.";
+  try {
+    await cpInitPush();
+    if(btn)btn.textContent="⏳ 알림 권한 요청 중…";
+    await cpPushWithTimeout(OneSignal.User.PushSubscription.optIn(),15000,"알림 권한 요청");
+    if(Notification.permission !== "granted"){
+      throw Error("브라우저 알림 권한이 허용되지 않았습니다. 주소창 왼쪽 사이트 설정에서 알림을 허용해 주세요.");
+    }
+    await cpPushWithTimeout(OneSignal.User.addTags(cpPushTags()),12000,"관심 조건 저장");
+    if(!OneSignal.User.PushSubscription.optedIn){
+      throw Error("알림 구독이 아직 활성화되지 않았습니다. OneSignal 웹 설정을 확인해 주세요.");
+    }
+    if(btn){btn.textContent="✓ 웹푸시 구독 활성화";btn.disabled=true;}
+    cpRenderPushButtons();
+    if(status)status.textContent="이 기기의 웹푸시 구독이 활성화되었습니다. 다른 휴대폰·PC에서는 별도로 구독해야 합니다. 자동 발송은 아직 준비 중입니다.";
+  } catch(e){
+    if(btn){btn.disabled=false;btn.textContent="🔔 다시 연결하기";}
+    if(status)status.textContent="연결 실패: "+String(e.message||e).slice(0,180);
+  }
+}
+async function cpUnsubscribePush(){
+  const btn=$("cpPushUnsubscribe"), status=$("cpPushMessage");
+  if(btn){btn.disabled=true;btn.textContent="해지 처리 중…";}
+  try{
+    await cpInitPush();
+    await cpPushWithTimeout(OneSignal.User.PushSubscription.optOut(),15000,"구독 해지");
+    if(OneSignal.User.PushSubscription.optedIn) throw Error("구독 해지 상태를 확인하지 못했습니다.");
+    if(status)status.textContent="이 브라우저의 웹푸시 구독을 해지했습니다. 언제든 다시 구독할 수 있습니다.";
+    cpRenderPushButtons();
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent="알림 구독 해지";}
+    if(status)status.textContent="해지 실패: "+String(e.message||e).slice(0,180);
+  }
+}
+function cpRenderPushButtons(){
+  const on=!!(cpPushSdkReady && window.OneSignal && OneSignal.User && OneSignal.User.PushSubscription && OneSignal.User.PushSubscription.optedIn);
+  const subscribe=$("cpPushSubscribe"), unsubscribe=$("cpPushUnsubscribe");
+  if(subscribe){subscribe.style.display=on?"none":"block";subscribe.hidden=on;subscribe.disabled=false;subscribe.textContent="🔔 웹푸시 알림 허용하기";}
+  if(unsubscribe){unsubscribe.style.display=on?"block":"none";unsubscribe.hidden=!on;unsubscribe.disabled=false;unsubscribe.textContent="알림 구독 해지";}
+  const status=$("cpPushMessage");
+  if(status && !status.textContent) status.textContent=on?"✓ 이 기기에서 웹푸시 구독 중입니다. 아래에서 해지할 수 있습니다.":"이 기기에서는 아직 웹푸시를 구독하지 않았습니다.";
+}
+async function cpRefreshPushPanel(){
+  if(cpPushStatus()!=="ready")return;
+  try{await cpInitPush();cpRenderPushButtons();}catch(e){
+    const status=$("cpPushMessage");
+    if(status)status.textContent="알림 상태 확인 실패: "+String(e.message||e).slice(0,120);
+  }
+}
+function cpPushSetupPanel(){
+  const state=cpPushStatus();
+  const msg=state==="setup"
+    ? "웹푸시 서비스 연결을 준비 중입니다. 관심 조건을 먼저 저장할 수 있습니다."
+    : state==="unsupported"
+    ? "이 브라우저에서는 웹푸시를 지원하지 않습니다."
+    : "조건을 저장한 다음 아래 버튼으로 브라우저 알림 수신에 동의할 수 있습니다.";
+  return '<div class="grp" style="border:2px solid #2563eb;border-radius:14px;padding:14px;margin:16px 0;background:#eff6ff;color:#172554"><strong style="font-size:16px">🔔 내 채용공고 웹푸시 알림</strong><p style="font-size:13px;margin:8px 0">'+msg+'</p>'
+    +(state==="ready" ? '<button type="button" id="cpPushSubscribe" style="display:block;width:100%;padding:15px 12px;border:0;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:800;font-size:16px;cursor:pointer">🔔 웹푸시 알림 허용하기</button>' : '')
+    +'<button type="button" id="cpPushUnsubscribe" hidden style="display:none;width:100%;margin-top:8px;padding:12px;border:1px solid #64748b;border-radius:10px;background:#fff;color:#334155;font-weight:700;cursor:pointer">알림 구독 해지</button>'
+    +'<p id="cpPushMessage" role="status" aria-live="polite" style="font-size:13px;line-height:1.5;margin:9px 0"></p>'
+    +'<p style="font-size:12px;line-height:1.5;margin:6px 0">신규 공고 및 마감 D-1 자동 발송은 별도 서버 연동 후 제공됩니다.</p></div>';
+}
+
+
+// ── 공유하기 ──
+const SHARE_URL = "https://jobinfo-hub.github.io/?src=share";
+const SHARE_TEXT = "공기업·공공기관 채용공고를 마감순으로 한눈에! 내 스펙을 넣으면 지원 가능한 공고만 골라줘요 📋";
+let SH = {text:SHARE_TEXT, url:SHARE_URL};
+function toast(msg){
+  let t = document.querySelector(".toast");
+  if(!t){ t = document.createElement("div"); t.className = "toast"; t.setAttribute("role","status"); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toast.tm); toast.tm = setTimeout(() => t.classList.remove("on"), 2200);
+}
+async function copyShare(){
+  const text = SH.text + "\n" + SH.url;
+  try { await navigator.clipboard.writeText(text); }
+  catch(e){
+    const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch(_) {}
+    ta.remove();
+  }
+  closeSheet(); toast("링크를 복사했어요. 원하는 곳에 붙여넣어 주세요.");
+}
+async function shareSite(text, url, title){
+  SH = {text: typeof text === "string" ? text : SHARE_TEXT, url: url || SHARE_URL};
+  const SHARE_TEXT_ = SH.text, SHARE_URL_ = SH.url;
+  if(navigator.share && !INAPP){
+    try { await navigator.share({title:"커리어픽", text:SHARE_TEXT_, url:SHARE_URL_}); return; }
+    catch(e){ if(e && e.name === "AbortError") return; }
+  }
+  const u = encodeURIComponent(SHARE_URL_), t = encodeURIComponent(SHARE_TEXT_);
+  sheet(`<div class="sharegrid">
+      <button onclick="copyShare()"><span class="ic" style="background:#1F3FBF">🔗</span>링크 복사</button>
+      <a href="https://band.us/plugin/share?body=${encodeURIComponent(SHARE_TEXT_ + "\n" + SHARE_URL_)}&route=jobinfo-hub.github.io" target="_blank" rel="noopener"><span class="ic" style="background:#06C755">B</span>밴드</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${u}" target="_blank" rel="noopener"><span class="ic" style="background:#1877F2">f</span>페이스북</a>
+      <a href="https://twitter.com/intent/tweet?text=${t}&url=${u}" target="_blank" rel="noopener"><span class="ic" style="background:#000">X</span>X</a>
+      <a href="https://www.threads.net/intent/post?text=${encodeURIComponent(SHARE_TEXT_ + " " + SHARE_URL_)}" target="_blank" rel="noopener"><span class="ic" style="background:#000">@</span>스레드</a>
+      <a href="sms:?&body=${encodeURIComponent(SHARE_TEXT_ + " " + SHARE_URL_)}"><span class="ic" style="background:#5B6475">✉</span>문자</a>
+    </div>
+    <p class="hint" style="font-size:12.5px;color:var(--muted);margin:0 0 12px">카카오톡은 링크 복사 후 대화방에 붙여넣으면 미리보기와 함께 보내져요.</p>
+    <div class="row"><button onclick="closeSheet()">닫기</button></div>`, title || "친구에게 공유하기");
+}
+$("sharebtn").addEventListener("click", () => shareSite());
+async function addToHome(){
+  if(installEvt){ installEvt.prompt(); const r = await installEvt.userChoice; installEvt = null; if(r.outcome === "accepted") $("addHint").hidden = true; return; }
+  const here = location.href.split("#")[0];
+  if(INAPP && UA.includes("KAKAOTALK")){
+    sheet(`<ol><li>아래 버튼으로 기본 브라우저에서 사이트를 여세요.</li><li>열린 브라우저에서 다시 <b>＋ 홈 화면에 추가</b>를 누르세요.</li></ol>
+      <div class="row"><a class="primary" href="kakaotalk://web/openExternal?url=${encodeURIComponent(here)}">브라우저로 열기</a><button onclick="closeSheet()">닫기</button></div>`);
+  }else if(INAPP && IS_ANDROID){
+    const intent = "intent://" + here.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+    sheet(`<ol><li>지금은 앱 안의 브라우저라 홈 화면 추가가 안 돼요.</li><li>아래 버튼으로 크롬에서 연 뒤 <b>＋ 홈 화면에 추가</b>를 누르세요.</li></ol>
+      <div class="row"><a class="primary" href="${intent}">크롬으로 열기</a><button onclick="closeSheet()">닫기</button></div>`);
+  }else if(INAPP){
+    sheet(`<ol><li>오른쪽 위 <b>⋯</b> 또는 공유 메뉴를 누르세요.</li><li><b>Safari로 열기</b>(또는 '브라우저에서 열기')를 선택하세요.</li><li>Safari에서 아래쪽 <b>공유 버튼(□↑)</b> → <b>홈 화면에 추가</b>를 누르세요.</li></ol>
+      <div class="row"><button class="primary" onclick="copyLink()">주소 복사</button><button onclick="closeSheet()">닫기</button></div>`);
+  }else if(IS_IOS){
+    sheet(`<ol><li>Safari 아래쪽(또는 위쪽)의 <b>공유 버튼(□↑)</b>을 누르세요.</li><li>목록을 내려 <b>홈 화면에 추가</b>를 누르세요.</li><li>오른쪽 위 <b>추가</b>를 누르면 끝이에요.</li></ol>
+      <div class="row"><button onclick="closeSheet()">확인</button></div>`);
+  }else if(IS_ANDROID){
+    sheet(`<ol><li>브라우저 오른쪽 위(삼성 인터넷은 아래쪽) <b>메뉴(⋮ 또는 ≡)</b>를 누르세요.</li><li><b>홈 화면에 추가</b> 또는 <b>현재 페이지 추가 → 홈 화면</b>을 누르세요.</li></ol>
+      <div class="row"><button onclick="closeSheet()">확인</button></div>`);
+  }else{
+    const mac = /Mac/.test(navigator.platform);
+    sheet(`<ol><li>키보드에서 <b>${mac ? "⌘ + D" : "Ctrl + D"}</b>를 누르면 즐겨찾기에 추가돼요.</li><li>크롬·엣지는 주소창 오른쪽의 <b>설치 아이콘</b>으로 앱처럼 설치할 수도 있어요.</li></ol>
+      <div class="row"><button onclick="closeSheet()">확인</button></div>`);
+  }
+}
+function copyLink(){ navigator.clipboard?.writeText(location.href.split("#")[0]).then(() => { closeSheet(); alert("주소를 복사했어요. Safari나 크롬 주소창에 붙여넣어 주세요."); }).catch(() => {}); }
+$("sheet").addEventListener("click", e => { if(e.target.id === "sheet") closeSheet(); });
+
+(function setupAddPrompts(){
+  if(IS_STANDALONE) return;
+  $("addbtn").hidden = false;
+  $("addbtn").onclick = addToHome;
+  let visits = 1, dismissed = false;
+  try{
+    visits = parseInt(localStorage.getItem("visits") || "0", 10) + 1;
+    localStorage.setItem("visits", String(visits));
+    dismissed = localStorage.getItem("addHintOff") === "1";
+  }catch(e){}
+  if(visits >= 2 && !dismissed) $("addHint").hidden = false;  // 두 번째 방문부터 안내
+  $("addHintGo").onclick = addToHome;
+  $("addHintX").onclick = () => { $("addHint").hidden = true; try{ localStorage.setItem("addHintOff","1"); }catch(e){} };
+})();
+
+// ── 저장한 공고 마감 임박 알림 ──
+function savedAlert(){
+  const now = new Date();
+  const soon = POSTS.filter(p => SAVED.has(p.id) && p.due && now < p.due && (p.due - now) < 3*864e5)
+                    .sort((a,b) => a.due - b.due);
+  const el = $("savedAlert");
+  const ev = appEvents(now).filter(e => e.kind !== "due" && e.date <= ymd(new Date(now.getTime() + 3*864e5)));
+  if(ev.length){
+    const f = ev[0];
+    el.innerHTML = `🗓 ${f.date === ymd(now) ? "오늘" : ymdLabel(f.date)} ${esc(f.name)} ${f.label}` + (ev.length > 1 ? ` 외 ${ev.length - 1}건` : "") + " · 3일 안에 전형 일정이 있어요";
+    el.hidden = false;
+    el.onclick = () => { state.tab = "track"; refresh(); el.scrollIntoView({block:"start"}); };
+    return;
+  }
+  const todo = Object.entries(APPS).filter(([id, a]) => a.st === "plan" && a.due && a.ck && a.ck.some(x => x.ph === "pre" && !x.d))
+    .map(([id, a]) => ({id, a, due:new Date(a.due)})).filter(x => now < x.due && x.due - now < 3*864e5).sort((x, y) => x.due - y.due);
+  if(todo.length){
+    const f = todo[0], left = f.a.ck.filter(x => x.ph === "pre" && !x.d).length, d = dday({due:f.due}, now);
+    el.innerHTML = `✅ ${d ? d.big : "곧"} ${esc(f.a.org || cleanTitle(f.a.title).slice(0, 14))} 마감 · 미완료 체크리스트 ${left}개` + (todo.length > 1 ? ` (외 ${todo.length - 1}곳)` : "");
+    el.hidden = false;
+    el.onclick = () => { state.tab = "track"; refresh(); el.scrollIntoView({block:"start"}); };
+    return;
+  }
+  if(!soon.length){ el.hidden = true; return; }
+  const first = soon[0];
+  el.innerHTML = `⏰ 저장한 공고 ${soon.length}건이 3일 안에 마감돼요 · ${esc(first.org || first.title.slice(0,14))} ${dueLong(first.due, first.dueHasTime)}`;
+  el.hidden = false;
+  el.onclick = () => { state.tab = "saved"; state.sort = "due"; refresh(); el.scrollIntoView({block:"start"}); };
+}
+
+// ── 맞춤 알림 설정 진입 ──
+$("cpAlwaysAlert").addEventListener("click", () => openPrefs());
 
 load();
 setInterval(() => POSTS.length && render(), 60000);
