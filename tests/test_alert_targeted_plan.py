@@ -1,6 +1,7 @@
 """Targeted notification planning is opt-in, deduplicated, and never sendable."""
 import unittest
 from scripts.plan_targeted_alerts import plan_notifications
+from scripts.alert_delivery_ledger import mark_delivered
 
 JOB = {"id": "a100", "title": "행정직", "region": "서울"}
 TAGS = {"cp_schema": "2", "cp_preferences_set": "yes", "cp2_region_1": "서울"}
@@ -31,6 +32,14 @@ class TargetedPlanTests(unittest.TestCase):
         jobs = [{"id": " ", "title": "행정직", "region": "서울"},
                 {"id": "a102", "title": "  ", "region": "서울"}]
         self.assertEqual(plan_notifications(jobs, subs), [])
+
+    def test_prior_delivery_excluded(self):
+        subs = [{"subscription_id": "a", "opted_in": True, "tags": TAGS},
+                {"subscription_id": "b", "opted_in": True, "tags": TAGS}]
+        ledger = mark_delivered({"delivered": []}, "a100", "a")
+        rows = plan_notifications([JOB], subs, delivery_state=ledger)
+        self.assertEqual([row["subscription_id"] for row in rows], ["b"])
+        self.assertEqual(plan_notifications([JOB], subs, delivery_state=ledger)[0]["sendable"], False)
 
     def test_missing_ids_are_skipped(self):
         self.assertEqual(plan_notifications([{"title": "no id"}],
