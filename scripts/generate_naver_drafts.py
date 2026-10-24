@@ -18,17 +18,36 @@ def plain(value):
         return ", ".join(str(x) for x in value if x)
     return str(value or "").strip()
 
+def eligibility(post, now):
+    """Fail closed: a placeholder hour cannot establish today's open status."""
+    if post.get("expired") is True or post.get("ongoingYn") == "N":
+        return "expired"
+    due = plain(post.get("due"))
+    try:
+        deadline = datetime.fromisoformat(due.replace("Z", "+00:00"))
+        if deadline.tzinfo is None:
+            deadline = deadline.replace(tzinfo=KST)
+    except (ValueError, TypeError):
+        return "deadline_unknown"
+    if len(due) == 10 or post.get("dueHasTime") is False:
+        day = deadline.astimezone(KST).date()
+        today = now.astimezone(KST).date()
+        return "expired" if day < today else "today_time_unverified" if day == today else "eligible"
+    return "expired" if deadline <= now else "eligible"
+
 def main():
     data = json.loads((ROOT / "alio.json").read_text(encoding="utf-8"))
     posts = data.get("posts", [])
     now = datetime.now(timezone.utc)
     candidates = []
+    excluded = []
     for post in posts:
         if not post.get("alio") or not post.get("id") or not post.get("url"):
             continue
-        due = plain(post.get("due"))
-        # Archive all ALIO listings, including expired or undated ones.
-        # Publication is always a separate manual decision.
+        reason = eligibility(post, now)
+        if reason != "eligible":
+            excluded.append({"id": post["id"], "title": post.get("title"), "reason": reason})
+            continue
         candidates.append(post)
     candidates.sort(key=lambda p: (plain(p.get("due")) or "9999", plain(p.get("id"))))
     OUT.mkdir(parents=True, exist_ok=True)
@@ -148,6 +167,7 @@ def main():
         if old.name not in current:
             old.unlink()
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    (OUT / "excluded.json").write_text(json.dumps(excluded, ensure_ascii=False, indent=2), encoding="utf-8")
     # Spreadsheet-friendly index for selecting which draft to publish manually.
     with (OUT / "review-index.csv").open("w", encoding="utf-8-sig", newline="") as fp:
         writer = csv.writer(fp)
@@ -160,7 +180,7 @@ def main():
                 "확인" if item["deadline_known"] else "미확인",
                 f"{pid}.md", f"{pid}.docx", f"{pid}-thumbnail.png",
             ])
-    print(f"Generated all {len(manifest)} ALIO review-only drafts in {OUT}")
+    print(f"Generated {len(manifest)} eligible review-only drafts; excluded/held {len(excluded)}")
 
 if __name__ == "__main__":
     main()

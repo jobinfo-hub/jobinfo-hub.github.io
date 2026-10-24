@@ -8,6 +8,15 @@ from unittest.mock import patch
 import scripts.generate_naver_drafts as generator
 
 class DraftTests(unittest.TestCase):
+    def test_exact_deadline_and_kst_boundaries(self):
+        from datetime import datetime, timezone
+        now = datetime.fromisoformat("2026-10-24T09:00:00+00:00")
+        for due in ["2026-10-24T18:00:00+09:00", "2026-10-24T17:59:00+09:00", "2026-10-23"]:
+            self.assertEqual(generator.eligibility({"due":due}, now), "expired")
+        self.assertEqual(generator.eligibility({"due":"2026-10-24T18:01:00+09:00"}, now), "eligible")
+        self.assertEqual(generator.eligibility({"due":"2026-10-25", "expired":True}, now), "expired")
+        self.assertEqual(generator.eligibility({"due":"bad"}, now), "deadline_unknown")
+
     def test_plain(self):
         self.assertEqual(generator.plain(["사무", "기술"]), "사무, 기술")
         self.assertEqual(generator.plain(None), "")
@@ -54,7 +63,7 @@ class DraftTests(unittest.TestCase):
             text = (root / "naver-drafts" / "a400.md").read_text(encoding="utf-8")
             self.assertIn("마감 시각은 원문 확인 필요", text)
 
-    def test_unknown_deadline_included_with_warning(self):
+    def test_unknown_deadline_is_held(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             job = {"id": "a300", "alio": True, "title": "미확인 마감", "org": "기관",
@@ -63,15 +72,15 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(result), 1)
-            self.assertFalse(result[0]["deadline_known"])
+            self.assertEqual(result, [])
+            self.assertFalse((root / "naver-drafts" / "a300.md").exists())
 
     def test_sanitized_ids_do_not_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             jobs = [
-                {"id":"job/1","alio":True,"title":"공고A","url":"https://example.org/a"},
-                {"id":"job1","alio":True,"title":"공고B","url":"https://example.org/b"},
+                {"id":"job/1","alio":True,"title":"공고A","url":"https://example.org/a","due":"2099-01-01"},
+                {"id":"job1","alio":True,"title":"공고B","url":"https://example.org/b","due":"2099-01-01"},
             ]
             (root / "alio.json").write_text(json.dumps({"posts":jobs}, ensure_ascii=False), encoding="utf-8")
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
@@ -98,7 +107,7 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(rows), 25)
             self.assertEqual(rows[0]["검수상태"], "needs_review")
 
-    def test_date_only_deadline_not_expired_until_next_day(self):
+    def test_today_unknown_time_is_held(self):
         from datetime import datetime, timedelta, timezone
         today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
         with tempfile.TemporaryDirectory() as tmp:
@@ -109,7 +118,7 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
-            self.assertFalse(result[0]["expired"])
+            self.assertEqual(result, [])
 
     def test_thumbnail_status_labels(self):
         from scripts.build_naver_review_packs import image_for
@@ -135,8 +144,8 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             manifest = json.loads((root/"naver-drafts"/"manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(manifest),2)
-            self.assertTrue(next(x for x in manifest if x["id"]=="a101")["expired"])
+            self.assertEqual(len(manifest),1)
+            self.assertFalse((root/"naver-drafts"/"a101.md").exists())
             self.assertEqual(manifest[0]["status"],"needs_review")
             self.assertIn("공식 공고", (root/"naver-drafts"/"a100.md").read_text(encoding="utf-8"))
 

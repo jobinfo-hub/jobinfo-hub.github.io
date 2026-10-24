@@ -32,7 +32,7 @@ jobs:
           manifest = json.loads(Path("naver-drafts/manifest.json").read_text(encoding="utf-8"))
           with Path("naver-drafts/review-index.csv").open(encoding="utf-8-sig", newline="") as f:
               index = list(csv.DictReader(f))
-          assert manifest, "No ALIO drafts generated: refusing to upload empty archive"
+          assert all(not item["expired"] and item["deadline_known"] for item in manifest), "Ineligible draft"
           assert len(index) == len(manifest), "Review CSV count mismatch"
           assert len({item["id"] for item in manifest}) == len(manifest), "Duplicate draft IDs"
           for item in manifest:
