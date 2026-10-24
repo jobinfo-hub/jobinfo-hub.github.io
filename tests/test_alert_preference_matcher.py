@@ -18,6 +18,12 @@ class PreferenceMatcherTests(unittest.TestCase):
         self.assertTrue(matches(JOB, tags))
         tags["cp2_region_1"] = "부산"
         self.assertFalse(matches(JOB, tags))
+    def test_space_separated_keywords(self):
+        tags = {"cp_preferences_set": "yes", "cp_schema": "2", "cp_keywords": "없는단어 사무"}
+        self.assertTrue(matches(JOB, tags))
+        tags["cp_keywords"] = "없는단어 전혀없는단어"
+        self.assertFalse(matches(JOB, tags))
+
     def test_dimensions_and_keywords(self):
         tags = {"cp_preferences_set": "yes", "cp_schema": "2", "cp2_region_1": "서울",
                 "cp2_employment_1": "정규직", "cp_keywords": "전산, 사무"}
