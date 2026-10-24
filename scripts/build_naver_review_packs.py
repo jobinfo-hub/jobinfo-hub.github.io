@@ -51,7 +51,8 @@ def image_for(draft, target, expired=False, deadline_known=True):
     status = "마감 공고 · 기록용" if expired else "마감일 확인 필요" if not deadline_known else "채용공고 핵심정리"
     draw.text((108, 240), status, font=font(54), fill="#173b73")
     y = 355
-    for line in wrap(draw, heading, font(56), 850)[:6]:
+    # Reserve the organization line and footer: long titles must not overlap them.
+    for line in wrap(draw, heading, font(56), 850)[:5]:
         draw.text((108, y), line, font=font(56), fill="#152438")
         y += 79
     draw.line((108, 835, 970, 835), fill="#d8e0ed", width=3)
