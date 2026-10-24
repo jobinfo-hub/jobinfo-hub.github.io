@@ -116,8 +116,27 @@ jobs:
             git commit -m 'Reserve CareerPick Threads job'
             # Other automation can commit between checkout and image generation.
             # Rebase the committed reservation before pushing; fail closed on conflicts.
-            git pull --rebase origin main
-            git push
+            # Retry when another scheduled workflow pushes to main concurrently.
+            # Never force-push or discard reservation/history on conflicts.
+            pushed=false
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              if ! git rebase origin/main; then
+                git rebase --abort || true
+                echo "::error::Threads history rebase conflict; manual reconciliation required"
+                exit 1
+              fi
+              if git push origin HEAD:main; then
+                pushed=true
+                break
+              fi
+              echo "Concurrent main update; retrying push ($attempt/5)"
+              sleep $((attempt * 3))
+            done
+            if [ "$pushed" != true ]; then
+              echo "::error::Threads history push failed after retries"
+              exit 1
+            fi
           fi
 
       - name: Reload persisted reservation
@@ -211,8 +230,27 @@ jobs:
             git commit -m 'Record published CareerPick Threads job'
             # Other automation can commit between checkout and image generation.
             # Rebase the committed reservation before pushing; fail closed on conflicts.
-            git pull --rebase origin main
-            git push
+            # Retry when another scheduled workflow pushes to main concurrently.
+            # Never force-push or discard reservation/history on conflicts.
+            pushed=false
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              if ! git rebase origin/main; then
+                git rebase --abort || true
+                echo "::error::Threads history rebase conflict; manual reconciliation required"
+                exit 1
+              fi
+              if git push origin HEAD:main; then
+                pushed=true
+                break
+              fi
+              echo "Concurrent main update; retrying push ($attempt/5)"
+              sleep $((attempt * 3))
+            done
+            if [ "$pushed" != true ]; then
+              echo "::error::Threads history push failed after retries"
+              exit 1
+            fi
           fi
 
       - name: Verify published post and reply
