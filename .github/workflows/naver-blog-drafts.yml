@@ -52,6 +52,8 @@ jobs:
               out.write(summary)
           print(f"Verified {len(manifest)} draft, DOCX and PNG packages")
           PY
+      - name: Build searchable draft picker
+        run: python scripts/build_naver_draft_picker.py
       - name: Upload review drafts
         uses: actions/upload-artifact@v4
         with:
