@@ -422,7 +422,17 @@ def publish_post(record, history):
 
     if record.get('reply_post_id'):
         return
+    # Threads may not accept a reply immediately after the parent image post.
+    # Check that the parent is readable and allow propagation before creating
+    # the reply. Never retry an ambiguous publish automatically.
     try:
+        parent = api('GET', '/' + str(record['threads_post_id']), token,
+                     {'fields': 'id'})
+        if str(parent.get('id', '')) != str(record['threads_post_id']):
+            raise RuntimeError('Parent post not yet confirmed by Threads API')
+        if record.get('published_at'):
+            print('Waiting 20 seconds before first reply to new parent post')
+            time.sleep(20)
         reply_id = create_media(token, {
             'media_type': 'TEXT',
             'text': record.get('reply_text', '🔗 자세한 채용공고: 커리어픽 프로필링크'),
@@ -436,6 +446,8 @@ def publish_post(record, history):
         print('Reply publish failed; original post remains recorded:', str(exc))
         # Keep post ID for manual reconciliation; never publish the original again.
         record['reply_status'] = 'needs_review'
+        record['reply_failure_reason'] = str(exc)[:300]
+        record['reply_failed_at'] = datetime.now(KST).isoformat()
         save(history)
 
 
