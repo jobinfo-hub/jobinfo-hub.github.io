@@ -2,12 +2,8 @@ name: CareerPick alert safety tests
 on:
   push:
     paths:
-      - 'scripts/*alert*.py'
-      - 'scripts/*push*.py'
-      - 'scripts/*onesignal*.py'
-      - 'scripts/persist_accepted_push.py'
-      - 'scripts/record_accepted_push.py'
-      - 'tests/test_alert*.py'
+      - 'scripts/**'
+      - 'tests/**'
       - '.github/workflows/alert-tests.yml'
   pull_request:
     paths:
