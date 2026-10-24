@@ -62,7 +62,8 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(result), 1)\n            self.assertFalse(result[0]["deadline_known"])
+            self.assertEqual(len(result), 1)
+            self.assertFalse(result[0]["deadline_known"])
 
     def test_generates_all_more_than_eleven(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -88,7 +89,8 @@ class DraftTests(unittest.TestCase):
             with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
                 generator.main()
             manifest = json.loads((root/"naver-drafts"/"manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(manifest),2)\n            self.assertTrue(next(x for x in manifest if x["id"]=="a101")["expired"])
+            self.assertEqual(len(manifest),2)
+            self.assertTrue(next(x for x in manifest if x["id"]=="a101")["expired"])
             self.assertEqual(manifest[0]["status"],"needs_review")
             self.assertIn("공식 공고", (root/"naver-drafts"/"a100.md").read_text(encoding="utf-8"))
 
