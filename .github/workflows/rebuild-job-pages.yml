@@ -175,6 +175,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 2
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -184,3 +185,6 @@ jobs:
 
       - name: Verify public institution ALIO list after deployment
         run: python scripts/check_live_org_pages.py
+
+      - name: Notify IndexNow about changed job pages
+        run: python scripts/submit_indexnow.py
