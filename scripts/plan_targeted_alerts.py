@@ -5,7 +5,10 @@ def plan_notifications(jobs, subscribers):
     """Return matching pairs for a local dry run; no network access."""
     result = []
     seen = set()
+    subscribers = list(subscribers)
     for job in jobs:
+        if not isinstance(job, dict):
+            continue
         job_id = str(job.get("id") or "")
         if not job_id or not job.get("title"):
             continue
