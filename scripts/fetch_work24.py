@@ -59,9 +59,9 @@ def normalize(root):
         if not number or not title or not company:
             continue
         close = field(node, "closeDt")
-        if re.fullmatch(r"\\d{8}", close):
+        if re.fullmatch(r"\d{8}", close):
             close = f"{close[:4]}-{close[4:6]}-{close[6:]}"
-        if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", close) and close < date.today().isoformat():
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", close) and close < date.today().isoformat():
             continue
         result.append({
             "id": number, "title": title, "company": company,
