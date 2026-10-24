@@ -2506,6 +2506,9 @@ async function cpSyncPushPreferences(){
   if(cpPushStatus()!=="ready")return false;
   try{
     await cpInitPush();
+    // Do not claim remote preference sync for an unsubscribed browser.
+    const subscription=window.OneSignal && OneSignal.User && OneSignal.User.PushSubscription;
+    if(!subscription || !subscription.optedIn || !subscription.id)return false;
     if(window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags==="function"){
       const desired=cpPushTags();
       await cpPushWithTimeout(OneSignal.User.addTags(desired),12000,"관심 조건 동기화");
