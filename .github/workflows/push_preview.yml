@@ -1,0 +1,27 @@
+name: CareerPick matched push preview
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '40 0,6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build notification candidates (NO SEND)
+        run: python scripts/push_preview.py --output push-preview.json
+      - name: Publish preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: careerpick-push-preview
+          path: push-preview.json
+          retention-days: 7
