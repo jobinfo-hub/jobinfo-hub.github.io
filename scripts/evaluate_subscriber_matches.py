@@ -14,9 +14,14 @@ from scripts.alert_preference_matcher import matches
 
 def match_counts(jobs, subscribers):
     output = []
+    subscribers = list(subscribers)
     for job in jobs:
+        if not isinstance(job, dict):
+            continue
         seen = set()
         for subscriber in subscribers:
+            if not isinstance(subscriber, dict):
+                continue
             sid = subscriber.get("subscription_id")
             if (not isinstance(sid, str) or not sid or sid in seen
                     or subscriber.get("opted_in") is not True):
