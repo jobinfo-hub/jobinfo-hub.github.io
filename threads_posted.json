@@ -228,6 +228,30 @@
       "published_at": "2026-10-24T16:23:53.467484+09:00",
       "reply_post_id": "18419454310158375",
       "reply_published_at": "2026-10-24T16:24:51.329517+09:00"
+    },
+    {
+      "job_id": "a306244",
+      "reserved_date": "2026-10-24",
+      "status": "pending",
+      "run_id": "40081353302",
+      "created_at": "2026-10-24T18:17:23.602814+09:00",
+      "text": "📢 공공기관 채용정보\n\n🏢 공무원연금공단\n\n👥 정규직 15명 모집\n\n📅 11월 5일 마감\n\n💬 지원자격·접수정보는 답글 확인",
+      "reply_text": "🏢 기관명: 공무원연금공단\n\n📌 고용형태: 정규직\n\n👥 채용인원: 15명\n\n📍 근무지: 전국\n\n📅 접수기간: 마감 2026-11-05\n\n🔗 상세 자격·접수방법 확인 → 프로필 링크의 커리어픽",
+      "image_url": "https://jobinfo-hub.github.io/threads-images/a306244.jpg",
+      "image_job": {
+        "id": "a306244",
+        "org": "공무원연금공단",
+        "title": "2026년 하반기 신입직원(전산직 및 장애·보훈) 채용 공고",
+        "url": "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=306244",
+        "due": "2026-11-05",
+        "days": 12,
+        "regular": true,
+        "count": 15,
+        "employment": "정규직",
+        "location": "전국",
+        "start": "",
+        "priority": 1
+      }
     }
   ]
 }
