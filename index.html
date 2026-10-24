@@ -1451,55 +1451,53 @@ function openPrefs(){
     + `<p class="hint">선택한 조건은 이 기기에 저장됩니다. 아래 저장 버튼을 누르면 완료 안내가 나타납니다. 맞춤 웹푸시 자동 발송은 아직 준비 중입니다.</p>`
     + cpPushSetupPanel()
     + `<p class="live" id="prefLive"></p>`
-    + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
+    + `<div class="row"><button id="prefClear">초기화</button><button type="button" class="primary" id="prefSave" onclick="cpSavePreferenceSettings();return false">저장</button></div>`;
   $("sheet").classList.add("open");
   cpOpenSheetHistory();
   // Direct, local button binding: mobile/PWA clicks must not depend on global delegation.
-  $("prefSave").addEventListener("click", e => {
-    e.preventDefault();
-    e.stopPropagation();
-    cpSavePreferenceSettings();
-  });
+  // Save uses inline handler as a fallback for Android PWA event delegation issues.
+  $("prefSave").addEventListener("click", e => { e.stopPropagation(); });
   $("prefKw").addEventListener("input", e => { DRAFT.kw = e.target.value; prefLive(); });
   prefLive();
   cpRefreshPushPanel();
 }
 function cpSavePreferenceSettings(){
-  try {
-    const nextPrefs = JSON.parse(JSON.stringify(DRAFT));
-    const previousPrefs = PREFS;
-    PREFS = nextPrefs;
-    if(!savePrefs()){
-      PREFS = previousPrefs;
-      const live=$("prefLive");
-      if(live)live.textContent="⚠️ 조건 저장에 실패했습니다. 브라우저의 사이트 데이터 저장 허용 여부를 확인해 주세요.";
-      return;
-    }
-    // Push tag sync is optional and must never prevent saving local preferences.
-    try { if(cpPushSdkReady && window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags === "function") Promise.resolve(OneSignal.User.addTags(cpPushTags())).catch(()=>{}); } catch(e) { console.warn("Push tag sync skipped",e); }
-    // Confirm immediately before any optional page rerender can fail.
-    const live=$("prefLive");
-    if(live)live.textContent="✓ 맞춤 조건 저장 완료! 다시 열어도 유지됩니다.";
-    toast("✓ 맞춤 알림 조건 저장 완료");
+  const button=document.getElementById("prefSave");
+  const live=document.getElementById("prefLive");
+  if(button){button.textContent="저장 처리 중…";button.disabled=true;}
+  if(live)live.textContent="저장 버튼 입력 확인 · 처리 중… (진단 v2)";
+  try{
+    const input=document.getElementById("prefKw");
+    if(input)DRAFT.kw=input.value;
+    const next=JSON.parse(JSON.stringify(DRAFT));
+    const serialized=JSON.stringify(next);
+    localStorage.setItem("prefs",serialized);
+    if(localStorage.getItem("prefs")!==serialized)throw Error("저장 후 값 검증 실패");
+    PREFS=next;
+    if(live)live.textContent="✓ 맞춤 조건 저장 성공 · 진단 v2";
+    if(button){button.textContent="✓ 저장 완료";button.disabled=false;}
+    try{
+      if(cpPushSdkReady && window.OneSignal && window.OneSignal.User && typeof window.OneSignal.User.addTags==="function"){
+        Promise.resolve(window.OneSignal.User.addTags(cpPushTags())).catch(()=>{});
+      }
+    }catch(_){}
     setTimeout(()=>{
-      try {
+      try{
         closeSheet();
         state.tab=hasPrefs()?"mine":"all";
         state.onlyNew=false;
         refresh();
-        window.scrollTo({top:0});
-      } catch(e) {
-        console.error("Preference view refresh failed",e);
-        closeSheet();
-      }
-    },450);
-  } catch(err) {
-    console.error("CareerPick preference save error",err);
-    const live=$("prefLive");
-    if(live)live.textContent="⚠️ 저장 처리 중 오류가 발생했습니다. 화면을 다시 열어 시도해 주세요.";
-    toast("저장 중 오류가 발생했습니다.");
+      }catch(e){console.warn("Post-save view update",e);}
+    },1000);
+    return true;
+  }catch(e){
+    const message=String(e && e.message || e).slice(0,120);
+    if(live)live.textContent="⚠️ 저장 실패 (진단 v2): "+message;
+    if(button){button.textContent="다시 저장";button.disabled=false;}
+    return false;
   }
 }
+
 function prefLive(){
   const now = new Date();
   const n = POSTS.filter(p => matchPrefs(p, DRAFT) && statusOf(p, now) !== "closed").length;
