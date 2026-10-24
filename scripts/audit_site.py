@@ -35,6 +35,35 @@ def check():
         "Job-page inventory": "available.js" in script,
         "Job quality reporting": "job-quality-report.json" in script,
     }
+    # Verify the minimum crawlability and publisher trust signals without network calls.
+    robots = ROOT / "robots.txt"
+    sitemap = ROOT / "sitemap.xml"
+    ads = ROOT / "ads.txt"
+    checks.update({
+        "Robots file present": robots.is_file(),
+        "Sitemap present": sitemap.is_file(),
+        "About page present": (ROOT / "about.html").is_file(),
+        "Privacy policy present": (ROOT / "privacy.html").is_file(),
+        "Contact page present": (ROOT / "contact.html").is_file(),
+        "Ads publisher declaration present": ads.is_file(),
+    })
+    if robots.is_file():
+        robots_text = robots.read_text(encoding="utf-8")
+        checks["Robots sitemap declaration"] = "https://jobinfo-hub.github.io/sitemap.xml" in robots_text
+    if sitemap.is_file():
+        import xml.etree.ElementTree as ET
+        try:
+            root = ET.parse(sitemap).getroot()
+            checks["Sitemap valid XML"] = root.tag.endswith("urlset")
+        except ET.ParseError:
+            checks["Sitemap valid XML"] = False
+    if ads.is_file():
+        publishers = set(re.findall(r"ca-pub-(\\d+)", html))
+        ads_text = ads.read_text(encoding="utf-8")
+        checks["Ads publisher ID consistent"] = (
+            len(publishers) == 1
+            and f"google.com, pub-{next(iter(publishers))}, DIRECT" in ads_text
+        )
     for name, ok in checks.items():
         print(f'{"PASS" if ok else "FAIL"}: {name}')
         if not ok:
