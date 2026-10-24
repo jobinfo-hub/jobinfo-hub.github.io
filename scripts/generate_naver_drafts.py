@@ -26,16 +26,8 @@ def main():
         if not post.get("alio") or not post.get("id") or not post.get("url"):
             continue
         due = plain(post.get("due"))
-        if not due:
-            continue  # Unknown deadline: cannot verify that recruitment is open.
-        try:
-            parsed_due = datetime.fromisoformat(due.replace("Z", "+00:00"))
-            if parsed_due.tzinfo is None:
-                parsed_due = parsed_due.replace(tzinfo=KST)
-            if parsed_due.astimezone(timezone.utc) < now:
-                continue
-        except ValueError:
-            continue
+        # Archive all ALIO listings, including expired or undated ones.
+        # Publication is always a separate manual decision.
         candidates.append(post)
     candidates.sort(key=lambda p: (plain(p.get("due")) or "9999", plain(p.get("id"))))
     OUT.mkdir(parents=True, exist_ok=True)
@@ -82,9 +74,25 @@ def main():
             f"- [ ] {label}: 공식 모집요강·첨부파일 대조"
             for label, _ in review_items
         )
+        due = plain(post.get("due"))
+        try:
+            deadline = datetime.fromisoformat(due.replace("Z", "+00:00")) if due else None
+            if deadline is not None and deadline.tzinfo is None:
+                deadline = deadline.replace(tzinfo=KST)
+            expired = deadline is not None and deadline.astimezone(timezone.utc) < now
+        except ValueError:
+            deadline = None
+            expired = False
+        posting_note = (
+            "⚠️ 접수 마감된 공고입니다. 기록·참고용이며 현재 지원 가능한 공고로 안내하지 마세요."
+            if expired else (
+                "⚠️ 접수 마감일을 확인할 수 없습니다. 발행 전에 현재 모집 여부를 확인하세요."
+                if deadline is None else "접수 진행 여부는 공식 공고에서 최종 확인하세요."
+            )
+        )
         body = f"""# {title} | 지원자격·접수마감 정리
 
-**핵심부터:** {org} 채용공고입니다. {highlights}.
+{posting_note}\n\n**핵심부터:** {org} 채용공고입니다. {highlights}.
 지원 전 공식 모집요강에서 지원 자격과 접수 마감 조건을 확인하세요.
 
 ## 1. 모집 요약
@@ -131,14 +139,14 @@ def main():
 검수 상태: 미검수 · 네이버 블로그 게시 전 원문 및 첨부파일 대조 필요
 """
         (OUT / f"{pid}.md").write_text(body, encoding="utf-8")
-        manifest.append({"id": pid, "title": title, "file": f"{pid}.md", "status": "needs_review"})
+        manifest.append({"id": pid, "title": title, "file": f"{pid}.md", "status": "needs_review", "expired": expired, "deadline_known": deadline is not None})
     # Remove stale drafts from previous runs.
     current = {item["file"] for item in manifest}
     for old in OUT.glob("*.md"):
         if old.name not in current:
             old.unlink()
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Generated {len(manifest)} review-only drafts in {OUT}")
+    print(f"Generated all {len(manifest)} ALIO review-only drafts in {OUT}")
 
 if __name__ == "__main__":
     main()
