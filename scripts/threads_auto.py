@@ -96,7 +96,7 @@ def candidates(posts, history, today):
     found = []
 
     for job in posts:
-        if not isinstance(job, dict):
+        if not validate_candidate(job, today):
             continue
 
         jid = str(job.get('id', '')).strip()
@@ -171,6 +171,22 @@ def candidates(posts, history, today):
     )
 
     return found
+
+
+def validate_candidate(job, today):
+    """Return true only for currently eligible ALIO posts."""
+    if not isinstance(job, dict):
+        return False
+    due = parse_date(job.get('due'))
+    if due is None or not MIN_DAYS <= (due - today).days <= MAX_DAYS:
+        return False
+    if not str(job.get('id') or '').strip() or not job.get('title') or not job.get('org'):
+        return False
+    try:
+        parsed = urllib.parse.urlparse(str(job.get('url') or '').strip())
+    except ValueError:
+        return False
+    return parsed.scheme == 'https' and parsed.hostname in ('job.alio.go.kr', 'jobinfo-hub.github.io')
 
 
 def compose(job):
