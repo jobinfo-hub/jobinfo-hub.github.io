@@ -17,7 +17,7 @@ class MultiRegionMatchTests(unittest.TestCase):
         self.assertFalse(matches({"region": "경기도 외", "title": "채용"}, self.tags))
 
     def test_newline_and_whitespace_separated(self):
-        self.assertEqual(region_tokens("서울\\n경기  강원"), ["서울", "경기", "강원"])
+        self.assertEqual(region_tokens("서울\n경기  강원"), ["서울", "경기", "강원"])
 
     def test_list_and_slash_separated(self):
         self.assertEqual(region_tokens(["서울/경기", "강원"]), ["서울", "경기", "강원"])
