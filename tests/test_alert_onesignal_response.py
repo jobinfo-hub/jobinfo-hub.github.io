@@ -15,6 +15,8 @@ class OneSignalResponseTests(unittest.TestCase):
             (200, {"id": "x", "recipients": 1, "errors": ["invalid"]}),
             (200, {"id": "x", "recipients": "1"}),
             (200, None),
+            (True, {"id": "x", "recipients": 1}),
+            (200, {"id": "x", "recipients": True}),
         ]
         for status, payload in samples:
             with self.subTest(status=status, payload=payload):
