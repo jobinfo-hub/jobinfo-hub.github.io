@@ -22,6 +22,7 @@ def main():
     assert delivered(state, item["job_id"], item["subscription_id"])
     assert state["delivered"] == [delivery_key(item["job_id"], item["subscription_id"])]
     assert "synthetic-opted-in" not in str(state)
+    assert plan_notifications(jobs, subscribers, delivery_state=state) == [], "Delivered pair was targeted again"
     print("Synthetic targeted alert smoke check: PASS (sent=0)")
 
 if __name__ == "__main__":
