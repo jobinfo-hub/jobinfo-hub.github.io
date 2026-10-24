@@ -55,12 +55,41 @@ def candidates(posts, now):
             found.append(dict(entry, kind="deadline_d1", event_id=f"d1:{job_id}:{due.date()}"))
     return found
 
-def matched_job_tags(job):
-    """Return a conservative OneSignal tag filter for a job.
+def matching_preference_tags(job, prefs):
+    """Simulate the site's AND-across-fields / OR-within-field matching.
 
-    Users select multiple values encoded with '|', which cannot be matched
-    safely using exact equality. Therefore this function does not pretend
-    that OneSignal's equals filter supports multi-select matching.
+    This is an offline correctness check, not a OneSignal delivery selector.
+    Empty preference fields impose no restriction. Keywords match any term.
+    """
+    for field, job_field in (("region", "region"), ("emp", "emp"), ("edu", "edu"), ("cat", "cat")):
+        wanted = prefs.get(field, [])
+        if not wanted:
+            continue
+        raw = job.get(job_field, [])
+        available = raw if isinstance(raw, list) else [raw]
+        if field == "region":
+            # The homepage uses detailed work-region data and nationwide rules.
+            # Without that data, reject uncertain matches rather than over-send.
+            if not any(x in str(raw) for x in wanted):
+                return False
+        elif field == "edu":
+            if not any(x in available or (x == "고졸 가능" and "학력무관" in available) for x in wanted):
+                return False
+        elif field == "emp":
+            if not any(x in available or (x == "무기계약직" and "무기계약" in available) for x in wanted):
+                return False
+        elif not any(x in available for x in wanted):
+            return False
+    keywords = [w.casefold() for w in re.split(r"[,\\s]+", str(prefs.get("kw", ""))) if w]
+    searchable = " ".join(str(job.get(k, "")) for k in ("title", "org", "cat", "desc")).casefold()
+    return not keywords or any(w in searchable for w in keywords)
+
+
+def matched_job_tags(job):
+    """Not safe to use as OneSignal filters without subscriber-specific evaluation.
+
+    Indexed v2 tags help future targeting but cannot faithfully implement
+    arbitrary keyword substring search or nuanced region matching.
     """
     return None
 
