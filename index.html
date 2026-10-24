@@ -946,7 +946,7 @@ const PREF_RE = {
 let PREFS = {emp:[], edu:[], region:[], cat:[], kw:""};
 try { PREFS = Object.assign(PREFS, JSON.parse(localStorage.getItem("prefs") || "{}")); } catch(e) {}
 function hasPrefs(){ return PREFS.emp.length || PREFS.edu.length || PREFS.region.length || PREFS.cat.length || PREFS.kw.trim(); }
-function savePrefs(){ try { localStorage.setItem("prefs", JSON.stringify(PREFS)); } catch(e) {} }
+function savePrefs(){ try { localStorage.setItem("prefs", JSON.stringify(PREFS)); return localStorage.getItem("prefs") === JSON.stringify(PREFS); } catch(e) { return false; } }
 // ── 내 스펙으로 지원 가능 공고 찾기 (공식 공고의 지원 자격 문장을 읽어 자동 판정, 이 기기에만 저장) ──
 const SPEC_EDU = [["고졸",1],["전문대졸",2],["대졸",3],["석사",4],["박사",5]];
 const SPEC_CAREER = [["신입(경력 없음)",0],["1년 이상",1],["3년 이상",3],["5년 이상",5],["10년 이상",10]];
@@ -1448,7 +1448,7 @@ function openPrefs(){
   $("sheetBody").innerHTML = PREF_GROUPS.map(g => grp(g.key, g.label, g.items)).join("")
     + grp("cat", "분야", cats)
     + `<div class="grp"><span>키워드 (쉼표로 여러 개)</span><input type="text" id="prefKw" value="${esc(DRAFT.kw)}" placeholder="예: 간호, 전산, 사무"></div>`
-    + `<p class="hint">선택한 조건은 이 기기에만 저장됩니다. 맞춤 웹푸시 자동 발송은 아직 준비 중이며, 조건 저장만으로 알림이 발송되지는 않습니다.</p>`
+    + `<p class="hint">선택한 조건은 이 기기에 저장됩니다. 아래 저장 버튼을 누르면 완료 안내가 나타납니다. 맞춤 웹푸시 자동 발송은 아직 준비 중입니다.</p>`
     + cpPushSetupPanel()
     + `<p class="live" id="prefLive"></p>`
     + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
@@ -2383,8 +2383,19 @@ document.addEventListener("click", e => {
   else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
   else if(t.id === "cpPushUnsubscribe"){ cpUnsubscribePush(); }
   else if(t.id === "prefSave"){
-    PREFS = DRAFT; savePrefs(); if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); } closeSheet();
+    const nextPrefs = JSON.parse(JSON.stringify(DRAFT));
+    const previousPrefs = PREFS;
+    PREFS = nextPrefs;
+    if(!savePrefs()){
+      PREFS = previousPrefs;
+      const live=$("prefLive");
+      if(live)live.textContent="⚠️ 조건 저장에 실패했습니다. 브라우저의 사이트 데이터 저장 허용 여부를 확인해 주세요.";
+      return;
+    }
+    if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); }
+    closeSheet();
     state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
+    toast("✓ 맞춤 알림 조건이 이 기기에 저장되었습니다.");
   }
   else if(t.dataset.cpdeadline){ state.deadline=t.dataset.cpdeadline; refresh(); }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
