@@ -57,6 +57,29 @@ def check():
             checks["Sitemap valid XML"] = root.tag.endswith("urlset")
         except ET.ParseError:
             checks["Sitemap valid XML"] = False
+    if sitemap.is_file():
+        from urllib.parse import urlsplit, unquote
+        try:
+            sitemap_root = ET.parse(sitemap).getroot()
+            ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+            entries = sitemap_root.findall("sm:url", ns)
+            locs = [e.findtext("sm:loc", default="", namespaces=ns).strip() for e in entries]
+            checks["Sitemap has URLs"] = bool(locs)
+            checks["Sitemap URLs unique"] = len(locs) == len(set(locs))
+            checks["Sitemap URLs use site HTTPS origin"] = all(
+                urlsplit(loc).scheme == "https"
+                and urlsplit(loc).netloc == "jobinfo-hub.github.io"
+                and not urlsplit(loc).query and not urlsplit(loc).fragment
+                for loc in locs
+            )
+            checks["Sitemap paths exist locally"] = all(
+                (ROOT / unquote(urlsplit(loc).path).lstrip("/")).is_file()
+                if urlsplit(loc).path not in ("", "/") else INDEX.is_file()
+                for loc in locs
+            )
+        except (ET.ParseError, ValueError):
+            checks["Sitemap URLs unique"] = False
+            checks["Sitemap paths exist locally"] = False
     if ads.is_file():
         publishers = set(re.findall(r"ca-pub-(\d+)", html))
         ads_text = ads.read_text(encoding="utf-8")
