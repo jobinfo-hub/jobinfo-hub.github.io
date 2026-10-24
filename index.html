@@ -1449,6 +1449,7 @@ function openPrefs(){
     + grp("cat", "분야", cats)
     + `<div class="grp"><span>키워드 (쉼표로 여러 개)</span><input type="text" id="prefKw" value="${esc(DRAFT.kw)}" placeholder="예: 간호, 전산, 사무"></div>`
     + `<p class="hint">선택한 조건은 이 기기에만 저장됩니다. 맞춤 웹푸시 자동 발송은 아직 준비 중이며, 조건 저장만으로 알림이 발송되지는 않습니다.</p>`
+    + cpPushSetupPanel()
     + `<p class="live" id="prefLive"></p>`
     + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
   $("sheet").classList.add("open");
@@ -2378,8 +2379,9 @@ document.addEventListener("click", e => {
     document.querySelectorAll("[data-pref]").forEach(b => b.setAttribute("aria-pressed","false"));
     $("prefKw").value = ""; prefLive();
   }
+  else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
   else if(t.id === "prefSave"){
-    PREFS = DRAFT; savePrefs(); closeSheet();
+    PREFS = DRAFT; savePrefs(); if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); } closeSheet();
     state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
   }
   else if(t.dataset.cpdeadline){ state.deadline=t.dataset.cpdeadline; refresh(); }
@@ -2405,6 +2407,81 @@ window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("ad
 
 function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); $("sheetBody").scrollTop = 0; }
 function closeSheet(){ $("sheet").classList.remove("open"); }
+
+/* Web push is opt-in. Public OneSignal App ID is set in push-config.js;
+   private REST API keys must never be exposed in client-side code. */
+let cpPushSdkReady = false;
+function cpPushStatus(){
+  const id = window.CP_ONESIGNAL_APP_ID;
+  if(!id || !/^[0-9a-f-]{36}$/i.test(id)) return "setup";
+  if(!("Notification" in window) || !("serviceWorker" in navigator)) return "unsupported";
+  return "ready";
+}
+function cpPushTags(){
+  const p = PREFS;
+  return {
+    cp_region: (p.region || []).slice(0,5).join("|").slice(0,200),
+    cp_employment: (p.emp || []).slice(0,5).join("|").slice(0,200),
+    cp_education: (p.edu || []).slice(0,5).join("|").slice(0,200),
+    cp_category: (p.cat || []).slice(0,5).join("|").slice(0,200),
+    cp_keywords: String(p.kw || "").slice(0,200),
+    cp_preferences_set: hasPrefs() ? "yes" : "no"
+  };
+}
+async function cpInitPush(){
+  if(cpPushSdkReady) return;
+  if(cpPushStatus() !== "ready") throw Error("웹푸시 설정이 완료되지 않았습니다.");
+  if(!window.OneSignalDeferred) window.OneSignalDeferred = [];
+  await new Promise((resolve,reject)=>{
+    window.OneSignalDeferred.push(async function(OneSignal){
+      try {
+        await OneSignal.init({
+          appId: window.CP_ONESIGNAL_APP_ID,
+          serviceWorkerPath: "OneSignalSDKWorker.js",
+          serviceWorkerParam: {scope: "/"}
+        });
+        cpPushSdkReady = true;
+        resolve();
+      } catch(e){reject(e);}
+    });
+    if(!document.querySelector('script[data-cp-onesignal]')){
+      const script=document.createElement("script");
+      script.src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+      script.async=true;script.dataset.cpOnesignal="1";
+      script.onerror=()=>reject(Error("푸시 SDK를 불러오지 못했습니다."));
+      document.head.appendChild(script);
+    }
+  });
+}
+async function cpSubscribePush(){
+  const btn=$("cpPushSubscribe");
+  if(btn){btn.disabled=true;btn.textContent="연결 중…";}
+  try {
+    await cpInitPush();
+    await OneSignal.User.PushSubscription.optIn();
+    if(Notification.permission !== "granted"){
+      if(btn) btn.textContent="알림 권한을 허용해야 합니다";
+      return;
+    }
+    await OneSignal.User.addTags(cpPushTags());
+    if(btn) btn.textContent="알림 구독 완료";
+  } catch(e){
+    if(btn){btn.disabled=false;btn.textContent="다시 시도";}
+    alert("웹푸시 연결 실패: "+String(e.message || e).slice(0,160));
+  }
+}
+function cpPushSetupPanel(){
+  const state=cpPushStatus();
+  const msg=state==="setup"
+    ? "웹푸시 서비스 연결을 준비 중입니다. 관심 조건을 먼저 저장할 수 있습니다."
+    : state==="unsupported"
+    ? "이 브라우저에서는 웹푸시를 지원하지 않습니다."
+    : "조건을 저장한 다음 아래 버튼으로 브라우저 알림 수신에 동의할 수 있습니다.";
+  return '<div class="grp"><span>🔔 브라우저 웹푸시</span><p class="hint">'+msg+'</p>'
+    +(state==="ready" ? '<button type="button" class="primary" id="cpPushSubscribe">웹푸시 알림 허용하기</button>' : '')
+    +'<p class="hint">개인별 신규 공고 및 마감 D-1 자동 발송은 별도 서버 연동 후 제공됩니다. 알림 허용만으로 즉시 발송되지는 않습니다.</p></div>';
+}
+
 
 // ── 공유하기 ──
 const SHARE_URL = "https://jobinfo-hub.github.io/?src=share";
