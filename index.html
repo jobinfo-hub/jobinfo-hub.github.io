@@ -2420,6 +2420,7 @@ document.addEventListener("click", e => {
   }
   else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
   else if(t.id === "cpPushUnsubscribe"){ cpUnsubscribePush(); }
+  else if(t.id === "cpPushCopyId"){ cpCopyPushSubscriptionId(); }
   else if(t.id === "prefSave"){
     cpSavePreferenceSettings();
   }
@@ -2563,6 +2564,19 @@ async function cpSubscribePush(){
     if(status)status.textContent="연결 실패: "+String(e.message||e).slice(0,180);
   }
 }
+async function cpCopyPushSubscriptionId(){
+  const status=$("cpPushMessage");
+  try{
+    await cpInitPush();
+    const sub=OneSignal.User.PushSubscription;
+    const id=sub && sub.optedIn && sub.id;
+    if(!id) throw Error("먼저 웹푸시를 구독한 뒤 다시 시도해 주세요.");
+    await navigator.clipboard.writeText(id);
+    if(status)status.textContent="테스트 기기 구독 ID를 복사했습니다. GitHub Secret CP_TEST_SUBSCRIPTION_ID에 등록하세요. 공개 게시물에 공유하지 마세요.";
+  }catch(e){
+    if(status)status.textContent="구독 ID 복사 실패: "+String(e.message||e).slice(0,140);
+  }
+}
 async function cpUnsubscribePush(){
   const btn=$("cpPushUnsubscribe"), status=$("cpPushMessage");
   if(btn){btn.disabled=true;btn.textContent="해지 처리 중…";}
@@ -2602,6 +2616,7 @@ function cpPushSetupPanel(){
   return '<div class="grp" style="border:2px solid #2563eb;border-radius:14px;padding:14px;margin:16px 0;background:#eff6ff;color:#172554"><strong style="font-size:16px">🔔 내 채용공고 웹푸시 알림</strong><p style="font-size:13px;margin:8px 0">'+msg+'</p>'
     +(state==="ready" ? '<button type="button" id="cpPushSubscribe" style="display:block;width:100%;padding:15px 12px;border:0;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:800;font-size:16px;cursor:pointer">🔔 웹푸시 알림 허용하기</button>' : '')
     +'<button type="button" id="cpPushUnsubscribe" hidden style="display:none;width:100%;margin-top:8px;padding:12px;border:1px solid #64748b;border-radius:10px;background:#fff;color:#334155;font-weight:700;cursor:pointer">알림 구독 해지</button>'
+    +'<button type="button" id="cpPushCopyId" style="width:100%;margin-top:8px;padding:10px;border:1px solid #64748b;border-radius:10px;background:#fff;color:#334155;cursor:pointer">테스트용 구독 ID 복사</button>'
     +'<p id="cpPushMessage" role="status" aria-live="polite" style="font-size:13px;line-height:1.5;margin:9px 0"></p>'
     +'<p style="font-size:12px;line-height:1.5;margin:6px 0">신규 공고 및 마감 D-1 자동 발송은 별도 서버 연동 후 제공됩니다.</p></div>';
 }
