@@ -1,12 +1,22 @@
 import unittest
 from datetime import datetime, timedelta, timezone
-from scripts.push_preview import candidates, event_deduplicate, matched_job_tags
+from scripts.push_preview import candidates, event_deduplicate, matched_job_tags, matching_preference_tags
 
 KST = timezone(timedelta(hours=9))
 
 class PushPreviewTests(unittest.TestCase):
     def test_no_unsafe_tag_matching(self):
         self.assertIsNone(matched_job_tags({"region": "서울"}))
+
+    def test_multiple_selections_or_and_fields(self):
+        job={"title":"공기업 사무직", "region":"서울", "emp":["정규직"], "edu":["학력무관"], "cat":"행정"}
+        self.assertTrue(matching_preference_tags(job, {"region":["경기","서울"], "emp":["정규직"], "edu":["고졸 가능"], "cat":["행정"], "kw":"사무"}))
+        self.assertFalse(matching_preference_tags(job, {"region":["부산"], "emp":["정규직"]}))
+        self.assertFalse(matching_preference_tags(job, {"region":["서울"], "emp":["인턴"]}))
+        self.assertFalse(matching_preference_tags(job, {"kw":"의사 간호사"}))
+
+    def test_unknown_region_not_over_targeted(self):
+        self.assertFalse(matching_preference_tags({"region":""}, {"region":["서울"]}))
 
     def test_deduplication(self):
         events = [{"event_id": "new:a1"}, {"event_id": "new:a1"}, {"event_id": "d1:a1:2026-10-25"}]
