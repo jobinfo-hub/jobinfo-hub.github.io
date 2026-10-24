@@ -504,6 +504,19 @@ def main():
     history.setdefault('records', [])
 
     if command == 'diagnose':
+        # Read-only diagnostic: no publishing and no history mutation.
+        pending_records = [
+            r for r in history['records'] if r.get('status') == 'pending'
+        ]
+        for record in pending_records:
+            print(
+                'Unresolved reservation:',
+                'job_id=' + str(record.get('job_id', '')),
+                'run_id=' + str(record.get('run_id', '')),
+                'created_at=' + str(record.get('created_at', '')),
+                'has_post_id=' + str(bool(record.get('threads_post_id')))
+            )
+
         token = os.environ.get('THREADS_ACCESS_TOKEN', '')
         configured_id = os.environ.get('THREADS_USER_ID', '')
         if not token:
