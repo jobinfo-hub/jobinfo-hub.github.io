@@ -50,7 +50,7 @@ def safe_link(value):
 
 def normalize(root):
     if root.tag != "wantedRoot":
-        raise ValueError("Unexpected Work24 recruitment response: root=" + repr(root.tag[:70]) + ", child_tags=" + repr([x.tag[:50] for x in list(root)[:6]]) + ", error_fields=" + repr({x.tag: (x.text or "").strip()[:120] for e in root.findall("error") for x in e if x.tag.lower() in ("code", "errorcode", "errcode", "message", "errormessage", "errmsg", "error_code", "error_message")}))
+        raise ValueError("Unexpected Work24 recruitment response: root=" + repr(root.tag[:70]) + ", child_tags=" + repr([x.tag[:50] for x in list(root)[:6]]) + ", error_structure=" + repr([(e.tag, sorted(e.attrib.keys()), [(c.tag, (c.text or "").strip()[:80]) for c in e if c.tag.lower() in ("code", "errorcode", "errcode", "message", "errormessage", "errmsg", "error_code", "error_message")]) for e in root.findall("error")]))
     result = []
     for node in root.findall("wanted"):
         number = field(node, "wantedAuthNo")
