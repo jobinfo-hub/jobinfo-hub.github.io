@@ -20,7 +20,7 @@ def delivered(state, job_id, subscription_id, kind="new_job"):
 def mark_delivered(state, job_id, subscription_id, kind="new_job"):
     if not job_id or not subscription_id:
         raise ValueError("job and subscriber are required")
-    key = str(kind) + ":" + str(job_id) + ":" + str(subscription_id)
+    key = delivery_key(job_id, subscription_id, kind)
     return {"delivered": sorted(set(state.get("delivered", [])) | {key})}
 
 def load(path):
