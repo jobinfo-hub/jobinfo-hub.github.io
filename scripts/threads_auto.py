@@ -384,8 +384,15 @@ def create_media(token, params):
                 'Threads media processing timed out; do not publish prematurely'
             )
 
-    published = api('POST', '/me/threads_publish', token,
-                    {'creation_id': creation_id})
+    print('Threads media container created; attempting final publish')
+    try:
+        published = api('POST', '/me/threads_publish', token,
+                        {'creation_id': creation_id})
+    except RuntimeError:
+        # An API failure is not proof that the remote publish did not happen.
+        # Preserve the pending reservation for manual reconciliation.
+        print('Final Threads publish not confirmed; keep reservation pending')
+        raise
     post_id = published.get('id')
     if not post_id:
         raise RuntimeError('Threads publish ID missing')
