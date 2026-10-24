@@ -34,8 +34,6 @@ def main():
     manifest = []
     seen = set()
     for post in candidates:
-        if len(manifest) >= 11:
-            break
         if str(post["id"]) in seen:
             continue
         seen.add(str(post["id"]))
