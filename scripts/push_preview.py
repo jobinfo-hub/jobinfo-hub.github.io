@@ -6,6 +6,7 @@ tags require an audited server-side matching strategy before production sends.
 """
 import argparse
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -54,21 +55,55 @@ def candidates(posts, now):
             found.append(dict(entry, kind="deadline_d1", event_id=f"d1:{job_id}:{due.date()}"))
     return found
 
+def matched_job_tags(job):
+    """Return a conservative OneSignal tag filter for a job.
+
+    Users select multiple values encoded with '|', which cannot be matched
+    safely using exact equality. Therefore this function does not pretend
+    that OneSignal's equals filter supports multi-select matching.
+    """
+    return None
+
+
+def event_deduplicate(events, sent_ids):
+    """Remove previously processed events, without mutating the ledger."""
+    seen = set(sent_ids)
+    result = []
+    for item in events:
+        event_id = item["event_id"]
+        if event_id not in seen:
+            result.append(item)
+            seen.add(event_id)
+    return result
+
+
+def load_ledger(path):
+    if not path.exists():
+        return set()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or not isinstance(data.get("sent_event_ids", []), list):
+        raise ValueError("Invalid push ledger format")
+    return set(str(x) for x in data["sent_event_ids"])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", default="alio.json")
     ap.add_argument("--output", default="/tmp/careerpick-push-preview.json")
+    ap.add_argument("--ledger", default="push_sent.json")
     args = ap.parse_args()
     data = json.loads(Path(args.input).read_text(encoding="utf-8"))
     now = datetime.now(KST)
-    found = candidates(data.get("posts", []), now)
+    found = event_deduplicate(candidates(data.get("posts", []), now), load_ledger(Path(args.ledger)))
     result = {
         "generated_at": now.isoformat(),
         "mode": "preview_only",
         "total_candidates": len(found),
         "candidates": found[:MAX_PREVIEW],
         "send_enabled": False,
-        "reason": "Subscriber-side tag matching and deduplication must be validated before production."
+        "targeting_verified": False,
+        "deduplication": "preview-only: excludes event IDs in the read-only ledger",
+        "reason": "Client-side multi-select tags are pipe-delimited and cannot safely be targeted using OneSignal equals filters. No notifications sent."
     }
     Path(args.output).write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Push preview only: {len(found)} candidates, {min(len(found),MAX_PREVIEW)} shown. No notifications sent.")
