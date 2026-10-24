@@ -98,6 +98,19 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(rows), 25)
             self.assertEqual(rows[0]["검수상태"], "needs_review")
 
+    def test_date_only_deadline_not_expired_until_next_day(self):
+        from datetime import datetime, timedelta, timezone
+        today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            job = {"id":"today1","alio":True,"title":"오늘 마감","org":"기관",
+                   "url":"https://example.org/today","due":today,"dueHasTime":False}
+            (root / "alio.json").write_text(json.dumps({"posts":[job]}, ensure_ascii=False), encoding="utf-8")
+            with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
+                generator.main()
+            result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
+            self.assertFalse(result[0]["expired"])
+
     def test_thumbnail_status_labels(self):
         from scripts.build_naver_review_packs import image_for
         from PIL import Image
