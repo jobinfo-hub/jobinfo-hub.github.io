@@ -1453,6 +1453,7 @@ function openPrefs(){
     + `<p class="live" id="prefLive"></p>`
     + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
   $("sheet").classList.add("open");
+  cpOpenSheetHistory();
   $("prefKw").addEventListener("input", e => { DRAFT.kw = e.target.value; prefLive(); });
   prefLive();
   cpRefreshPushPanel();
@@ -2383,6 +2384,7 @@ document.addEventListener("click", e => {
   else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
   else if(t.id === "cpPushUnsubscribe"){ cpUnsubscribePush(); }
   else if(t.id === "prefSave"){
+    e.preventDefault();
     const nextPrefs = JSON.parse(JSON.stringify(DRAFT));
     const previousPrefs = PREFS;
     PREFS = nextPrefs;
@@ -2393,9 +2395,22 @@ document.addEventListener("click", e => {
       return;
     }
     if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); }
-    closeSheet();
-    state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
-    toast("✓ 맞춤 알림 조건이 이 기기에 저장되었습니다.");
+    // Confirm immediately before any optional page rerender can fail.
+    const live=$("prefLive");
+    if(live)live.textContent="✓ 맞춤 조건 저장 완료! 다시 열어도 유지됩니다.";
+    toast("✓ 맞춤 알림 조건 저장 완료");
+    setTimeout(()=>{
+      try {
+        closeSheet();
+        state.tab=hasPrefs()?"mine":"all";
+        state.onlyNew=false;
+        refresh();
+        window.scrollTo({top:0});
+      } catch(e) {
+        console.error("Preference view refresh failed",e);
+        closeSheet();
+      }
+    },450);
   }
   else if(t.dataset.cpdeadline){ state.deadline=t.dataset.cpdeadline; refresh(); }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
@@ -2419,7 +2434,22 @@ window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); instal
 window.addEventListener("appinstalled", () => { $("addbtn").hidden = true; $("addHint").hidden = true; });
 
 function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").textContent = title; $("sheetBody").innerHTML = html; $("sheet").classList.add("open"); $("sheetBody").scrollTop = 0; }
-function closeSheet(){ $("sheet").classList.remove("open"); }
+function closeSheet(){
+  $("sheet").classList.remove("open");
+  if(history.state && history.state.cpSheet){
+    history.replaceState({cpTab:state.tab,cpQ:state.q||""},"",location.pathname+location.search);
+  }
+}
+function cpOpenSheetHistory(){
+  if(!(history.state && history.state.cpSheet)){
+    history.pushState({cpSheet:true,cpTab:state.tab,cpQ:state.q||""},"",location.pathname+location.search);
+  }
+}
+window.addEventListener("popstate",()=>{
+  if($("sheet").classList.contains("open")){
+    $("sheet").classList.remove("open");
+  }
+});
 
 /* Web push is opt-in. Public OneSignal App ID is set in push-config.js;
    private REST API keys must never be exposed in client-side code. */
