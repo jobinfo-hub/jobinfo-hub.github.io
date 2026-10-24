@@ -47,6 +47,24 @@ class PersistAcceptedPushTests(unittest.TestCase):
             self.assertTrue(lock.exists())
             self.assertEqual(stat.S_IMODE(os.stat(lock).st_mode), 0o600)
 
+    def test_parallel_writers_do_not_lose_updates(self):
+        from concurrent.futures import ThreadPoolExecutor
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            def record(index):
+                sub = "sub-" + str(index)
+                return record_and_save_accepted(
+                    path, "job1", sub, 200,
+                    {"id": "accepted-" + str(index), "recipients": 1},
+                    targeted_subscription_ids=[sub])
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                results = list(pool.map(record, range(20)))
+            self.assertTrue(all(results))
+            state = load(path)
+            self.assertEqual(len(state["delivered"]), 20)
+            for index in range(20):
+                self.assertTrue(delivered(state, "job1", "sub-" + str(index)))
+
     def test_relative_path_rejected(self):
         with self.assertRaises(ValueError):
             record_and_save_accepted("ledger.json", "job1", "sub1", 200,
