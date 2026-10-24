@@ -1,7 +1,7 @@
 """Persist one explicitly targeted OneSignal API acceptance to a private ledger.
 
 Does not send notifications or fetch subscribers. Caller must supply a private,
-durable path and must serialize concurrent writers externally. Do not use a
+durable path. POSIX file locking serializes local writers only. Do not use a
 public repository file or GitHub Actions cache as the authoritative ledger.
 """
 from pathlib import Path
@@ -18,14 +18,13 @@ def exclusive_ledger_lock(path):
     if lock_path.is_symlink():
         raise ValueError("Refusing a symlinked lock file")
     descriptor = os.open(lock_path, os.O_CREAT | os.O_RDWR | getattr(os, "O_NOFOLLOW", 0), 0o600)
-    try:
-        os.fchmod(descriptor, 0o600)
-        with os.fdopen(descriptor, "r+") as handle:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
-            try:
-                yield
-            finally:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+    with os.fdopen(descriptor, "r+") as handle:
+        os.fchmod(handle.fileno(), 0o600)
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 def record_and_save_accepted(path, job_id, subscription_id, status, payload, *, targeted_subscription_ids):
     ledger_path = Path(path)
