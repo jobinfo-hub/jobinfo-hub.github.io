@@ -722,6 +722,7 @@ footer .src b{color:var(--ink)}
   <div class="sheet-box"><h3 id="sheetTitle">홈 화면에 추가하기</h3><div id="sheetBody"></div></div>
 </div>
 
+<script src="push-config.js"></script>
 <script>
 // ── 설정 ──
 const COUPANG = false;    // 쿠팡 추천 상품 표시 (ads.py 설정 후 true로)
@@ -2438,7 +2439,7 @@ async function cpInitPush(){
         await OneSignal.init({
           appId: window.CP_ONESIGNAL_APP_ID,
           serviceWorkerPath: "OneSignalSDKWorker.js",
-          serviceWorkerParam: {scope: "/"}
+          serviceWorkerParam: {scope: "/onesignal/"}
         });
         cpPushSdkReady = true;
         resolve();
