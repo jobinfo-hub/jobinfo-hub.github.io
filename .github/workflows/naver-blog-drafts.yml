@@ -1,0 +1,21 @@
+name: Prepare Naver blog drafts (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate drafts
+        run: python scripts/generate_naver_drafts.py
+      - name: Upload review drafts
+        uses: actions/upload-artifact@v4
+        with:
+          name: naver-blog-review-drafts
+          path: naver-drafts/
+          retention-days: 14
