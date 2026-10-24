@@ -2508,7 +2508,22 @@ async function cpSyncPushPreferences(){
       if(typeof OneSignal.User.getTags!=="function")return false;
       const actual=await cpPushWithTimeout(OneSignal.User.getTags(),12000,"관심 조건 확인");
       if(!actual || typeof actual!=="object")return false;
-      return Object.keys(desired).every(key=>String(actual[key]??"")===String(desired[key]));
+      const verified=Object.keys(desired).every(key=>String(actual[key]??"")===String(desired[key]));
+      if(!verified)return false;
+      // Remove obsolete v2 tags only after all seven v3 values are verified.
+      // This reduces tag usage for returning subscribers without affecting v3 matching.
+      if(typeof OneSignal.User.removeTags==="function"){
+        const legacy=["cp_region","cp_employment","cp_education","cp_category"];
+        for(const dimension of ["region","employment","education","category"]){
+          for(let i=1;i<=5;i++)legacy.push("cp2_"+dimension+"_"+i);
+        }
+        try{
+          await cpPushWithTimeout(OneSignal.User.removeTags(legacy),12000,"이전 태그 정리");
+        }catch(error){
+          console.warn("Legacy push tag cleanup deferred",error);
+        }
+      }
+      return true;
     }
   }catch(e){
     console.warn("Push preference sync deferred",e);
