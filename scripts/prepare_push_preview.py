@@ -26,6 +26,7 @@ def prepare(report):
             "sendable": False,
             "reason": "Subscriber preferences are not yet matched server-side."
         })
+    # Never put subscriber IDs, private preference tags, or API credentials into artifacts.
     return {
         "dry_run": True,
         "new_job_previews": notifications,
