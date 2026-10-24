@@ -21,6 +21,8 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_alert*.py' -v
       - name: Synthetic end-to-end targeted alert smoke check
         run: python3 -m scripts.smoke_targeted_alerts
+      - name: Verify schema-v4 targeted delivery safety (no sending)
+        run: python3 -m scripts.smoke_alert_delivery_v4
       - name: Restore prior detection snapshot
         uses: actions/cache@v4
         with:
