@@ -1454,9 +1454,50 @@ function openPrefs(){
     + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
   $("sheet").classList.add("open");
   cpOpenSheetHistory();
+  // Direct, local button binding: mobile/PWA clicks must not depend on global delegation.
+  $("prefSave").addEventListener("click", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    cpSavePreferenceSettings();
+  });
   $("prefKw").addEventListener("input", e => { DRAFT.kw = e.target.value; prefLive(); });
   prefLive();
   cpRefreshPushPanel();
+}
+function cpSavePreferenceSettings(){
+  try {
+    const nextPrefs = JSON.parse(JSON.stringify(DRAFT));
+    const previousPrefs = PREFS;
+    PREFS = nextPrefs;
+    if(!savePrefs()){
+      PREFS = previousPrefs;
+      const live=$("prefLive");
+      if(live)live.textContent="⚠️ 조건 저장에 실패했습니다. 브라우저의 사이트 데이터 저장 허용 여부를 확인해 주세요.";
+      return;
+    }
+    if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); }
+    // Confirm immediately before any optional page rerender can fail.
+    const live=$("prefLive");
+    if(live)live.textContent="✓ 맞춤 조건 저장 완료! 다시 열어도 유지됩니다.";
+    toast("✓ 맞춤 알림 조건 저장 완료");
+    setTimeout(()=>{
+      try {
+        closeSheet();
+        state.tab=hasPrefs()?"mine":"all";
+        state.onlyNew=false;
+        refresh();
+        window.scrollTo({top:0});
+      } catch(e) {
+        console.error("Preference view refresh failed",e);
+        closeSheet();
+      }
+    },450);
+  } catch(err) {
+    console.error("CareerPick preference save error",err);
+    const live=$("prefLive");
+    if(live)live.textContent="⚠️ 저장 처리 중 오류가 발생했습니다. 화면을 다시 열어 시도해 주세요.";
+    toast("저장 중 오류가 발생했습니다.");
+  }
 }
 function prefLive(){
   const now = new Date();
@@ -2384,33 +2425,7 @@ document.addEventListener("click", e => {
   else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
   else if(t.id === "cpPushUnsubscribe"){ cpUnsubscribePush(); }
   else if(t.id === "prefSave"){
-    e.preventDefault();
-    const nextPrefs = JSON.parse(JSON.stringify(DRAFT));
-    const previousPrefs = PREFS;
-    PREFS = nextPrefs;
-    if(!savePrefs()){
-      PREFS = previousPrefs;
-      const live=$("prefLive");
-      if(live)live.textContent="⚠️ 조건 저장에 실패했습니다. 브라우저의 사이트 데이터 저장 허용 여부를 확인해 주세요.";
-      return;
-    }
-    if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); }
-    // Confirm immediately before any optional page rerender can fail.
-    const live=$("prefLive");
-    if(live)live.textContent="✓ 맞춤 조건 저장 완료! 다시 열어도 유지됩니다.";
-    toast("✓ 맞춤 알림 조건 저장 완료");
-    setTimeout(()=>{
-      try {
-        closeSheet();
-        state.tab=hasPrefs()?"mine":"all";
-        state.onlyNew=false;
-        refresh();
-        window.scrollTo({top:0});
-      } catch(e) {
-        console.error("Preference view refresh failed",e);
-        closeSheet();
-      }
-    },450);
+    cpSavePreferenceSettings();
   }
   else if(t.dataset.cpdeadline){ state.deadline=t.dataset.cpdeadline; refresh(); }
   else if(t.id === "toggle"){ const o = $("panel").classList.toggle("open"); t.setAttribute("aria-expanded", o); }
@@ -2437,7 +2452,7 @@ function sheet(html, title = "홈 화면에 추가하기"){ $("sheetTitle").text
 function closeSheet(){
   $("sheet").classList.remove("open");
   if(history.state && history.state.cpSheet){
-    history.replaceState({cpTab:state.tab,cpQ:state.q||""},"",location.pathname+location.search);
+    history.replaceState({cpTab:state.tab,cpQ:state.q||"",cpDepth:CP_TAB_DEPTH},"",location.pathname+location.search);
   }
 }
 function cpOpenSheetHistory(){
@@ -2446,9 +2461,8 @@ function cpOpenSheetHistory(){
   }
 }
 window.addEventListener("popstate",()=>{
-  if($("sheet").classList.contains("open")){
-    $("sheet").classList.remove("open");
-  }
+  const modal=$("sheet");
+  if(modal && modal.classList.contains("open")) modal.classList.remove("open");
 });
 
 /* Web push is opt-in. Public OneSignal App ID is set in push-config.js;
