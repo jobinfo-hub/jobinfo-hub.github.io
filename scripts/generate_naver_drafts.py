@@ -59,6 +59,12 @@ def main():
             ("접수 마감", plain(post.get("due")))
         ]
         summary = "\n".join(f"- {k}: {v or '공고 원문 확인 필요'}" for k,v in fields)
+        # Respect source metadata: dueHasTime=false means the hour is not authoritative.
+        deadline_note = (
+            "마감 시각은 원문 확인 필요(수집 데이터에 표시된 시간은 확정 시각이 아닐 수 있음)."
+            if post.get("dueHasTime") is False
+            else "마감 시각과 변경 공지를 공식 원문에서 최종 확인하세요."
+        )
         body = f"""# {title} | 지원자격·접수마감 정리
 
 {org}의 채용공고입니다. 지원 전 접수 마감과 지원 자격을 먼저 확인하세요.
@@ -67,7 +73,7 @@ def main():
 ## 채용 핵심 정보
 {summary}
 
-## 지원 전에 꼭 확인할 10가지 질문
+{deadline_note}\n\n## 지원 전에 꼭 확인할 10가지 질문
 1. 정확한 접수 마감 시각은 언제인가요?
 2. 지원 가능한 학력과 경력은 무엇인가요?
 3. 필수 자격증이 있나요?
