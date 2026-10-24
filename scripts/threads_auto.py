@@ -328,17 +328,16 @@ def create_media(token, params):
     if not creation_id:
         raise RuntimeError('Threads container ID missing')
 
-    # Image containers are asynchronous. Publishing immediately after creation
-    # can fail while Threads is still processing the media.
-    if params.get('media_type') == 'IMAGE':
+    # Both image and text/reply containers may require asynchronous processing.
+    # Never submit a container to threads_publish before Meta reports FINISHED.
+    if params.get('media_type') in ('IMAGE', 'TEXT'):
         for attempt in range(24):
             status = api('GET', '/' + str(creation_id), token,
                          {'fields': 'status,error_message'})
             state = str(status.get('status', '')).upper()
             print('Threads media processing:', state, f'({attempt + 1}/24)')
             if state == 'FINISHED':
-                # Give Meta's publish endpoint time to observe the ready media.
-                # A successful status check may precede propagation.
+                # Meta's publish endpoint can lag the FINISHED status.
                 time.sleep(10)
                 break
             if state in ('ERROR', 'EXPIRED'):
