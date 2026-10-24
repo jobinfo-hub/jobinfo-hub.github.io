@@ -207,3 +207,23 @@ jobs:
             git commit -m 'Record published CareerPick Threads job'
             git push
           fi
+
+      - name: Verify published post and reply
+        if: ${{ always() && env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true' }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          records = json.loads(Path('threads_posted.json').read_text(encoding='utf-8')).get('records', [])
+          mine = [r for r in records if str(r.get('run_id')) == os.environ['GITHUB_RUN_ID']]
+          post_ok = len(mine) == 1 and mine[0].get('status') == 'published' and bool(mine[0].get('threads_post_id'))
+          reply_ok = post_ok and bool(mine[0].get('reply_post_id'))
+          lines = ['## Threads publication result', '', '- Main post recorded: **' + ('YES' if post_ok else 'NO') + '**', '- Detail reply recorded: **' + ('YES' if reply_ok else 'NO') + '**']
+          if not reply_ok:
+              lines.append('- **ACTION REQUIRED:** inspect this run and remote Threads state; do not blindly repost.')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write(chr(10).join(lines) + chr(10))
+          if not post_ok or not reply_ok:
+              raise SystemExit('Threads publication incomplete; investigate without duplicate repost')
+          print('Verified main post and detail reply IDs')
+          PY
