@@ -29,6 +29,16 @@ class PackedProfileTests(unittest.TestCase):
     def test_empty_profile(self):
         self.assertFalse(matches(self.job,self.tags({"v":4})))
 
+    def test_packed_keywords_match(self):
+        tags=self.tags({**self.profile,"region":[],"employment":[],
+                        "keywords":"전기직"})
+        self.assertTrue(matches(self.job,tags))
+
+    def test_packed_keywords_reject_mismatch(self):
+        tags=self.tags({**self.profile,"region":[],"employment":[],
+                        "keywords":"간호사"})
+        self.assertFalse(matches(self.job,tags))
+
     def test_legacy_v3(self):
         self.assertTrue(matches(self.job,{"cp_schema":"3","cp_preferences_set":"yes",
                                          "cp3_region":"경기"}))
