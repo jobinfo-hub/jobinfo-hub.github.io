@@ -5,7 +5,8 @@
     "a306006",
     "a306200",
     "a305975",
-    "a306234"
+    "a306234",
+    "a306193"
   ],
   "posts": [],
   "records": [
@@ -175,7 +176,7 @@
     {
       "job_id": "a306193",
       "reserved_date": "2026-10-24",
-      "status": "pending",
+      "status": "published",
       "run_id": "40064330588",
       "created_at": "2026-10-24T13:56:53.900835+09:00",
       "text": "📢 공공기관 채용정보\n\n🏢 한국예술인복지재단",
@@ -194,7 +195,10 @@
         "location": "서울",
         "start": "",
         "priority": 1
-      }
+      },
+      "threads_post_id": "17963866491239426",
+      "published_at": "2026-10-24T13:57:51.852475+09:00",
+      "reply_status": "needs_review"
     }
   ]
 }
