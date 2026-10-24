@@ -2430,27 +2430,28 @@ function cpPushTags(){
     cp_preferences_set: hasPrefs() ? "yes" : "no"
   };
 }
+function cpPushWithTimeout(promise, ms, label){
+  return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>setTimeout(()=>reject(Error(label+" 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.")),ms))]);
+}
 async function cpInitPush(){
   if(cpPushSdkReady) return;
   if(cpPushInitPromise) return cpPushInitPromise;
   if(cpPushStatus() !== "ready") throw Error("웹푸시 설정이 완료되지 않았습니다.");
-  cpPushInitPromise = new Promise((resolve,reject)=>{
-    if(!window.OneSignalDeferred) window.OneSignalDeferred = [];
-    window.OneSignalDeferred.push(async function(OneSignal){
+  cpPushInitPromise = cpPushWithTimeout(new Promise((resolve,reject)=>{
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(sdk){
       try {
-        if(!OneSignal.User || !OneSignal.User.PushSubscription){
-          try {
-            await OneSignal.init({
-              appId: window.CP_ONESIGNAL_APP_ID,
-              serviceWorkerPath: "OneSignalSDKWorker.js",
-              serviceWorkerParam: {scope: "/onesignal/"}
-            });
-          } catch(e){
-            if(!/already initialized/i.test(String(e && e.message || e))) throw e;
-          }
+        try {
+          await sdk.init({
+            appId: window.CP_ONESIGNAL_APP_ID,
+            serviceWorkerPath: "OneSignalSDKWorker.js",
+            serviceWorkerParam: {scope: "/onesignal/"}
+          });
+        } catch(e){
+          if(!/already initialized/i.test(String(e && e.message || e))) throw e;
         }
-        if(!OneSignal.User || !OneSignal.User.PushSubscription) throw Error("웹푸시 SDK가 준비되지 않았습니다.");
-        cpPushSdkReady = true;
+        if(!sdk.User || !sdk.User.PushSubscription) throw Error("웹푸시 SDK가 준비되지 않았습니다.");
+        cpPushSdkReady=true;
         resolve();
       } catch(e){reject(e);}
     });
@@ -2461,25 +2462,30 @@ async function cpInitPush(){
       script.onerror=()=>reject(Error("푸시 SDK를 불러오지 못했습니다."));
       document.head.appendChild(script);
     }
-  });
+  }),15000,"SDK 연결");
   try { await cpPushInitPromise; }
-  catch(e){ cpPushInitPromise = null; throw e; }
+  catch(e){cpPushInitPromise=null;throw e;}
 }
 async function cpSubscribePush(){
-  const btn=$("cpPushSubscribe");
-  if(btn){btn.disabled=true;btn.textContent="연결 중…";}
+  const btn=$("cpPushSubscribe"), status=$("cpPushMessage");
+  if(btn){btn.disabled=true;btn.textContent="⏳ 연결 확인 중…";}
+  if(status)status.textContent="OneSignal 연결과 브라우저 권한을 확인하고 있습니다.";
   try {
     await cpInitPush();
-    await OneSignal.User.PushSubscription.optIn();
+    if(btn)btn.textContent="⏳ 알림 권한 요청 중…";
+    await cpPushWithTimeout(OneSignal.User.PushSubscription.optIn(),15000,"알림 권한 요청");
     if(Notification.permission !== "granted"){
-      if(btn) btn.textContent="알림 권한을 허용해야 합니다";
-      return;
+      throw Error("브라우저 알림 권한이 허용되지 않았습니다. 주소창 왼쪽 사이트 설정에서 알림을 허용해 주세요.");
     }
-    await OneSignal.User.addTags(cpPushTags());
-    if(btn) btn.textContent="알림 구독 완료";
+    await cpPushWithTimeout(OneSignal.User.addTags(cpPushTags()),12000,"관심 조건 저장");
+    if(!OneSignal.User.PushSubscription.optedIn){
+      throw Error("알림 구독이 아직 활성화되지 않았습니다. OneSignal 웹 설정을 확인해 주세요.");
+    }
+    if(btn){btn.textContent="✓ 웹푸시 구독 활성화";btn.disabled=true;}
+    if(status)status.textContent="이 브라우저의 웹푸시 구독이 활성화되었습니다. 맞춤 자동 발송은 별도 설정이 필요합니다.";
   } catch(e){
-    if(btn){btn.disabled=false;btn.textContent="다시 시도";}
-    alert("웹푸시 연결 실패: "+String(e.message || e).slice(0,160));
+    if(btn){btn.disabled=false;btn.textContent="🔔 다시 연결하기";}
+    if(status)status.textContent="연결 실패: "+String(e.message||e).slice(0,180);
   }
 }
 function cpPushSetupPanel(){
@@ -2489,9 +2495,10 @@ function cpPushSetupPanel(){
     : state==="unsupported"
     ? "이 브라우저에서는 웹푸시를 지원하지 않습니다."
     : "조건을 저장한 다음 아래 버튼으로 브라우저 알림 수신에 동의할 수 있습니다.";
-  return '<div class="grp"><span>🔔 브라우저 웹푸시</span><p class="hint">'+msg+'</p>'
-    +(state==="ready" ? '<button type="button" class="primary" id="cpPushSubscribe">웹푸시 알림 허용하기</button>' : '')
-    +'<p class="hint">개인별 신규 공고 및 마감 D-1 자동 발송은 별도 서버 연동 후 제공됩니다. 알림 허용만으로 즉시 발송되지는 않습니다.</p></div>';
+  return '<div class="grp" style="border:2px solid #2563eb;border-radius:14px;padding:14px;margin:16px 0;background:#eff6ff;color:#172554"><strong style="font-size:16px">🔔 내 채용공고 웹푸시 알림</strong><p style="font-size:13px;margin:8px 0">'+msg+'</p>'
+    +(state==="ready" ? '<button type="button" id="cpPushSubscribe" style="display:block;width:100%;padding:15px 12px;border:0;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:800;font-size:16px;cursor:pointer">🔔 웹푸시 알림 허용하기</button>' : '')
+    +'<p id="cpPushMessage" role="status" aria-live="polite" style="font-size:13px;line-height:1.5;margin:9px 0"></p>'
+    +'<p style="font-size:12px;line-height:1.5;margin:6px 0">신규 공고 및 마감 D-1 자동 발송은 별도 서버 연동 후 제공됩니다.</p></div>';
 }
 
 
