@@ -515,6 +515,18 @@ def main():
             except (RuntimeError, ValueError, TypeError) as exc:
                 print('Remote reconciliation unavailable:', type(exc).__name__)
         print('Publishing enabled:', os.getenv('THREADS_ENABLED', 'false'))
+        # Report legacy posts without recorded replies; do not auto-reply.
+        missing_replies = [
+            r for r in history['records']
+            if r.get('status') == 'published'
+            and r.get('threads_post_id')
+            and not r.get('reply_post_id')
+        ]
+        print('Published posts missing recorded reply:', len(missing_replies))
+        for record in missing_replies:
+            print('Missing reply for job:', record.get('job_id'),
+                  'has_reply_text:', bool(record.get('reply_text')),
+                  'reply_status:', record.get('reply_status', 'unknown'))
         print('Pending reservations:', sum(
             r.get('status') == 'pending' for r in history['records']
         ))
