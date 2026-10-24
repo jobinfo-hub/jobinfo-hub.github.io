@@ -1,6 +1,12 @@
 name: CareerPick rebuild static job pages
 on:
   workflow_dispatch:
+    inputs:
+      indexnow_bootstrap:
+        description: 'Submit up to 100 existing job URLs to IndexNow for one-time verification'
+        type: boolean
+        required: false
+        default: false
   schedule:
     - cron: '43 1 * * *'
   pull_request:
@@ -188,3 +194,7 @@ jobs:
 
       - name: Notify IndexNow about changed job pages
         run: python scripts/submit_indexnow.py
+
+      - name: One-time IndexNow bootstrap (manual opt-in)
+        if: github.event_name == 'workflow_dispatch' && inputs.indexnow_bootstrap == true
+        run: python scripts/submit_indexnow.py --bootstrap
