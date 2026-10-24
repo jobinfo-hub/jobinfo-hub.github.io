@@ -607,8 +607,8 @@ footer .src b{color:var(--ink)}
   <div class="cp-feed-status" id="cpFeedStatus" role="status" aria-live="polite">📡 채용정보 업데이트 상태 확인 중…</div>
   <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
   <div class="notice kakao" id="kakaoBar" hidden>
-    <span class="grow">💬 <b>오늘·내일 마감 공고</b>를 카톡방에서 매일 받아보세요</span>
-    <a class="go kgo" href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener" id="kakaoGo">참여하기</a>
+    <span class="grow">🔔 <b>내게 맞는 채용공고</b>, 빠르게 받아보세요! <small>맞춤 웹푸시 알림 준비 중</small></span>
+    <button type="button" class="go kgo" id="kakaoGo">알림 안내</button>
     <button class="x" id="kakaoX" aria-label="닫기">×</button>
   </div>
   <div class="notice" id="addHint" hidden>
@@ -708,7 +708,7 @@ footer .src b{color:var(--ink)}
       커리어픽은 공개 채용정보를 수집·정리하고 취업 준비 안내 콘텐츠를 제공합니다. 일부 공고는 자동 갱신되므로 공식 원문과 차이가 있을 수 있습니다. 마감 시각·자격 요건은 바뀔 수 있으니 지원 전 반드시 공식 공고를 확인하세요.<br>
       공공기관 공식 공고: <a href="https://job.alio.go.kr" target="_blank" rel="noopener">잡알리오</a> · <a href="https://www.gojobs.go.kr" target="_blank" rel="noopener">나라일터</a> · <a href="https://www.work24.go.kr" target="_blank" rel="noopener">고용24</a>
     </div>
-    <nav class="flinks"><a href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener">💬 카톡 알림방</a><a href="prep.html">🎓 취업 준비실</a><a href="about.html">사이트 소개</a><a href="privacy.html">개인정보처리방침</a><a href="contact.html">문의</a><a href="https://m.blog.naver.com/hid4989-3" target="_blank" rel="noopener">블로그</a></nav>
+    <nav class="flinks"><a href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener">💬 홈페이지 건의·운영자 대화</a><a href="prep.html">🎓 취업 준비실</a><a href="about.html">사이트 소개</a><a href="privacy.html">개인정보처리방침</a><a href="contact.html">문의</a><a href="https://m.blog.naver.com/hid4989-3" target="_blank" rel="noopener">블로그</a></nav>
     <p class="biz">📮 광고·제휴 문의: <a class="mail" href="contact.html" data-u="hid4989-3" data-d="naver.com">문의 페이지</a></p>
   </footer>
   <script>document.querySelectorAll("a.mail").forEach(function(a){var m=a.dataset.u+"@"+a.dataset.d;a.href="mailto:"+m+"?subject="+encodeURIComponent("[커리어픽] 광고·제휴 문의");a.textContent=m;});</script>
@@ -2528,7 +2528,7 @@ function savedAlert(){
   $("addHint").hidden = true;   // 안내 줄은 한 번에 하나만
   const hide = () => { $("kakaoBar").hidden = true; try { localStorage.setItem("kakaoOff","1"); } catch(e) {} };
   $("kakaoX").onclick = hide;
-  $("kakaoGo").addEventListener("click", () => setTimeout(hide, 500));
+  $("kakaoGo").addEventListener("click", () => sheet(`<p>관심 지역·직종에 맞춘 <b>채용공고 웹푸시 알림</b> 기능을 준비하고 있습니다.</p><p>현재는 자동 알림 신청이나 발송이 시작되지 않았습니다. 기능이 준비되면 이곳에서 알림 수신을 설정할 수 있습니다.</p><p><a href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener">💬 홈페이지 건의사항·운영자와 대화하기 ↗</a></p>`, "커리어픽 맞춤 채용 알림"));
 })();
 
 load();
