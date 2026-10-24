@@ -1,6 +1,6 @@
 """Notify Bing IndexNow about newly added or changed CareerPick job pages.
 
-Usage: python scripts/submit_indexnow.py [--dry-run]
+Usage: python scripts/submit_indexnow.py [--dry-run] [--bootstrap]
 Only changed jobs/a<digits>.html files from recent commits are submitted.
 IndexNow submission does not guarantee indexing.
 """
@@ -43,7 +43,10 @@ def main():
     if not key_file.is_file() or key_file.read_text(encoding="utf-8").strip() != KEY:
         raise SystemExit("IndexNow ownership key file missing or invalid")
     urls = changed_job_urls()
-    print(f"IndexNow changed job URLs: {len(urls)}")
+    if "--bootstrap" in sys.argv:
+        # Explicit one-time verification path; never resubmit old pages on every deploy.
+        urls = sorted({f"https://{HOST}/jobs/{p.name}" for p in (ROOT / "jobs").glob("a[0-9]*.html") if p.stem[1:].isdigit()})[:100]
+    print(f"IndexNow selected job URLs: {len(urls)}")
     if not urls:
         return
     payload = {"host": HOST, "key": KEY, "keyLocation": KEY_LOCATION, "urlList": urls}
