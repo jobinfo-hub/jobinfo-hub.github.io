@@ -70,7 +70,7 @@ def main():
             ("급여·복리후생", None),
             ("제출 서류·우대조건", None),
         ]
-        checks = "\\n".join(
+        checks = "\n".join(
             f"- [ ] {label}: 공식 모집요강·첨부파일 대조"
             for label, _ in review_items
         )
