@@ -728,6 +728,16 @@ def main():
     quality['missing_substantive_description'] = sum(
         '실질 직무설명' in row['missing'] for row in quality_rows
     )
+    # Flag source-detail coverage changes without assuming missing data is a site bug.
+    quality['source_qualification_coverage_pct'] = round(
+        100 * quality['with_qualification'] / quality['total'], 1
+    ) if quality['total'] else 0.0
+    quality['source_process_coverage_pct'] = round(
+        100 * quality['with_process'] / quality['total'], 1
+    ) if quality['total'] else 0.0
+    quality['source_duties_coverage_pct'] = round(
+        100 * quality['substantive_description_source_available'] / quality['total'], 1
+    ) if quality['total'] else 0.0
     quality['suspected_same_link_duplicate_groups'] = sum(
         item['distinct_official_link_count'] == 1 for item in suspected_duplicates
     )
