@@ -372,6 +372,9 @@ def create_media(token, params):
             state = str(status.get('status', '')).upper()
             print('Threads media processing:', state, f'({attempt + 1}/24)')
             if state == 'FINISHED':
+                # Give Meta's publish endpoint time to observe the ready media.
+                # A successful status check may precede propagation.
+                time.sleep(10)
                 break
             if state in ('ERROR', 'EXPIRED'):
                 raise RuntimeError(
