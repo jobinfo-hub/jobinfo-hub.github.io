@@ -26,6 +26,18 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(manifest), 1)
             self.assertFalse((out / "stale.md").exists())
 
+    def test_unverified_deadline_time_is_labeled(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            job = {"id":"a400", "alio":True, "title":"시각 미확인", "org":"기관",
+                   "url":"https://example.org/job", "due":"2099-01-01T23:59:00+09:00",
+                   "dueHasTime":False}
+            (root / "alio.json").write_text(json.dumps({"posts":[job]}, ensure_ascii=False), encoding="utf-8")
+            with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
+                generator.main()
+            text = (root / "naver-drafts" / "a400.md").read_text(encoding="utf-8")
+            self.assertIn("마감 시각은 원문 확인 필요", text)
+
     def test_unknown_deadline_excluded(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
