@@ -476,7 +476,7 @@ footer .src b{color:var(--ink)}
 .cp-mobile-nav{display:none}
 @media(max-width:640px){
   body{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))}
-  .cp-mobile-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:95;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -3px 14px rgba(10,20,50,.08)}
+  .cp-mobile-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:95;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -3px 14px rgba(10,20,50,.08)}
   .cp-mobile-nav button{appearance:none;background:transparent;border:0;color:var(--muted);min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:700;cursor:pointer;border-radius:9px}
   .cp-mobile-nav button .cp-nav-ico{font-size:20px;line-height:1.2}
   .cp-mobile-nav button[aria-current="page"]{color:var(--brand);background:var(--brand-soft)}
@@ -600,6 +600,7 @@ footer .src b{color:var(--ink)}
   <nav class="cp-mobile-nav" aria-label="모바일 빠른 이동">
     <button type="button" data-dash="all" data-cpnav="all"><span class="cp-nav-ico" aria-hidden="true">🏠</span>전체 공고</button>
     <button type="button" data-dash="mine" data-cpnav="mine"><span class="cp-nav-ico" aria-hidden="true">🎯</span>맞춤 공고</button>
+    <button type="button" data-dash="prefs" id="cpMobilePush"><span class="cp-nav-ico" aria-hidden="true">🔔</span>알림 설정</button>
     <button type="button" data-dash="saved" data-cpnav="saved"><span class="cp-nav-ico" aria-hidden="true">☆</span>저장 공고</button>
     <button type="button" data-dash="track" data-cpnav="track"><span class="cp-nav-ico" aria-hidden="true">📋</span>내 지원</button>
   </nav>
@@ -1459,6 +1460,7 @@ function openPrefs(){
   $("sheet").classList.add("open");
   $("prefKw").addEventListener("input", e => { DRAFT.kw = e.target.value; prefLive(); });
   prefLive();
+  cpRefreshPushPanel();
 }
 function prefLive(){
   const now = new Date();
@@ -2384,6 +2386,7 @@ document.addEventListener("click", e => {
     $("prefKw").value = ""; prefLive();
   }
   else if(t.id === "cpPushSubscribe"){ cpSubscribePush(); }
+  else if(t.id === "cpPushUnsubscribe"){ cpUnsubscribePush(); }
   else if(t.id === "prefSave"){
     PREFS = DRAFT; savePrefs(); if(cpPushSdkReady && window.OneSignal){ OneSignal.User.addTags(cpPushTags()).catch(()=>{}); } closeSheet();
     state.tab = hasPrefs() ? "mine" : "all"; state.onlyNew = false; refresh(); window.scrollTo({top:0});
@@ -2485,10 +2488,38 @@ async function cpSubscribePush(){
       throw Error("알림 구독이 아직 활성화되지 않았습니다. OneSignal 웹 설정을 확인해 주세요.");
     }
     if(btn){btn.textContent="✓ 웹푸시 구독 활성화";btn.disabled=true;}
+    cpRenderPushButtons();
     if(status)status.textContent="이 브라우저의 웹푸시 구독이 활성화되었습니다. 맞춤 자동 발송은 별도 설정이 필요합니다.";
   } catch(e){
     if(btn){btn.disabled=false;btn.textContent="🔔 다시 연결하기";}
     if(status)status.textContent="연결 실패: "+String(e.message||e).slice(0,180);
+  }
+}
+async function cpUnsubscribePush(){
+  const btn=$("cpPushUnsubscribe"), status=$("cpPushMessage");
+  if(btn){btn.disabled=true;btn.textContent="해지 처리 중…";}
+  try{
+    await cpInitPush();
+    await cpPushWithTimeout(OneSignal.User.PushSubscription.optOut(),15000,"구독 해지");
+    if(OneSignal.User.PushSubscription.optedIn) throw Error("구독 해지 상태를 확인하지 못했습니다.");
+    if(status)status.textContent="이 브라우저의 웹푸시 구독을 해지했습니다. 언제든 다시 구독할 수 있습니다.";
+    cpRenderPushButtons();
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent="알림 구독 해지";}
+    if(status)status.textContent="해지 실패: "+String(e.message||e).slice(0,180);
+  }
+}
+function cpRenderPushButtons(){
+  const on=!!(cpPushSdkReady && window.OneSignal && OneSignal.User && OneSignal.User.PushSubscription && OneSignal.User.PushSubscription.optedIn);
+  const subscribe=$("cpPushSubscribe"), unsubscribe=$("cpPushUnsubscribe");
+  if(subscribe){subscribe.style.display=on?"none":"block";subscribe.hidden=on;subscribe.disabled=false;subscribe.textContent="🔔 웹푸시 알림 허용하기";}
+  if(unsubscribe){unsubscribe.style.display=on?"block":"none";unsubscribe.hidden=!on;unsubscribe.disabled=false;unsubscribe.textContent="알림 구독 해지";}
+}
+async function cpRefreshPushPanel(){
+  if(cpPushStatus()!=="ready")return;
+  try{await cpInitPush();cpRenderPushButtons();}catch(e){
+    const status=$("cpPushMessage");
+    if(status)status.textContent="알림 상태 확인 실패: "+String(e.message||e).slice(0,120);
   }
 }
 function cpPushSetupPanel(){
@@ -2500,6 +2531,7 @@ function cpPushSetupPanel(){
     : "조건을 저장한 다음 아래 버튼으로 브라우저 알림 수신에 동의할 수 있습니다.";
   return '<div class="grp" style="border:2px solid #2563eb;border-radius:14px;padding:14px;margin:16px 0;background:#eff6ff;color:#172554"><strong style="font-size:16px">🔔 내 채용공고 웹푸시 알림</strong><p style="font-size:13px;margin:8px 0">'+msg+'</p>'
     +(state==="ready" ? '<button type="button" id="cpPushSubscribe" style="display:block;width:100%;padding:15px 12px;border:0;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:800;font-size:16px;cursor:pointer">🔔 웹푸시 알림 허용하기</button>' : '')
+    +'<button type="button" id="cpPushUnsubscribe" hidden style="display:none;width:100%;margin-top:8px;padding:12px;border:1px solid #64748b;border-radius:10px;background:#fff;color:#334155;font-weight:700;cursor:pointer">알림 구독 해지</button>'
     +'<p id="cpPushMessage" role="status" aria-live="polite" style="font-size:13px;line-height:1.5;margin:9px 0"></p>'
     +'<p style="font-size:12px;line-height:1.5;margin:6px 0">신규 공고 및 마감 D-1 자동 발송은 별도 서버 연동 후 제공됩니다.</p></div>';
 }
