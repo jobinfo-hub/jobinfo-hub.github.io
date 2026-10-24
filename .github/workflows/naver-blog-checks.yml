@@ -4,6 +4,7 @@ on:
     paths:
       - 'scripts/generate_naver_drafts.py'
       - 'scripts/build_naver_review_packs.py'
+      - 'scripts/build_naver_draft_picker.py'
       - 'tests/test_naver_drafts.py'
       - '.github/workflows/naver-blog-*.yml'
   workflow_dispatch:
@@ -49,6 +50,8 @@ jobs:
           print('Verified',len(m),'draft packs')
           PY
 
+      - name: Build searchable draft picker
+        run: python scripts/build_naver_draft_picker.py
       - name: Upload sample review package
         uses: actions/upload-artifact@v4
         with:
