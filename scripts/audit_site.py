@@ -58,7 +58,7 @@ def check():
         except ET.ParseError:
             checks["Sitemap valid XML"] = False
     if ads.is_file():
-        publishers = set(re.findall(r"ca-pub-(\\d+)", html))
+        publishers = set(re.findall(r"ca-pub-(\d+)", html))
         ads_text = ads.read_text(encoding="utf-8")
         checks["Ads publisher ID consistent"] = (
             len(publishers) == 1
