@@ -44,6 +44,16 @@ class DeliveryLedgerTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 load(path)
 
+    def test_rejects_raw_or_malformed_delivery_keys(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "invalid.json"
+            for value in ("raw-subscription-id", 123, "A" * 64, "g" * 64):
+                with self.subTest(value=value):
+                    path.write_text('{"delivered": [' + __import__("json").dumps(value) + ']}',
+                                    encoding="utf-8")
+                    with self.assertRaises(ValueError):
+                        load(path)
+
     def test_missing_identity_rejected(self):
         with self.assertRaises(ValueError):
             mark_delivered({}, "", "sub1")
