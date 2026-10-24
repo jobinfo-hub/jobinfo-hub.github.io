@@ -35,9 +35,9 @@ def record_and_save_accepted(path, job_id, subscription_id, status, payload, *, 
     ledger_path.parent.mkdir(parents=True, exist_ok=True)
     with exclusive_ledger_lock(ledger_path):
         state = load(ledger_path)
-        if delivered(state, job_id, subscription_id):
-            return False
         updated = record_accepted_target(state, job_id, subscription_id, status, payload,
                                          targeted_subscription_ids=targeted_subscription_ids)
+        if delivered(state, job_id, subscription_id):
+            return False
         save(ledger_path, updated)
         return True
