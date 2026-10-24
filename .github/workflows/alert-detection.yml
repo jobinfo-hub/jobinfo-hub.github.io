@@ -1,0 +1,37 @@
+name: CareerPick alert detection (dry run)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: careerpick-alert-detection
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore prior detection snapshot
+        uses: actions/cache@v4
+        with:
+          path: .notification-state.json
+          key: careerpick-alert-state-${{ github.run_id }}
+          restore-keys: |
+            careerpick-alert-state-
+      - name: Detect new ALIO jobs (no messages sent)
+        env:
+          CP_UPDATE_ALERT_STATE: '1'
+          CP_ALERT_REPORT: careerpick-new-jobs.json
+        run: python3 scripts/detect_new_job_alerts.py
+      - name: Upload report for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: careerpick-alert-report
+          path: careerpick-new-jobs.json
+          retention-days: 14
