@@ -34,12 +34,10 @@ def main():
     manifest = []
     seen = set()
     for post in candidates:
-        if str(post["id"]) in seen:
-            continue
-        seen.add(str(post["id"]))
         pid = re.sub(r"[^a-zA-Z0-9_-]", "", str(post["id"]))
-        if not pid:
+        if not pid or pid in seen:
             continue
+        seen.add(pid)
         title = plain(post.get("title"))
         org = plain(post.get("org"))
         fields = [
