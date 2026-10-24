@@ -28,7 +28,7 @@ def region_tokens(value):
     output = []
     for part in parts:
         output.extend(token.strip().casefold() for token in
-                      re.split(r"[,，、;/|·\\n]+", str(part)) if token.strip())
+                      re.split(r"[,，、;/|·\s]+", str(part)) if token.strip())
     return output
 
 def selected(tags, prefix):
