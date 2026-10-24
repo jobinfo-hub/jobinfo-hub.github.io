@@ -31,7 +31,7 @@ def main():
         except ValueError:
             continue
         candidates.append(post)
-    candidates.sort(key=lambda p: plain(p.get("due")) or "9999")
+    candidates.sort(key=lambda p: (plain(p.get("due")) or "9999", plain(p.get("id"))))
     OUT.mkdir(parents=True, exist_ok=True)
     manifest = []
     for post in candidates[:11]:
@@ -80,7 +80,7 @@ def main():
 """
         (OUT / f"{pid}.md").write_text(body, encoding="utf-8")
         manifest.append({"id": pid, "title": title, "file": f"{pid}.md", "status": "needs_review"})
-    (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    # Remove stale drafts from prior runs so the artifact only contains current candidates.\n    current = {item["file"] for item in manifest}\n    for old in OUT.glob("*.md"):\n        if old.name not in current:\n            old.unlink()\n    (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Generated {len(manifest)} review-only drafts in {OUT}")
 
 if __name__ == "__main__":
