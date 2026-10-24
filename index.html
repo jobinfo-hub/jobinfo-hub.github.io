@@ -1481,7 +1481,7 @@ function cpSavePreferenceSettings(){
     if(pushStatus)pushStatus.textContent="관심 조건은 이 기기에 저장되었습니다. 알림 서버 동기화 확인 중…";
     cpSyncPushPreferences().then(ok=>{
       if(pushStatus)pushStatus.textContent=ok
-        ?"관심 조건을 OneSignal에 전송했습니다. 서버의 태그 저장 여부는 별도 확인이 필요합니다."
+        ?"관심 조건을 OneSignal에 전송하고 SDK 조회 결과와 일치하는지 확인했습니다."
         :"관심 조건은 이 기기에만 저장되었습니다. 알림 서버 동기화는 확인되지 않았습니다.";
     }).catch(()=>{
       if(pushStatus)pushStatus.textContent="관심 조건은 이 기기에만 저장되었습니다. 알림 서버 동기화 실패.";
@@ -2507,8 +2507,13 @@ async function cpSyncPushPreferences(){
   try{
     await cpInitPush();
     if(window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags==="function"){
-      await cpPushWithTimeout(OneSignal.User.addTags(cpPushTags()),12000,"관심 조건 동기화");
-      return true;
+      const desired=cpPushTags();
+      await cpPushWithTimeout(OneSignal.User.addTags(desired),12000,"관심 조건 동기화");
+      // addTags resolving does not guarantee all tags were retained on the account.
+      if(typeof OneSignal.User.getTags!=="function")return false;
+      const actual=await cpPushWithTimeout(OneSignal.User.getTags(),12000,"관심 조건 확인");
+      if(!actual || typeof actual!=="object")return false;
+      return Object.keys(desired).every(key=>String(actual[key]??"")===String(desired[key]));
     }
   }catch(e){
     console.warn("Push preference sync deferred",e);
