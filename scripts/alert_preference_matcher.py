@@ -26,6 +26,9 @@ def matches(job, tags):
         return False
     if str(tags.get("cp_schema", "")) != "2":
         return False
+    # A stale or incorrectly set preferences flag alone must never target everyone.
+    if not any(selected(tags, prefix) for _, prefix in DIMENSIONS.values()) and not str(tags.get("cp_keywords", "")).strip():
+        return False
     for _, (job_key, prefix) in DIMENSIONS.items():
         wants = selected(tags, prefix)
         if wants and not set(wants).intersection(tokens(job.get(job_key))):
