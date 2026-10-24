@@ -39,6 +39,15 @@ class PackedProfileTests(unittest.TestCase):
                         "keywords":"간호사"})
         self.assertFalse(matches(self.job,tags))
 
+    def test_boolean_schema_version_is_rejected(self):
+        self.assertFalse(matches(self.job,self.tags({**self.profile,"v":True})))
+
+    def test_oversized_keyword_is_rejected(self):
+        self.assertFalse(matches(self.job,self.tags({**self.profile,"keywords":"x"*201})))
+
+    def test_oversized_region_is_rejected(self):
+        self.assertFalse(matches(self.job,self.tags({**self.profile,"region":["x"*101]})))
+
     def test_legacy_v3(self):
         self.assertTrue(matches(self.job,{"cp_schema":"3","cp_preferences_set":"yes",
                                          "cp3_region":"경기"}))
