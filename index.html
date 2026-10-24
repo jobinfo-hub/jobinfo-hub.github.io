@@ -1486,7 +1486,8 @@ function cpSavePreferenceSettings(){
         :"✓ 기기에 저장 완료 · OneSignal 동기화 미확인 (알림 구독 상태를 확인해 주세요)";
       if(live)live.textContent=message;
       if(pushStatus)pushStatus.textContent=message;
-      if(button){button.textContent="완료 · 닫기";button.disabled=false;}
+      if(button){button.textContent="✓ 저장 완료";button.disabled=false;}
+      closeSheet();
       state.tab=hasPrefs()?"mine":"all";
       state.onlyNew=false;
       refresh();
@@ -1494,7 +1495,8 @@ function cpSavePreferenceSettings(){
       const message="✓ 기기에 저장 완료 · 알림 서버 동기화 오류";
       if(live)live.textContent=message;
       if(pushStatus)pushStatus.textContent=message;
-      if(button){button.textContent="완료 · 닫기";button.disabled=false;}
+      if(button){button.textContent="✓ 저장 완료";button.disabled=false;}
+      closeSheet();
       console.warn("Preference sync failed",error);
     });
     return true;
