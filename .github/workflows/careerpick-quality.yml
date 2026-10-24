@@ -16,6 +16,7 @@ on:
       - 'scripts/build_sitemap.py'
       - 'index.html'
       - 'scripts/build_job_pages.py'
+      - 'scripts/threads_auto.py'
       - 'scripts/audit_site.py'
       - 'scripts/check_api_freshness.py'
       - 'scripts/test_api_freshness.py'
@@ -50,6 +51,15 @@ jobs:
           for required in ('ready = False', 'ready = True', 'if not ready:', 'Public recruitment image unavailable; skip Threads publish'):
               assert required in content, f'Missing readiness guard: {required}'
           print('Threads image readiness guard PASS')
+          PY
+      - name: Check Threads pending reservation safety
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src = Path('scripts/threads_auto.py').read_text(encoding='utf-8')
+          assert 'manual reconciliation required before another publish attempt' in src
+          assert "waiting[0]['run_id'] = run_id" not in src
+          print('Unresolved Threads reservations cannot be automatically retried')
           PY
       - name: Check Python syntax
         run: python -m py_compile scripts/test_api_transport.py scripts/test_qnet_pagination.py orgs.py alio.py qnet.py history.py monitor.py update.py sitegen.py scripts/build_sitemap.py scripts/audit_site.py scripts/build_job_pages.py scripts/check_api_freshness.py scripts/test_api_freshness.py scripts/audit_org_links.py scripts/test_audit_org_links.py scripts/test_org_page_links.py scripts/refresh_org_links.py scripts/summarize_api_run.py scripts/test_summarize_api_run.py test_alio_partial_fetch.py
