@@ -90,10 +90,14 @@ def main():
         if not re.fullmatch(r"[a-zA-Z0-9_-]+", pid):
             raise ValueError("Unsafe ID")
         draft = (DRAFTS / item["file"]).read_text(encoding="utf-8")
-        current.update({f"{pid}-thumbnail.png", f"{pid}.docx"})\n        png = OUT / f"{pid}-thumbnail.png"
+        current.update({f"{pid}-thumbnail.png", f"{pid}.docx"})
+        png = OUT / f"{pid}-thumbnail.png"
         image_for(draft, png)
         make_docx(draft, png, OUT / f"{pid}.docx")
-    for old in OUT.iterdir():\n        if old.is_file() and old.suffix.lower() in (".docx", ".png") and old.name not in current:\n            old.unlink()\n    (OUT / "README.txt").write_text(
+    for old in OUT.iterdir():
+        if old.is_file() and old.suffix.lower() in (".docx", ".png") and old.name not in current:
+            old.unlink()
+    (OUT / "README.txt").write_text(
         "커리어픽 검수용 초안입니다. 원문과 조건을 대조한 뒤 사용자가 최종 발행하세요.\n"
         "네이버 블로그 임시저장 및 자동 발행 기능은 포함되어 있지 않습니다.\n",
         encoding="utf-8",
