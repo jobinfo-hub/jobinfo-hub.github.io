@@ -12,6 +12,12 @@ class AcceptedPushLedgerTests(unittest.TestCase):
         self.assertTrue(delivered(result, "job1", "sub1"))
         self.assertFalse(delivered(initial, "job1", "sub1"))
 
+    def test_blank_job_id_rejected(self):
+        with self.assertRaises(ValueError):
+            record_accepted_target({"delivered": []}, " ", "sub1", 200,
+                                   {"id": "notification-1", "recipients": 1},
+                                   targeted_subscription_ids=["sub1"])
+
     def test_unsafe_requests_never_record(self):
         cases = [
             (["sub1", "sub2"], 200, {"id": "x", "recipients": 2}),
