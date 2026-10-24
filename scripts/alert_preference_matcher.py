@@ -51,13 +51,16 @@ def packed_preferences(tags):
         data = json.loads(tags.get("cp_profile", ""))
     except (TypeError, ValueError):
         return None
-    if not isinstance(data, dict) or data.get("v") != 4:
+    if not isinstance(data, dict) or type(data.get("v")) is not int or data["v"] != 4:
         return None
     for field in ("region", "employment", "education", "category"):
         values = data.get(field, [])
         if not isinstance(values, list) or len(values) > 5 or any(not isinstance(x, str) for x in values):
             return None
-    if not isinstance(data.get("keywords", ""), str):
+    if not isinstance(data.get("keywords", ""), str) or len(data.get("keywords", "")) > 200:
+        return None
+    if any(len(value) > 100 for field in ("region", "employment", "education", "category")
+           for value in data.get(field, [])):
         return None
     return data
 
