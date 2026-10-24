@@ -26,6 +26,7 @@ on:
       - 'scripts/test_org_page_links.py'
       - 'scripts/refresh_org_links.py'
       - '.github/workflows/careerpick-quality.yml'
+      - '.github/workflows/threads_auto.yml'
       - '.github/workflows/update.yml'
   workflow_dispatch:
 
@@ -41,6 +42,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate Threads image readiness guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          content = Path('.github/workflows/threads_auto.yml').read_text(encoding='utf-8')
+          for required in ('ready = False', 'ready = True', 'if not ready:', 'Public recruitment image unavailable; skip Threads publish'):
+              assert required in content, f'Missing readiness guard: {required}'
+          print('Threads image readiness guard PASS')
+          PY
       - name: Check Python syntax
         run: python -m py_compile scripts/test_api_transport.py scripts/test_qnet_pagination.py orgs.py alio.py qnet.py history.py monitor.py update.py sitegen.py scripts/build_sitemap.py scripts/audit_site.py scripts/build_job_pages.py scripts/check_api_freshness.py scripts/test_api_freshness.py scripts/audit_org_links.py scripts/test_audit_org_links.py scripts/test_org_page_links.py scripts/refresh_org_links.py scripts/summarize_api_run.py scripts/test_summarize_api_run.py test_alio_partial_fetch.py
       - name: Test API HTTPS and credential redaction

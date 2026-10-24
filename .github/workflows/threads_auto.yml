@@ -148,15 +148,32 @@ jobs:
           if len(pending) == 1:
               url = pending[0].get('image_url')
               if url:
+                  ready = False
                   for _ in range(60):
                       try:
                           with urllib.request.urlopen(urllib.request.Request(url, method='HEAD'), timeout=10) as response:
                               if response.status == 200 and response.headers.get('Content-Type', '').startswith('image/'):
                                   print('Public image ready')
+                                  ready = True
                                   break
                       except Exception as exc:
                           print('Waiting for public image:', type(exc).__name__)
                       time.sleep(10)
+                  if not ready:
+                      raise SystemExit('Public recruitment image unavailable; skip Threads publish')
+          PY
+
+      - name: Validate image readiness guard
+        if: env.THREADS_ENABLED == 'true'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/threads_auto.yml').read_text(encoding='utf-8')
+          assert "ready = False" in workflow
+          assert "ready = True" in workflow
+          assert "if not ready:" in workflow
+          assert "raise SystemExit('Public recruitment image unavailable; skip Threads publish')" in workflow
+          print('Threads image readiness guard present')
           PY
 
       - name: Publish one Threads post
