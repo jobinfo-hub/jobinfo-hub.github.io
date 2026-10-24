@@ -32,6 +32,9 @@ def load(path):
     state = json.loads(p.read_text(encoding="utf-8"))
     if not isinstance(state, dict) or not isinstance(state.get("delivered"), list):
         raise ValueError("Invalid delivery ledger format")
+    if any(not isinstance(key, str) or len(key) != 64 or any(ch not in "0123456789abcdef" for ch in key)
+           for key in state["delivered"]):
+        raise ValueError("Invalid hashed delivery key")
     return state
 
 def save(path, state):
