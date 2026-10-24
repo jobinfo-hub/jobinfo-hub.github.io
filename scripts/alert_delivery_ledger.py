@@ -21,11 +21,18 @@ def mark_delivered(state, job_id, subscription_id, kind="new_job"):
     if not job_id or not subscription_id:
         raise ValueError("job and subscriber are required")
     key = delivery_key(job_id, subscription_id, kind)
-    return {"delivered": sorted(set(state.get("delivered", [])) | {key})}
+    updated = dict(state)
+    updated["delivered"] = sorted(set(state.get("delivered", [])) | {key})
+    return updated
 
 def load(path):
     p = Path(path)
-    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"delivered": []}
+    if not p.exists():
+        return {"delivered": []}
+    state = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(state, dict) or not isinstance(state.get("delivered"), list):
+        raise ValueError("Invalid delivery ledger format")
+    return state
 
 def save(path, state):
     """Atomically persist a delivery snapshot; caller must save it privately."""
