@@ -7,8 +7,6 @@ def plan_notifications(jobs, subscribers, delivery_state=None):
     result = []
     seen = set()
     subscribers = list(subscribers)
-    if not isinstance(jobs, list):
-        jobs = list(jobs)
     for job in jobs:
         if not isinstance(job, dict):
             continue
