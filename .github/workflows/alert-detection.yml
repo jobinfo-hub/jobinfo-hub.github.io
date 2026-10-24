@@ -31,9 +31,14 @@ jobs:
           CP_UPDATE_ALERT_STATE: '1'
           CP_ALERT_REPORT: careerpick-new-jobs.json
         run: python3 scripts/detect_new_job_alerts.py
+      - name: Prepare push previews (never send)
+        env:
+          CP_ALERT_REPORT: careerpick-new-jobs.json
+          CP_PUSH_PREVIEW: careerpick-push-preview.json
+        run: python3 scripts/prepare_push_preview.py
       - name: Upload report for review
         uses: actions/upload-artifact@v4
         with:
           name: careerpick-alert-report
-          path: careerpick-new-jobs.json
+          path: |\n            careerpick-new-jobs.json\n            careerpick-push-preview.json
           retention-days: 14
