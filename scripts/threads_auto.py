@@ -628,9 +628,12 @@ def main():
     ]
     if waiting:
         waiting.sort(key=lambda r: r.get('created_at', ''))
-        waiting[0]['run_id'] = run_id
-        save(history)
-        print('Retrying image reservation:', waiting[0]['job_id'])
+        print(
+            'Unresolved pending Threads reservation:',
+            waiting[0].get('job_id'),
+            '- manual reconciliation required before another publish attempt.'
+        )
+        print('No new reservation created; avoiding possible duplicate post.')
         return
 
     job = chosen[0]
