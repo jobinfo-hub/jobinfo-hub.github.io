@@ -76,7 +76,12 @@ def main():
             deadline = datetime.fromisoformat(due.replace("Z", "+00:00")) if due else None
             if deadline is not None and deadline.tzinfo is None:
                 deadline = deadline.replace(tzinfo=KST)
-            expired = deadline is not None and deadline.astimezone(timezone.utc) < now
+            # A date-only or unverified deadline time must not be treated as an exact cutoff.
+            # Mark expired only after the entire displayed calendar day ends in KST.
+            if deadline is not None and (len(due) == 10 or post.get("dueHasTime") is False):
+                expired = deadline.astimezone(KST).date() < now.astimezone(KST).date()
+            else:
+                expired = deadline is not None and deadline.astimezone(timezone.utc) < now
         except ValueError:
             deadline = None
             expired = False
