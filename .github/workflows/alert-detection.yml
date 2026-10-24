@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run alert regression tests
-        run: python3 -m unittest discover -s tests -p 'test_alert_detection.py' -v
+        run: python3 -m unittest discover -s tests -p 'test_alert*.py' -v
       - name: Restore prior detection snapshot
         uses: actions/cache@v4
         with:
