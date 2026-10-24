@@ -65,18 +65,35 @@ jobs:
           test -n "$THREADS_USER_ID"
 
       - name: Reserve one job
+        id: reserve
         if: env.THREADS_ENABLED == 'true'
-        run: python scripts/threads_auto.py prepare
+        run: |
+          python scripts/threads_auto.py prepare
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          records = json.loads(Path('threads_posted.json').read_text(encoding='utf-8')).get('records', [])
+          mine = [r for r in records if str(r.get('run_id')) == os.environ['GITHUB_RUN_ID'] and r.get('status') == 'pending']
+          ready = len(mine) == 1
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write(f"ready={'true' if ready else 'false'}\\n".replace('\\n', '\n'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              if ready:
+                  summary.write('Threads reservation created; proceeding to publish.\\n'.replace('\\n', '\n'))
+              else:
+                  summary.write('Threads publishing SKIPPED: no new reservation (possibly unresolved pending history). This is NOT a successful post.\\n'.replace('\\n', '\n'))
+          print('Threads reservation ready:', ready)
+          PY
 
       - name: Install Korean fonts and Pillow
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y fonts-nanum
           python -m pip install 'Pillow>=10,<13'
 
       - name: Generate recruitment image
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           python - <<'PY'
           import json
@@ -89,7 +106,7 @@ jobs:
           PY
 
       - name: Persist reservation before publishing
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           if [ -n "$(git status --porcelain -- threads_posted.json threads-images/)" ]; then
             git config user.name 'github-actions[bot]'
@@ -100,13 +117,13 @@ jobs:
           fi
 
       - name: Reload persisted reservation
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           git fetch origin main
           git restore --source=origin/main -- threads_posted.json
 
       - name: Trigger Pages deployment for newly committed image
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -138,7 +155,7 @@ jobs:
           PY
 
       - name: Allow Pages deployment to serve new image
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           python - <<'PY'
           import json, os, time, urllib.request
@@ -164,7 +181,7 @@ jobs:
           PY
 
       - name: Validate image readiness guard
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -177,11 +194,11 @@ jobs:
           PY
 
       - name: Publish one Threads post
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: python scripts/threads_auto.py publish
 
       - name: Persist successful publish
-        if: env.THREADS_ENABLED == 'true'
+        if: env.THREADS_ENABLED == 'true' && steps.reserve.outputs.ready == 'true'
         run: |
           if [ -n "$(git status --porcelain -- threads_posted.json)" ]; then
             git config user.name 'github-actions[bot]'
