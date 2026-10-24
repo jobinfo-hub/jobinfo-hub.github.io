@@ -1,6 +1,8 @@
 """Delivery ledger must not confuse detection with delivery."""
 import unittest
-from scripts.alert_delivery_ledger import delivered, mark_delivered, delivery_key
+import tempfile
+from pathlib import Path
+from scripts.alert_delivery_ledger import delivered, mark_delivered, delivery_key, load, save
 
 class DeliveryLedgerTests(unittest.TestCase):
     def test_only_explicit_delivery_is_recorded(self):
@@ -17,6 +19,14 @@ class DeliveryLedgerTests(unittest.TestCase):
         self.assertEqual(len(key), 64)
         self.assertNotIn("private-device-id", key)
         self.assertNotEqual(key, delivery_key("job1", "another-device"))
+
+    def test_atomic_save_roundtrip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "private" / "ledger.json"
+            snapshot = mark_delivered({"delivered": []}, "job1", "sub1")
+            save(path, snapshot)
+            self.assertEqual(load(path), snapshot)
+            self.assertNotIn("sub1", path.read_text(encoding="utf-8"))
 
     def test_missing_identity_rejected(self):
         with self.assertRaises(ValueError):
