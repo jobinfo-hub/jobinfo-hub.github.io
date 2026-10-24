@@ -42,12 +42,12 @@ jobs:
               assert Path(f"naver-review-packs/{pid}-thumbnail.png").is_file(), pid
           expired = sum(bool(item["expired"]) for item in manifest)
           unknown = sum(not item["deadline_known"] for item in manifest)
-          summary = ("## CareerPick Naver review package\\n"
-                     f"- Drafts: **{len(manifest)}**\\n"
-                     f"- Expired: **{expired}**\\n"
-                     f"- Deadline unknown: **{unknown}**\\n"
-                     "- Publication: **manual review only**\\n"
-                     "- Download: workflow Artifacts → naver-blog-review-drafts\\n")
+          summary = ("## CareerPick Naver review package\n"
+                     f"- Drafts: **{len(manifest)}**\n"
+                     f"- Expired: **{expired}**\n"
+                     f"- Deadline unknown: **{unknown}**\n"
+                     "- Publication: **manual review only**\n"
+                     "- Download: workflow Artifacts → naver-blog-review-drafts\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
               out.write(summary)
           print(f"Verified {len(manifest)} draft, DOCX and PNG packages")
