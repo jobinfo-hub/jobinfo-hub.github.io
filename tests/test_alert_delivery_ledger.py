@@ -30,6 +30,20 @@ class DeliveryLedgerTests(unittest.TestCase):
             self.assertEqual(load(path), snapshot)
             self.assertNotIn("sub1", path.read_text(encoding="utf-8"))
 
+    def test_preserves_metadata(self):
+        initial = {"delivered": [], "version": 1, "source": "private"}
+        updated = mark_delivered(initial, "job1", "sub1")
+        self.assertEqual(updated["version"], 1)
+        self.assertEqual(updated["source"], "private")
+        self.assertEqual(initial["delivered"], [])
+
+    def test_rejects_invalid_ledger(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "invalid.json"
+            path.write_text('{"delivered":"wrong"}', encoding="utf-8")
+            with self.assertRaises(ValueError):
+                load(path)
+
     def test_missing_identity_rejected(self):
         with self.assertRaises(ValueError):
             mark_delivered({}, "", "sub1")
