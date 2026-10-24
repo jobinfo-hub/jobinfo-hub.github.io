@@ -4,12 +4,13 @@ No Naver login, publishing, or automatic factual claims.
 """
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "naver-drafts"
 BASE = "https://jobinfo-hub.github.io"
+KST = timezone(timedelta(hours=9))
 
 def plain(value):
     if isinstance(value, list):
@@ -25,8 +26,13 @@ def main():
         if not post.get("alio") or not post.get("id") or not post.get("url"):
             continue
         due = plain(post.get("due"))
+        if not due:
+            continue  # Unknown deadline: cannot verify that recruitment is open.
         try:
-            if due and datetime.fromisoformat(due.replace("Z", "+00:00")).astimezone(timezone.utc) < now:
+            parsed_due = datetime.fromisoformat(due.replace("Z", "+00:00"))
+            if parsed_due.tzinfo is None:
+                parsed_due = parsed_due.replace(tzinfo=KST)
+            if parsed_due.astimezone(timezone.utc) < now:
                 continue
         except ValueError:
             continue
