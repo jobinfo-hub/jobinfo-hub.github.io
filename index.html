@@ -2583,7 +2583,7 @@ function cpRenderPushButtons(){
   if(subscribe){subscribe.style.display=on?"none":"block";subscribe.hidden=on;subscribe.disabled=false;subscribe.textContent="🔔 웹푸시 알림 허용하기";}
   if(unsubscribe){unsubscribe.style.display=on?"block":"none";unsubscribe.hidden=!on;unsubscribe.disabled=false;unsubscribe.textContent="알림 구독 해지";}
   const status=$("cpPushMessage");
-  if(status && !status.textContent) status.textContent=on?"✓ 이 기기에서 웹푸시 구독 중입니다. 아래에서 해지할 수 있습니다.":"이 기기에서는 아직 웹푸시를 구독하지 않았습니다.";
+  if(status && (!status.textContent || /^(✓ 이 기기에서 웹푸시 구독 중|이 기기에서는 아직 웹푸시를 구독하지 않았습니다)/.test(status.textContent))) status.textContent=on?"✓ 이 기기에서 웹푸시 구독 중입니다. 아래에서 해지할 수 있습니다.":"이 기기에서는 아직 웹푸시를 구독하지 않았습니다.";
 }
 async function cpRefreshPushPanel(){
   if(cpPushStatus()!=="ready")return;
