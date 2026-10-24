@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T01:31:42+00:00",
+  "updated_at": "2026-10-24T01:38:22+00:00",
   "source": "ALIO",
   "summary": {
     "total": 469,
@@ -11,7 +11,10 @@
     "without_official_link": 0,
     "thin_data": 0,
     "suspected_duplicate_groups": 12,
-    "duplicate_groups_with_distinct_official_links": 10
+    "duplicate_groups_with_distinct_official_links": 10,
+    "substantive_description_source_available": 0,
+    "missing_substantive_description": 469,
+    "suspected_same_link_duplicate_groups": 2
   },
   "detail_field_counts": {
     "acbgCondNmLst": 469,
