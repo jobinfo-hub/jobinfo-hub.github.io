@@ -46,6 +46,7 @@ def candidates(posts, now):
             "emp": p.get("emp", []),
             "edu": p.get("edu", []),
             "cat": str(p.get("cat", ""))[:80],
+            "desc": str(p.get("desc", ""))[:160],
             "due": due.isoformat(),
             "url": f"{BASE}/jobs/{job_id}.html",
         }
@@ -85,6 +86,15 @@ def matching_preference_tags(job, prefs):
     return not keywords or any(w in searchable for w in keywords)
 
 
+def preview_profile_matches(events, profile):
+    """Return only events matching an explicit local test profile.
+
+    This function is for validation only. It does not enumerate subscribers,
+    access OneSignal or send notifications.
+    """
+    return [event for event in events if matching_preference_tags(event, profile)]
+
+
 def matched_job_tags(job):
     """Not safe to use as OneSignal filters without subscriber-specific evaluation.
 
@@ -120,13 +130,20 @@ def main():
     ap.add_argument("--input", default="alio.json")
     ap.add_argument("--output", default="/tmp/careerpick-push-preview.json")
     ap.add_argument("--ledger", default="push_sent.json")
+    ap.add_argument("--test-profile", help="Optional local JSON profile for offline match verification")
     args = ap.parse_args()
     data = json.loads(Path(args.input).read_text(encoding="utf-8"))
     now = datetime.now(KST)
     found = event_deduplicate(candidates(data.get("posts", []), now), load_ledger(Path(args.ledger)))
+    if args.test_profile:
+        profile = json.loads(Path(args.test_profile).read_text(encoding="utf-8"))
+        if not isinstance(profile, dict):
+            raise ValueError("Test profile must be a JSON object")
+        found = preview_profile_matches(found, profile)
     result = {
         "generated_at": now.isoformat(),
         "mode": "preview_only",
+        "test_profile_applied": bool(args.test_profile),
         "total_candidates": len(found),
         "candidates": found[:MAX_PREVIEW],
         "send_enabled": False,
