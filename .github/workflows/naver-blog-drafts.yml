@@ -24,6 +24,34 @@ jobs:
         run: python scripts/generate_naver_drafts.py
       - name: Build DOCX and image review packs
         run: python scripts/build_naver_review_packs.py
+      - name: Verify generated packages and summarize
+        run: |
+          python - <<'PY'
+          import csv, json, os
+          from pathlib import Path
+          manifest = json.loads(Path("naver-drafts/manifest.json").read_text(encoding="utf-8"))
+          with Path("naver-drafts/review-index.csv").open(encoding="utf-8-sig", newline="") as f:
+              index = list(csv.DictReader(f))
+          assert manifest, "No ALIO drafts generated: refusing to upload empty archive"
+          assert len(index) == len(manifest), "Review CSV count mismatch"
+          assert len({item["id"] for item in manifest}) == len(manifest), "Duplicate draft IDs"
+          for item in manifest:
+              pid = item["id"]
+              assert Path(f"naver-drafts/{pid}.md").is_file(), pid
+              assert Path(f"naver-review-packs/{pid}.docx").is_file(), pid
+              assert Path(f"naver-review-packs/{pid}-thumbnail.png").is_file(), pid
+          expired = sum(bool(item["expired"]) for item in manifest)
+          unknown = sum(not item["deadline_known"] for item in manifest)
+          summary = ("## CareerPick Naver review package\\n"
+                     f"- Drafts: **{len(manifest)}**\\n"
+                     f"- Expired: **{expired}**\\n"
+                     f"- Deadline unknown: **{unknown}**\\n"
+                     "- Publication: **manual review only**\\n"
+                     "- Download: workflow Artifacts → naver-blog-review-drafts\\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+              out.write(summary)
+          print(f"Verified {len(manifest)} draft, DOCX and PNG packages")
+          PY
       - name: Upload review drafts
         uses: actions/upload-artifact@v4
         with:
