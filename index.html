@@ -2482,24 +2482,16 @@ function cpPushStatus(){
 }
 function cpPushTags(){
   const p=PREFS;
+  // Compact v3: seven tags rather than v2's 27+ tags.
   const tags={
-    cp_region:(p.region||[]).slice(0,5).join("|").slice(0,200),
-    cp_employment:(p.emp||[]).slice(0,5).join("|").slice(0,200),
-    cp_education:(p.edu||[]).slice(0,5).join("|").slice(0,200),
-    cp_category:(p.cat||[]).slice(0,5).join("|").slice(0,200),
+    cp3_region:(p.region||[]).slice(0,5).join("|").slice(0,200),
+    cp3_employment:(p.emp||[]).slice(0,5).join("|").slice(0,200),
+    cp3_education:(p.edu||[]).slice(0,5).join("|").slice(0,200),
+    cp3_category:(p.cat||[]).slice(0,5).join("|").slice(0,200),
     cp_keywords:String(p.kw||"").slice(0,200),
     cp_preferences_set:hasPrefs()?"yes":"no",
-    cp_schema:"2"
+    cp_schema:"3"
   };
-  // Each selection gets a separate indexed tag for future exact-match filters.
-  // Empty slots are explicitly cleared on update to avoid stale targeting.
-  for(const [name,values] of Object.entries({
-    region:p.region||[],employment:p.emp||[],education:p.edu||[],category:p.cat||[]
-  })){
-    for(let i=0;i<5;i++){
-      tags["cp2_"+name+"_"+(i+1)]=String(values[i]||"").slice(0,100);
-    }
-  }
   return tags;
 }
 async function cpSyncPushPreferences(){
