@@ -33,9 +33,9 @@ def matches(job, tags):
         wants = selected(tags, prefix)
         if wants and not set(wants).intersection(tokens(job.get(job_key))):
             return False
-    keywords = [s.strip().casefold() for s in re.split(r"[,，]", str(tags.get("cp_keywords", ""))) if s.strip()]
+    keywords = [s.strip().casefold() for s in re.split(r"[,，\\s]+", str(tags.get("cp_keywords", ""))) if s.strip()]
     if keywords:
-        text = " ".join(str(job.get(k) or "") for k in ("title", "org", "desc", "text")).casefold()
+        text = " ".join(str(job.get(k) or "") for k in ("title", "org", "cat", "desc", "text")).casefold()
         if not any(word in text for word in keywords):
             return False
     return True
