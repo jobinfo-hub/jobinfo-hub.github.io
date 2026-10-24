@@ -111,10 +111,19 @@ jobs:
           for attempt in range(5):
               try:
                   with urlopen(Request(base + '/robots.txt', headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
+                      assert response.status == 200, f'robots.txt HTTP {response.status}'
+                      assert response.url == base + '/robots.txt', f'robots.txt redirected to {response.url}'
+                      robots_type = response.headers.get_content_type()
                       robots = response.read(20000).decode('utf-8', errors='replace')
+                      print(f'robots.txt: HTTP {response.status}, type={robots_type}, final={response.url}')
                   assert 'Sitemap: ' + base + '/sitemap.xml' in robots, 'robots.txt missing sitemap declaration'
                   with urlopen(Request(base + '/sitemap.xml', headers={'User-Agent':'CareerPick-PublicSmoke/1.0'}), timeout=15) as response:
+                      assert response.status == 200, f'sitemap.xml HTTP {response.status}'
+                      assert response.url == base + '/sitemap.xml', f'sitemap.xml redirected to {response.url}'
+                      sitemap_type = response.headers.get_content_type()
+                      assert sitemap_type in ('application/xml', 'text/xml'), f'Unexpected sitemap Content-Type: {sitemap_type}'
                       xml_bytes = response.read(5000000)
+                      print(f'sitemap.xml: HTTP {response.status}, type={sitemap_type}, final={response.url}, bytes={len(xml_bytes)}')
                   root = ET.fromstring(xml_bytes)
                   ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
                   urls = [e.text.strip() for e in root.findall('s:url/s:loc', ns) if e.text]
