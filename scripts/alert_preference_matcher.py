@@ -31,6 +31,13 @@ def region_tokens(value):
                       re.split(r"[,，、;/|·\s]+", str(part)) if token.strip())
     return output
 
+def compact_selected(tags, dimension):
+    """Schema 3 stores one pipe-separated tag per preference dimension."""
+    value = tags.get("cp3_" + dimension, "")
+    if not isinstance(value, str):
+        return []
+    return [item.strip().casefold() for item in value.split("|") if item.strip()][:5]
+
 def selected(tags, prefix):
     return [str(tags.get(prefix + str(i), "")).strip().casefold()
             for i in range(1, 6) if str(tags.get(prefix + str(i), "")).strip()]
@@ -38,13 +45,16 @@ def selected(tags, prefix):
 def matches(job, tags):
     if str(tags.get("cp_preferences_set", "")).lower() != "yes":
         return False
-    if str(tags.get("cp_schema", "")) != "2":
+    schema = str(tags.get("cp_schema", ""))
+    if schema not in ("2", "3"):
         return False
     # A stale or incorrectly set preferences flag alone must never target everyone.
-    if not any(selected(tags, prefix) for _, prefix in DIMENSIONS.values()) and not str(tags.get("cp_keywords", "")).strip():
+    choices = {dimension: (compact_selected(tags, dimension) if schema == "3" else selected(tags, prefix))
+               for dimension, (_, prefix) in DIMENSIONS.items()}
+    if not any(choices.values()) and not str(tags.get("cp_keywords", "")).strip():
         return False
-    for _, (job_key, prefix) in DIMENSIONS.items():
-        wants = selected(tags, prefix)
+    for dimension, (job_key, prefix) in DIMENSIONS.items():
+        wants = choices[dimension]
         actual = region_tokens(job.get(job_key)) if job_key == "region" else tokens(job.get(job_key))
         if wants and not set(wants).intersection(actual):
             return False
