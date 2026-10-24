@@ -65,6 +65,20 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(result), 1)
             self.assertFalse(result[0]["deadline_known"])
 
+    def test_sanitized_ids_do_not_overwrite(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            jobs = [
+                {"id":"job/1","alio":True,"title":"공고A","url":"https://example.org/a"},
+                {"id":"job1","alio":True,"title":"공고B","url":"https://example.org/b"},
+            ]
+            (root / "alio.json").write_text(json.dumps({"posts":jobs}, ensure_ascii=False), encoding="utf-8")
+            with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
+                generator.main()
+            result = json.loads((root / "naver-drafts" / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0]["id"], "job1")
+
     def test_generates_all_more_than_eleven(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
