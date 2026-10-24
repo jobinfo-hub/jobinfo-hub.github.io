@@ -1,6 +1,8 @@
-name: Prepare Naver blog drafts (manual)
+name: Prepare Naver blog drafts (review only)
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "20 0 * * *" # 09:20 KST daily, after upstream ALIO refresh
 permissions:
   contents: read
 jobs:
