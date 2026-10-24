@@ -26,8 +26,6 @@ def exclusive_ledger_lock(path):
                 yield
             finally:
                 fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
-    except:
-        raise
 
 def record_and_save_accepted(path, job_id, subscription_id, status, payload, *, targeted_subscription_ids):
     ledger_path = Path(path)
