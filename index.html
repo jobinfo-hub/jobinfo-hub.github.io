@@ -2503,6 +2503,12 @@ async function cpSyncPushPreferences(){
     if(!subscription || !subscription.optedIn || !subscription.id)return false;
     if(window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags==="function"){
       const desired=cpPushTags();
+      // Free-tier OneSignal accounts may allow only two data tags per user.
+      // Refuse a misleading success status rather than attempting an over-quota write.
+      if(Object.keys(desired).length>2){
+        console.warn("OneSignal tag sync paused: account tag capacity must be verified.");
+        return false;
+      }
       await cpPushWithTimeout(OneSignal.User.addTags(desired),12000,"관심 조건 동기화");
       // addTags resolving does not guarantee all tags were retained on the account.
       if(typeof OneSignal.User.getTags!=="function")return false;
