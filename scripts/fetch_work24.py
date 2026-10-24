@@ -50,7 +50,7 @@ def safe_link(value):
 
 def normalize(root):
     if root.tag != "wantedRoot":
-        raise ValueError("Unexpected Work24 recruitment response")
+        raise ValueError("Unexpected Work24 recruitment response: root=" + repr(root.tag[:70]) + ", child_tags=" + repr([x.tag[:50] for x in list(root)[:6]]))
     result = []
     for node in root.findall("wanted"):
         number = field(node, "wantedAuthNo")
@@ -84,7 +84,7 @@ def main():
     for page in range(1, pages + 1):
         root = request_xml(LIST, {
             "authKey": key, "callTp": "L", "returnType": "XML",
-            "startPage": page, "display": 100, "sortOrderBy": "DESC",
+            "startPage": page, "display": 100,
         })
         records = normalize(root)
         for record in records:
@@ -108,7 +108,7 @@ def main():
                 "target": "CMCD", "dtlGb": category,
             })
             if root.tag != "cmcdInd":
-                raise ValueError("Unexpected Work24 common-code response")
+                raise ValueError("Unexpected Work24 common-code response: root=" + repr(root.tag[:70]))
             groups[str(category)] = [
                 {child.tag: (child.text or "").strip() for child in node}
                 for node in root if node.tag not in ("total", "codeName")
