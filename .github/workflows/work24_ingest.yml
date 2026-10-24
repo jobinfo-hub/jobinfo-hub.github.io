@@ -11,6 +11,9 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    env:
+      WORK24_RECRUITMENT_KEY: ${{ secrets.WORK24_RECRUITMENT_KEY }}
+      WORK24_COMMON_KEY: ${{ secrets.WORK24_COMMON_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
