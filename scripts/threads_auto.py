@@ -522,6 +522,32 @@ def main():
         if not token:
             raise RuntimeError('Missing THREADS_ACCESS_TOKEN')
         actual_id = verify_account(token, configured_id)
+        # Compare recent remote posts without creating, deleting, or editing any.
+        # Only exact text matches are evidence; absence is not proof of failure.
+        if pending_records:
+            try:
+                remote = api('GET', '/me/threads', token,
+                             {'fields': 'id,text,timestamp', 'limit': 100})
+                remote_posts = remote.get('data', [])
+                for record in pending_records:
+                    matches = [
+                        str(post.get('id', ''))
+                        for post in remote_posts
+                        if post.get('text') == record.get('text')
+                        and str(post.get('id', '')).isdigit()
+                    ]
+                    print('Remote match for job', record.get('job_id'),
+                          'count:', len(matches))
+                    if len(matches) == 1:
+                        print('Confirmed remote post ID:', matches[0])
+                    elif len(matches) > 1:
+                        print('Multiple remote matches; manual review required')
+                    else:
+                        print('No exact match in latest remote page; not proof of absence')
+                if remote.get('paging', {}).get('next'):
+                    print('Additional remote pages exist; reconciliation incomplete')
+            except (RuntimeError, ValueError, TypeError) as exc:
+                print('Remote reconciliation unavailable:', type(exc).__name__)
         print('Publishing enabled:', os.getenv('THREADS_ENABLED', 'false'))
         print('Pending reservations:', sum(
             r.get('status') == 'pending' for r in history['records']
