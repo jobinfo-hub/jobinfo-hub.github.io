@@ -10,6 +10,11 @@ import sys
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
+try:
+    from scripts.onesignal_response_validation import api_accepted
+except ModuleNotFoundError:
+    from onesignal_response_validation import api_accepted
+
 APP_ID = "31443bc9-bef0-4519-9817-2f916a548b6a"
 API_URL = "https://api.onesignal.com/notifications"
 
@@ -41,8 +46,8 @@ def main():
             result = json.load(response)
             print(json.dumps({"status": response.status, "notification_id": result.get("id"),
                               "recipients": result.get("recipients"), "errors": result.get("errors")}, ensure_ascii=False))
-            if not result.get("id") or result.get("errors"):
-                sys.exit("OneSignal did not confirm successful creation.")
+            if not api_accepted(response.status, result) or result["recipients"] != 1:
+                sys.exit("OneSignal did not confirm exactly one accepted test recipient.")
     except (HTTPError, URLError) as error:
         sys.exit("OneSignal request failed: " + str(getattr(error, "code", type(error).__name__)))
 
