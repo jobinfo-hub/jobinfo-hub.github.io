@@ -34,6 +34,8 @@ def main():
         print("No private subscriber export configured; no matching performed.")
         return
     raw = json.loads(Path(source).read_text(encoding="utf-8"))
+    if not isinstance(raw, dict) or not isinstance(raw.get("subscribers"), list):
+        raise ValueError("Private subscriber export must contain a subscribers array")
     report = json.loads(Path(os.environ.get("CP_ALERT_REPORT", "careerpick-new-jobs.json")).read_text(encoding="utf-8"))
     rows = match_counts(report.get("new_jobs", []), raw.get("subscribers", []))
     print(json.dumps({"evaluated_jobs": len(rows), "total_job_subscription_matches":
