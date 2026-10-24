@@ -26,6 +26,21 @@ class DraftTests(unittest.TestCase):
             self.assertEqual(len(manifest), 1)
             self.assertFalse((out / "stale.md").exists())
 
+    def test_faq_uses_only_source_fields(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            job = {"id":"a500","alio":True,"title":"FAQ 테스트","org":"테스트기관",
+                   "url":"https://example.org/job","due":"2099-01-01T00:00:00+09:00",
+                   "region":"서울","n":"3명","edu":"학력무관"}
+            (root / "alio.json").write_text(json.dumps({"posts":[job]}, ensure_ascii=False), encoding="utf-8")
+            with patch.object(generator, "ROOT", root), patch.object(generator, "OUT", root / "naver-drafts"):
+                generator.main()
+            article = (root / "naver-drafts" / "a500.md").read_text(encoding="utf-8")
+            self.assertIn("수집된 근무지역: **서울**", article)
+            self.assertIn("수집된 인원: **3명**", article)
+            self.assertIn("현재 수집 정보만으로 확정할 수 없습니다", article)
+            self.assertIn("발행 전 검수 체크리스트", article)
+
     def test_unverified_deadline_time_is_labeled(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
