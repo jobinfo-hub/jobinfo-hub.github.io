@@ -607,8 +607,8 @@ footer .src b{color:var(--ink)}
   <div class="cp-feed-status" id="cpFeedStatus" role="status" aria-live="polite">📡 채용정보 업데이트 상태 확인 중…</div>
   <div class="notice alert" id="savedAlert" hidden role="button" tabindex="0"></div>
   <div class="notice kakao" id="kakaoBar" hidden>
-    <span class="grow">🔔 <b>내게 맞는 채용공고</b>, 빠르게 받아보세요! <small>맞춤 웹푸시 알림 준비 중</small></span>
-    <button type="button" class="go kgo" id="kakaoGo">알림 안내</button>
+    <span class="grow">🔔 <b>내게 맞는 채용공고</b>, 빠르게 받아보세요! <small>관심 조건 저장 · 웹푸시 연동 준비 중</small></span>
+    <button type="button" class="go kgo" id="kakaoGo">내 알림 조건 설정</button>
     <button class="x" id="kakaoX" aria-label="닫기">×</button>
   </div>
   <div class="notice" id="addHint" hidden>
@@ -1444,11 +1444,11 @@ function openPrefs(){
   const cats = [...new Set(POSTS.filter(p => p.type === "j").map(p => p.cat))];
   const grp = (key, label, items) => `<div class="grp"><span>${label}</span><div class="chips">${items.map(v =>
     `<button class="chip" data-pref="${key}" data-val="${esc(v)}" aria-pressed="${DRAFT[key].includes(v)}">${esc(v)}</button>`).join("")}</div></div>`;
-  $("sheetTitle").textContent = "🎯 내 조건 설정";
+  $("sheetTitle").textContent = "🔔 맞춤 채용 알림 조건 설정";
   $("sheetBody").innerHTML = PREF_GROUPS.map(g => grp(g.key, g.label, g.items)).join("")
     + grp("cat", "분야", cats)
     + `<div class="grp"><span>키워드 (쉼표로 여러 개)</span><input type="text" id="prefKw" value="${esc(DRAFT.kw)}" placeholder="예: 간호, 전산, 사무"></div>`
-    + `<p class="hint">같은 항목 안에서는 하나만 맞아도 되고, 항목끼리는 모두 맞아야 해요. 이 기기에만 저장돼요.</p>`
+    + `<p class="hint">선택한 조건은 이 기기에만 저장됩니다. 맞춤 웹푸시 자동 발송은 아직 준비 중이며, 조건 저장만으로 알림이 발송되지는 않습니다.</p>`
     + `<p class="live" id="prefLive"></p>`
     + `<div class="row"><button id="prefClear">초기화</button><button class="primary" id="prefSave">저장</button></div>`;
   $("sheet").classList.add("open");
@@ -2528,7 +2528,7 @@ function savedAlert(){
   $("addHint").hidden = true;   // 안내 줄은 한 번에 하나만
   const hide = () => { $("kakaoBar").hidden = true; try { localStorage.setItem("kakaoOff","1"); } catch(e) {} };
   $("kakaoX").onclick = hide;
-  $("kakaoGo").addEventListener("click", () => sheet(`<p>관심 지역·직종에 맞춘 <b>채용공고 웹푸시 알림</b> 기능을 준비하고 있습니다.</p><p>현재는 자동 알림 신청이나 발송이 시작되지 않았습니다. 기능이 준비되면 이곳에서 알림 수신을 설정할 수 있습니다.</p><p><a href="https://open.kakao.com/o/gcWQTaQi" target="_blank" rel="noopener">💬 홈페이지 건의사항·운영자와 대화하기 ↗</a></p>`, "커리어픽 맞춤 채용 알림"));
+  $("kakaoGo").addEventListener("click", () => openPrefs());
 })();
 
 load();
