@@ -175,7 +175,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 2
+          fetch-depth: 100
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

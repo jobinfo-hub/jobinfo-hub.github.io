@@ -1,7 +1,7 @@
 """Notify Bing IndexNow about newly added or changed CareerPick job pages.
 
 Usage: python scripts/submit_indexnow.py [--dry-run]
-Only changed jobs/a<digits>.html files from the latest commit are submitted.
+Only changed jobs/a<digits>.html files from recent commits are submitted.
 IndexNow submission does not guarantee indexing.
 """
 import json
@@ -19,19 +19,23 @@ ENDPOINT = "https://api.indexnow.org/indexnow"
 
 
 def changed_job_urls():
+    # A Pages deployment can run after a separate workflow or merge commit.
+    # Inspect recent history, not only HEAD^..HEAD, which can miss generated jobs.
     try:
         names = subprocess.check_output(
-            ["git", "diff", "--name-only", "--diff-filter=AM", "HEAD^", "HEAD"],
-            cwd=ROOT, text=True, timeout=20,
+            ["git", "log", "--since=24 hours ago", "--max-count=100",
+             "--name-only", "--pretty=format:", "--diff-filter=AM",
+             "--", "jobs/"],
+            cwd=ROOT, text=True, timeout=25,
         ).splitlines()
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
         return []
     return sorted({
         f"https://{HOST}/{name}"
         for name in names
-        if re.fullmatch(r"jobs/a[0-9]+\.html", name)
+        if re.fullmatch(r"jobs/a[0-9]+\\.html", name)
         and (ROOT / name).is_file()
-    })
+    })[:1000]
 
 
 def main():
