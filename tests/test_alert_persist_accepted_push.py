@@ -24,6 +24,18 @@ class PersistAcceptedPushTests(unittest.TestCase):
                                          targeted_subscription_ids=["sub1"])
             self.assertFalse(path.exists())
 
+    def test_lock_file_created_with_private_permissions(self):
+        import os
+        import stat
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            record_and_save_accepted(path, "job1", "sub1", 200,
+                                     {"id": "x", "recipients": 1},
+                                     targeted_subscription_ids=["sub1"])
+            lock = Path(str(path) + ".lock")
+            self.assertTrue(lock.exists())
+            self.assertEqual(stat.S_IMODE(os.stat(lock).st_mode), 0o600)
+
     def test_relative_path_rejected(self):
         with self.assertRaises(ValueError):
             record_and_save_accepted("ledger.json", "job1", "sub1", 200,
