@@ -717,6 +717,19 @@ def main():
     quality['duplicate_groups_with_distinct_official_links'] = sum(
         item['distinct_official_link_count'] > 1 for item in suspected_duplicates
     )
+    # Source-field coverage helps distinguish a missing API field from a rendering defect.
+    quality['substantive_description_source_available'] = sum(
+        int(bool(clean(details.get(row['id'], {}).get(field))))
+        for row in quality_rows
+        for field in ('jobDscrptn',)
+        if isinstance(details.get(row['id']), dict)
+    )
+    quality['missing_substantive_description'] = sum(
+        '실질 직무설명' in row['missing'] for row in quality_rows
+    )
+    quality['suspected_same_link_duplicate_groups'] = sum(
+        item['distinct_official_link_count'] == 1 for item in suspected_duplicates
+    )
     # JSON 보고서는 배포 중 자동 생성되며 공개 페이지에서는 링크하지 않습니다.
     report = {
         'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
