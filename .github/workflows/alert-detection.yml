@@ -40,5 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: careerpick-alert-report
-          path: |\n            careerpick-new-jobs.json\n            careerpick-push-preview.json
+          path: |
+            careerpick-new-jobs.json
+            careerpick-push-preview.json
           retention-days: 14
