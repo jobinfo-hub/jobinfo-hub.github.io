@@ -114,6 +114,9 @@ jobs:
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add threads_posted.json threads-images/
             git commit -m 'Reserve CareerPick Threads job'
+            # Other automation can commit between checkout and image generation.
+            # Rebase the committed reservation before pushing; fail closed on conflicts.
+            git pull --rebase origin main
             git push
           fi
 
@@ -206,6 +209,9 @@ jobs:
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add threads_posted.json
             git commit -m 'Record published CareerPick Threads job'
+            # Other automation can commit between checkout and image generation.
+            # Rebase the committed reservation before pushing; fail closed on conflicts.
+            git pull --rebase origin main
             git push
           fi
 
