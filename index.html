@@ -2482,17 +2482,15 @@ function cpPushStatus(){
 }
 function cpPushTags(){
   const p=PREFS;
-  // Compact v3: seven tags rather than v2's 27+ tags.
-  const tags={
-    cp3_region:(p.region||[]).slice(0,5).join("|").slice(0,200),
-    cp3_employment:(p.emp||[]).slice(0,5).join("|").slice(0,200),
-    cp3_education:(p.edu||[]).slice(0,5).join("|").slice(0,200),
-    cp3_category:(p.cat||[]).slice(0,5).join("|").slice(0,200),
-    cp_keywords:String(p.kw||"").slice(0,200),
-    cp_preferences_set:hasPrefs()?"yes":"no",
-    cp_schema:"3"
+  const profile={
+    v:4,
+    region:(p.region||[]).slice(0,5),
+    employment:(p.emp||[]).slice(0,5),
+    education:(p.edu||[]).slice(0,5),
+    category:(p.cat||[]).slice(0,5),
+    keywords:String(p.kw||"").slice(0,200)
   };
-  return tags;
+  return {cp_profile:JSON.stringify(profile),cp_optin:hasPrefs()?"yes":"no"};
 }
 async function cpSyncPushPreferences(){
   if(cpPushStatus()!=="ready")return false;
@@ -2503,11 +2501,16 @@ async function cpSyncPushPreferences(){
     if(!subscription || !subscription.optedIn || !subscription.id)return false;
     if(window.OneSignal && OneSignal.User && typeof OneSignal.User.addTags==="function"){
       const desired=cpPushTags();
-      // Free-tier OneSignal accounts may allow only two data tags per user.
-      // Refuse a misleading success status rather than attempting an over-quota write.
-      if(Object.keys(desired).length>2){
-        console.warn("OneSignal tag sync paused: account tag capacity must be verified.");
-        return false;
+      // Refuse silent truncation of a packed profile.
+      if(desired.cp_profile.length>1000)return false;
+      // Remove old tags first; free-tier accounts may have a two-tag cap.
+      if(typeof OneSignal.User.removeTags==="function"){
+        const legacy=["cp_region","cp_employment","cp_education","cp_category",
+          "cp_keywords","cp_preferences_set","cp_schema",
+          "cp3_region","cp3_employment","cp3_education","cp3_category"];
+        for(const dimension of ["region","employment","education","category"])
+          for(let i=1;i<=5;i++)legacy.push("cp2_"+dimension+"_"+i);
+        await cpPushWithTimeout(OneSignal.User.removeTags(legacy),12000,"이전 태그 정리");
       }
       await cpPushWithTimeout(OneSignal.User.addTags(desired),12000,"관심 조건 동기화");
       // addTags resolving does not guarantee all tags were retained on the account.
@@ -2516,19 +2519,6 @@ async function cpSyncPushPreferences(){
       if(!actual || typeof actual!=="object")return false;
       const verified=Object.keys(desired).every(key=>String(actual[key]??"")===String(desired[key]));
       if(!verified)return false;
-      // Remove obsolete v2 tags only after all seven v3 values are verified.
-      // This reduces tag usage for returning subscribers without affecting v3 matching.
-      if(typeof OneSignal.User.removeTags==="function"){
-        const legacy=["cp_region","cp_employment","cp_education","cp_category"];
-        for(const dimension of ["region","employment","education","category"]){
-          for(let i=1;i<=5;i++)legacy.push("cp2_"+dimension+"_"+i);
-        }
-        try{
-          await cpPushWithTimeout(OneSignal.User.removeTags(legacy),12000,"이전 태그 정리");
-        }catch(error){
-          console.warn("Legacy push tag cleanup deferred",error);
-        }
-      }
       return true;
     }
   }catch(e){
